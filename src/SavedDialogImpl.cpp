@@ -26,7 +26,7 @@
 #include "SavedDialogImpl.h"
 #include "GlobalsImg.h"
 
-SavedDialogImpl::SavedDialogImpl(int mode, QWidget * parent, struct fp_pic_data *pic, Qt::WFlags f)
+SavedDialogImpl::SavedDialogImpl(int mode, QWidget * parent, struct fp_pic_data *pic, Qt::WindowFlags f)
     : QDialog(parent, f){
     setupUi(this);
 

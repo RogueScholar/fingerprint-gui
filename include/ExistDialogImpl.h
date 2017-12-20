@@ -47,7 +47,7 @@ class ExistDialogImpl : public QDialog, public Ui::ExistDialog {
 Q_OBJECT
 
 public:
-    ExistDialogImpl(string finger,QWidget * parent=0,Qt::WFlags f=0);
+    ExistDialogImpl(string finger,QWidget * parent=0,Qt::WindowFlags f=0);
 
 signals:
     void choice(existDialogChoice);

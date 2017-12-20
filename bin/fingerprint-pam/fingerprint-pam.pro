@@ -3,6 +3,7 @@ CONFIG = plugin
 TARGET = pam_fingerprint-gui
 DEPENDPATH += . ../../include ../../src
 INCLUDEPATH += . ../../include ../../upek/include
+QT += widgets x11extras
 
 isEmpty(PREFIX) {
 	PREFIX = /usr/local

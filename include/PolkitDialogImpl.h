@@ -66,7 +66,7 @@ public:
             const QString &iconName,
             const PolkitQt1::Details &details,
             const PolkitQt1::Identity::List &identities,
-            QWidget * parent = 0, Qt::WFlags f = 0);
+            QWidget * parent = 0, Qt::WindowFlags f = 0);
     virtual ~PolkitDialogImpl();
     QString password() const;
     void authenticationFailure();

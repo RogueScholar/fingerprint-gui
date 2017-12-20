@@ -26,16 +26,16 @@
 
 #include "../include/AboutImpl.h"
 
-AboutImpl::AboutImpl(QWidget *parent,Qt::WFlags f)
+AboutImpl::AboutImpl(QWidget *parent,Qt::WindowFlags f)
     : QDialog(parent,f){
     setupUi(this);
 
     string s="Version: ";
     s.append(VERSION);
-    versionLabel->setText(QApplication::translate("AboutDialog", s.data(),0,QApplication::UnicodeUTF8));
-    copyrightLabel->setText(QApplication::translate("AboutDialog", COPYRIGHT,0,QApplication::UnicodeUTF8));
-    homeButton->setText(QApplication::translate("AboutDialog",HOMEPAGE,0,QApplication::UnicodeUTF8));
-    bitcoinButton->setText(QApplication::translate("AboutDialog",BITCOINADDRESS,0,QApplication::UnicodeUTF8));
+    versionLabel->setText(QApplication::translate("AboutDialog", s.data()));
+    copyrightLabel->setText(QApplication::translate("AboutDialog", COPYRIGHT));
+    homeButton->setText(QApplication::translate("AboutDialog",HOMEPAGE));
+    bitcoinButton->setText(QApplication::translate("AboutDialog",BITCOINADDRESS));
     connect(donateButton,SIGNAL(clicked()),this,SLOT(donate()));
     connect(licenseButton,SIGNAL(clicked()),this,SLOT(license()));
     connect(homeButton,SIGNAL(clicked()),this,SLOT(homepage()));

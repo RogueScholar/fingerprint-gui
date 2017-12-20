@@ -26,7 +26,7 @@
 #ifndef _FINGERPRINT_H
 #define _FINGERPRINT_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "FingerprintDevice.h"
 
 #include "Globals.h"

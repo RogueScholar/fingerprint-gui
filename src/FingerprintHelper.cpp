@@ -31,12 +31,6 @@
 #include <sys/wait.h>
 #include <linux/uinput.h>
 #include <pwd.h>
-#include <fakekey/fakekey.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <X11/Xresource.h>
-#include <X11/keysym.h>
 #include "../include/FingerprintDevice.h"
 #include "../include/DeviceHandler.h"
 #include "../include/FingerprintDiscoverer.h"
@@ -47,6 +41,12 @@
 #include "../include/Globals.h"
 #include "../include/UserSettings.h"
 
+#include <fakekey/fakekey.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/Xresource.h>
+#include <X11/keysym.h>
 using namespace std;
 
 static string syslogIdent=string(HELPER_NAME);

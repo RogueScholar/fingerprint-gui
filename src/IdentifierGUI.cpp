@@ -34,7 +34,7 @@
     activateWindow();
 
 
-IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintData *iData,QWidget *parent,Qt::WFlags f)
+IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintData *iData,QWidget *parent,Qt::WindowFlags f)
     : QMainWindow(parent, f){
     setupUi(this);
 
@@ -45,7 +45,7 @@ IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintDa
         setWindowFlags(Qt::Dialog);
         string title=string("Fingerprint Identifier ");
         title.append(VERSION);
-        setWindowTitle(QApplication::translate("MainWindow",title.data(), 0, QApplication::UnicodeUTF8));
+        setWindowTitle(QApplication::translate("MainWindow",title.data()));
 	SET_TEXT_COLOR
     }
         

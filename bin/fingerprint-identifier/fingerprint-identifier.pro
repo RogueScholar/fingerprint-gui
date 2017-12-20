@@ -3,6 +3,7 @@ CONFIG += qt thread
 TARGET = fingerprint-identifier
 DEPENDPATH += . ../../include ../../src
 INCLUDEPATH += . ../../include ../../upek/include
+QT += widgets
 
 isEmpty(PREFIX) {
 	PREFIX = /usr/local

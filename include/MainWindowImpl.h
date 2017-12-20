@@ -77,7 +77,7 @@ private:
     QPixmap fpPix;
 
 public:
-    MainWindowImpl(QWidget * parent = 0, Qt::WFlags f = 0 );
+    MainWindowImpl(QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
 private:
     void tabChanged(int newTab);

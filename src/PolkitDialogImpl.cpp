@@ -43,7 +43,7 @@ PolkitDialogImpl::PolkitDialogImpl(
         const QString &/*iconName*/,
         const PolkitQt1::Details &details,
         const PolkitQt1::Identity::List &identities,
-        QWidget * parent,Qt::WFlags f)
+        QWidget * parent,Qt::WindowFlags f)
     : QDialog(parent,f){
 
     qRegisterMetaType<PolkitQt1::Identity*>("PolkitQt1::Identity *");

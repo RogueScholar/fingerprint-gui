@@ -30,7 +30,8 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string>
-#include <QtGui>
+#include <QtWidgets>
+#include <QX11Info>
 #include <QObject>
 #include <QEventLoop>
 #include <security/pam_modules.h>
