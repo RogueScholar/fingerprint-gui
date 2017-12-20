@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Name=Fingerprint GUI
+GenericName=Fingerprint Tool
+Comment=Tool for fingerprint enrollment and verification
+Icon=fingerprint-gui
+TryExec=fingerprint-gui
+Exec=fingerprint-gui --debug
+Categories=GNOME;GTK;Settings;HardwareSettings;

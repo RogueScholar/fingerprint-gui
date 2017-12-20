@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.docbook.org/xml/4.5/docbookx.dtd"
+[
+	<!ENTITY dhfirstname "David">
+	<!ENTITY dhsurname   "Jurenka">
+	<!ENTITY dhemail     "fingerprint-gui.box@mail.jurenka.cz">
+	<!ENTITY dhusername  "&dhfirstname; &dhsurname;">
+	<!-- The version information can also be suppressed (just
+	remove it or comment it out. -->
+	<!ENTITY dhrelease   "1.00">
+	<!-- TITLE should be something like "User commands",
+	"&dhpackage; command-line reference" or similar (see e.g.
+	http://www.tldp.org/HOWTO/Man-Page/q2.html). But limit
+	the length to 30 chars.	-->
+	<!ENTITY dhtitle     "User Manuals">
+
+	<!-- This is the application/package name. -->
+	<!ENTITY dhproduct   "pam_fingerprint-gui">
+	<!-- If the application e.g. belongs to a package like X.org,
+	this should be set to the package/suite name instead of
+	dhpackage. -->
+	<!ENTITY dhsuite     "Fingerprint GUI">
+	<!-- SECTION should be 1-8, maybe w/ subsection other
+	parameters are allowed: see man(7), man(1) and
+	http://www.tldp.org/HOWTO/Man-Page/q2.html. -->
+	<!ENTITY dhsection   "8">
+	<!ENTITY dhdate      "September 16, 2014">
+]>
+<refentry>
+	<refentryinfo>
+		<title>&dhtitle;</title>
+		<!-- Better put a suite name instead of &dhpackage; into productname -->
+		<productname>&dhsuite;</productname>
+		<releaseinfo role="version">&dhrelease;</releaseinfo>
+		<authorgroup>
+			<author>
+				<contrib>Developer</contrib>
+				<firstname>Wolfgang</firstname>
+				<surname>Ullrich</surname>
+				<address>
+					<email>contact@ullrich-online.cc</email>
+				</address>
+			</author>
+			<author>
+				<contrib>Manual pages and Debian packaging</contrib>
+				<firstname>&dhfirstname;</firstname>
+				<surname>&dhsurname;</surname>
+			</author>
+		</authorgroup>
+		<date>&dhdate;</date>
+	</refentryinfo>
+	<refmeta>
+		<refentrytitle>&dhproduct;</refentrytitle>
+		<manvolnum>&dhsection;</manvolnum>
+		<refmiscinfo class="version">&dhrelease;</refmiscinfo>
+	</refmeta>
+	<refnamediv>
+		<refname>&dhproduct;</refname>
+		<refpurpose>authenticate users based on their fingerprint</refpurpose>
+	</refnamediv>
+	<refsynopsisdiv>
+		<cmdsynopsis>
+			<command>&dhproduct;.so</command>
+			<group choice="opt">
+				<arg choice="plain"><option>-d</option></arg>
+				<arg choice="plain"><option>--debug</option></arg>
+			</group>
+			<arg choice="opt"><option>try_first_identified</option></arg>
+		</cmdsynopsis>
+	</refsynopsisdiv>
+	<refsect1 id="description">
+		<title>DESCRIPTION</title>
+		<para><command>&dhproduct;</command> is a PAM module that can authenticate users by their fingerprints. If the given
+		fingerprint scan matches one of the previously stored fingerprints data (.bir format) for a user, the username is stored in
+		the PAM stack and the module returns PAM_SUCCESS. The module requests swiping finger and/or typing in the password at the same time.
+		The user can get authenticated using either of these methods. If a password is typed, the module stores the password
+		in the PAM stack and returns PAM_IGNORE, so that the password can be checked by subsequent modules on the stack.
+		</para>
+		<para>Depending on the environment while authentication is requested and the service to be authenticated,
+		<command>&dhproduct;</command> requests password and finger-swipe through a GUI widget or a console prompt.
+		</para>
+		<para>If no fingerprint scanner device is connected to the system or no fingerprint data was found for the user to
+		be authenticated, <command>&dhproduct;</command> returns PAM_AUTHINFO_UNAVAIL.
+		</para>
+	</refsect1>
+	<refsect1 id="options">
+		<title>OPTIONS</title>
+		<variablelist>
+			<!-- Use the variablelist.term.separator and the
+			     variablelist.term.break.after parameters to
+			     control the term elements. -->
+			<varlistentry>
+				<term><option>-d</option></term>
+				<term><option>--debug</option></term>
+				<listitem>
+					<para>Send debugging information to syslog, using the auth facility. Depending on system settings the output
+					may end up in <filename>/var/log/auth.log</filename>, <filename>/var/log/messages</filename> or
+					<filename>/var/log/syslog</filename>.</para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><option>try_first_identified</option></term>
+				<listitem>
+					<para>If <command>&dhproduct;</command> is called more than once in a PAM stack and the given user was identified/authenticated
+					by his/her fingerprint in a previous call already, the module returns PAM_SUCCESS immediately without requesting a
+					password or finger-swipe again.</para>
+				</listitem>
+			</varlistentry>
+		</variablelist>
+	</refsect1>
+	<refsect1 id="bugs">
+		<title>BUGS</title>
+		<para>Bugs can be sent directly to the developer or submitted at <ulink url="http://home.ullrich-online.cc/fingerprint/Forum/"/> .</para>
+	</refsect1>
+	<refsect1 id="see_also">
+		<title>SEE ALSO</title>
+		<!-- In alphabetical order. -->
+		<para>
+			<citerefentry>
+				<refentrytitle>fingerprint-gui</refentrytitle>
+				<manvolnum>1</manvolnum>
+			</citerefentry>,
+			<citerefentry>
+				<refentrytitle>fingerprint-identifier</refentrytitle>
+				<manvolnum>1</manvolnum>
+			</citerefentry>
+		</para>
+	</refsect1>
+</refentry>

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=PolicyKit Authentication Agent with Fingerprint Authentication
+Comment=PolicyKit Authentication Agent with Fingerprint Authentication
+Exec=LIBEXECDIR/fingerprint-polkit-agent -d
+Terminal=false
+Type=Application
+Categories=
+NoDisplay=true
+OnlyShowIn=GNOME;XFCE;KDE;Unity;LXDE;MATE;
+X-GNOME-AutoRestart=true
+X-Ubuntu-Gettext-Domain=polkit-gnome-1

@@ -1,0 +1,351 @@
+Project Fingerprint GUI
+=======================
+version 1.09 (2016-08-03):
+Bugfixes:
+- LED on UPEK devices are switched off when fingerprint scan was cancelled
+  (password invoked),
+- Conflict (deadlock) while starting webmin fixed,
+- Current version of ressource file "usb.ids" used,
+
+version 1.08 (2016-06-15):
+Bugfixes:
+- Login doesnt work for Linux Mint 17.2 (Cinnamon and Mate),
+- fingerprint-polkit-agent not starting in MATE desktop,
+- Space bar not working after fingerprint login.
+Improvements:
+- Loading fingerprint data via pkexec is only used when not running with 
+  root privilegs (speedup loading).
+
+version 1.07 (2015-07-05):
+Bugfixes:
+- fixed: fingerprint export doesn't handle well spaces in custom filename,
+- important security fix:
+Directory "/var/lib/fingerprint-gui" and all its subdirectories are now owned
+by root.root with mode 755. All files in these directories are also owned by 
+root.root with mode 600 now. The helper module "fingerprint-suid" was replaced
+by a new module "fingerprint-rw" not set to suid root any more. This module is
+executed via "pkexec" for reading and modifying fingerprint data. A new policy 
+file "cc.ullrich-online.fingerprint-gui.policy" is installed in
+"/usr/share/polkit-1/actions/". This policy requires user authentication via
+polkit when the users fingerprint data are modified. So an attacker with access
+to a user's desktop while the user is away, can not register his fingerprint in
+the name of this user any more.
+- other changes: libpolkit-qt-1.0 is not supported any more.
+
+version 1.06 (2014-09-24):
+Workarounds:
+- Fix for cinnamon-screensaver on Mint 16 and Mint 17 provided by Pavel Sochelnikov,
+Bugfixes:
+- fixed: Segfault after failed login on secure tty,
+Improvements:
+- fingerpint-helper is aware of multiple screen environments and is
+  always placed on the screen that contains the cursor,
+- Added MATE to fingerprint-polkit-agent.desktop settings,
+- New program icon provided by Anna Petrova,
+- GUI improvements provided by Pavel Sochelnikov,
+
+version 1.05 (2013-05-08):
+Workarounds:
+- loader for UPEK devices is aware of the vendorId/productId now:
+  productId < 0x2000 loads bsapi version 4.0
+  productId >= 0x2000 loads bsapi version 4.3
+Bugfixes:
+- fixed: Segfault when stopping libfprint device asynchronous
+Improvements:
+- new usb.ids file (Version: 2013.05.08)
+- tested on Ubuntu 13.04
+
+version 1.05 (pre3):
+Workarounds:
+- unity-greeter calls pam_sm_authenticate twice for login (Ubuntu 12.10)
+  and kills the first instance immediately. So we wait for one second
+  to be killed until we go ahead with authentication.
+- missing environment variable DISPLAY in unity-greeter, 
+  so fingerprint-helper is not shown (Ubuntu 12.10). DISPLAY is set
+  before fingerprint-helper is forked.
+- unity-greeter releases the keyboard focus when fingerprint-helper
+  is started. So noone can invoke a password while fingerprint-helper
+  waits for finger-swipes. We search for unity-greeters window-id and
+  push the keyboard focus back to it.
+Bugfixes:
+- fixed: Deadlock when reading /etc/mtab on systems where /etc/mtab is a symlink
+- fixed: Permission problem with uinput for sudo in secure tty
+- fixed: Compiler errors since ubuntu 12.10
+- fixed: Some wrong include directives for qt4 headers
+Improvements:
+- new usb.ids file (Version: 2013.01.16)
+- tested on Ubuntu 13.04 Beta1
+
+version 1.04 (2012-03-11):
+CHANGES:
+Bugfixes:
+- fixed: When running PAM-service "sudo" in a GUI environment the
+	fingerprint-helper is started with privilegs of the calling
+	user now. This avoids Gtk error messages about running a 
+	GUI process as suid root.
+- fixed: After lightdm bug #862559 since its version 1.1.4 has been
+	fixed, pam_fingerprint-gui.so didn't start fingerprint-helper
+	gui any more due to a bug in the workaround needed for
+	lightdm versions below 1.1.4 (Ubuntu 11.10).
+- fixed: Segfault in DeviceHandler.cpp with newer glibc.
+
+version 1.03 (2011-12-07):
+CHANGES:
+Bugfixes:
+- fixed: fingerprint-polkit-agent doesn't start on Lubuntu 11.10;
+- fixed: No fingerprint login on secure tty (Ubuntu 11.10);
+- fixed: X-server doesn't restart on logout (Ubuntu 11.10);
+- fixed: Error message doesn't show up, when user's homedir is
+        encrypted and fingerprint login was without password.
+
+version 1.02 (2011-10-23):
+CHANGES:
+Minor bugfix: Segfault in fingerprint-polkit-agent fixed.
+
+version 1.01 (2011-10-15):
+CHANGES (needed for Ubuntu 11.10):
+- workaround for bug #862559 (lightdm): Display ":0" hard coded for service
+  lightdm in pam_fingerprint-gui.so
+Minor bugfixes:
+- inserted missing "Unity" entry in /etc/xdg/autostart/fingerprint-polkit-agent.desktop
+- fixed: disabled password dialog in polkit agent, when more than one administrator user
+  is available.
+
+version 1.00 (2010-12-13):
+CHANGES:
+- fingerprint-polkit-agent builds by default on systems with libpolkit-qt-1-0.
+  For systems with libpolkit-qt-1-1 (Natty) qmake must be called with the extra
+  argument LIBPOLKIT_QT=LIBPOLKIT_QT_1_1.
+- The default PREFIX for building and installing was changed from "/usr"
+  to "/usr/local".
+- System is bundled with UPEK libbsapi "BSAPI_4.0.0218Lite_RC_for_Linux"
+  supporting a larger number of UPEK device.
+Minor bugfixes:
+- pam_fingerprint-gui.so fixed for systems without XAuth variable in GDM 
+  environment (Gentoo);
+
+version 1.00-rc3 (2010-11-19):
+Additional library required: libpolkit-qt-1
+CHANGES:
+- Authenticating root in console, gnome-terminal and xterm for "su" works now
+  without gui widget;
+- A new module "fingerprint-polkit-agent" has been added. It enables fingerprint
+  authentication for the PAM service "polkit-1". The agent needs to be started
+  at system startup. Therefore the file "fingerprint-polkit-agent.desktop" is
+  installed to /etc/xdg/autostart. This agent conflicts with files in
+  /etc/xdg/autostart that must be removed:
+  "polkit-gnome-authentication-agent-1.desktop" and
+  "polkit-kde-authentication-agent-1.desktop".
+- New "help" menu in fingerprint-gui. "Help" opens a "Fingerprint GUI Manual" in
+  default browser. If available the manual is opened in the users local language
+  (See "Manual_??.html" files in /usr/share/doc/fingerprint-gui).
+- "sudo make install-upek" installs a new libbsapi.so named
+  "BSAPI 4.0 for Linux Unqualified Preview". This lib can handle 147e:1000 devices
+  with NVM emulation now. It will be upgraded as soon a final version is available.
+- Default settings for NVM emulation are installed in "/etc/upek.cfg" and a
+  directory "/var/upek_data" is created.
+- Bugfix: Test button is disabled while a test is running; no segfault any more.
+
+version 1.00-rc2 (2010-10-30):
+CHANGES:
+- IPC between pam_fingerprint-gui.so and fingerprint-helper has been changed
+  from using libfakekey/uinput to using a pipe (for sending random number,
+  password and username). This should make the system independent from keymaps.
+  Only <enter> is sent to the pam prompt by libfakekey or uinput now.
+- new argument for pam_fingerprint-gui.so "try_first_identified"
+  This option avoids a finger-swipe to be requested twice if the PAM stack calls
+  pam_fingerprint-gui.so more then once. Example for gdm login with disabled 
+  user browser:
+
+  File "/etc/pam.d/gdm":
+  ...
+  auth optional pam_fingerprint-gui.so -d  #required to get the username for nologin
+  auth requisite pam_nologin.so
+  ...
+  @include common-auth
+  ...
+
+  File "/etc/pam.d/common-auth":
+  ...
+  auth [success=3 default=ignore] pam_fingerprint-gui.so try_first_identified -d
+  ...
+
+  The second call to pam_fingerprint-gui.so returns PAM_SUCCESS if the user was
+  identified by fingerprint in the first call from file "/etc/pam.d/gdm".
+
+
+version 1.00-rc1 (2010-10-16):
+CHANGES: Some minor gui improvements like follows:
+- In the "Finger" tab fingers with already existing bir data are marked
+  green.
+- In the "Password" tab the path to the external media for saving the
+  encrypted password is predefined in the "Save to Directory" field when
+  a password was saved there before and this media is connected.
+BUGFIXES:
+- Gnome-screensaver hangs while unlocking -- fixed
+- Logout hangs after fingerprint login -- fixed
+- Applications using polkit-1 can not be unlocked -- fixed (but fingerprints
+  are ignored; a password is required)
+- Usernames with more than 8 characters don't work -- fixed
+- "su" doesn't work in gnome-terminal -- _not_ fixed (as a workaround
+  "sudo su" can be used)
+
+version 0.15 (2010-08-20):
+CHANGES: Some minor bugfixes like follows:
+- Environment variables like username or hostname are requested by a
+  posix compliant system call now;
+- The uinput driver module is loaded on-the-fly when needed.
+- libbsapi is now installed to /usr/lib (on 32bit systems) 
+  or /usr/lib64 (on 64bit systems);
+- The file locations are changed to fit the Filesystem Hierarchy Standard:
+  Helper programs that should not be called by the user are located in
+  "/usr/local/lib/fingerprint-gui/" now.
+!!!PLEASE UNINSTALL A PREVIOUS VERSION BEFORE INSTALLING THIS ONE!!!
+
+
+version 0.14 (2010-05-14):
+CHANGES: Some minor bugfixes for running on Fedora 12 like follows:
+- libbsapi is now installed to /usr/lib
+- A bug in selecting the current fingerprint device (with more than one devices
+  available on the system) was fixed.
+- A minor bug in FingerprintPAM (login with given PAM_RHOST) has been fixed.
+- A script to disable the user list in gdm was added.
+- The install script installs required rules files to /etc/udev/rules.d/ now
+  when libbsapi.so is installed.
+- The install script creates a /etc/upek.cfg file and a /var/upek_data directory
+  when libbsapi.so is installed.
+- The Install-step-by-step.pdf manual has been adapted to Fedora12, Kubuntu 10.04
+  and Lubuntu 10.04.
+- The whole system requires "libfprint-0.1.0" and "libusb-1.0.0" now. Please
+  upgrade your libfprint (see Ubuntu-upgrade-libfprint.sh)!!
+
+
+version 0.13 (2010-04-21):
+IMPORTANT: Fingerprint data (bir) and configuration files (config.xml) located
+in "~/.fingerprints/...", that are created by a previous version, can _not_ be
+used any more! All user-specific data and configuration has to be newly setup!
+The entry "/usr/local/bin/fingerprintPlugin -d" made with gconf-editor for
+the gnome-screensaver, that was created for a previous version, has to be changed
+to "/usr/local/bin/fingerprint-plugin -d".
+All entries for fingerprint in PAM configuration files (/etc/pam.d/...) have to
+be renamed from "libpam_fingerprint.so" to "pam_fingerprint-gui.so".
+For more information about upgrading please read IMPORTANT-UPGRADE-INFORMATION.txt.
+
+CHANGES: Lots of code cleanup and CONFIGURATION CHANGES:
+- Executables have been renamed to "fingerprint-gui", "fingerprint-helper",
+  "fingerprint-identifier", "fingerprint-plugin" and "pam_fingerprint-gui.so".
+- A new executable "fingerprint-suid" has been added. It is called from
+  fingerprint-gui and creates subdirectories for user's bir-data with proper
+  directory- and file mode.
+- Fingerprints and user configurations are NOT stored to the user's home directory
+  any more! They are stored to a new directory /var/lib/fingerprint-gui/<user>/ now.
+  (This makes it possible to login for users with an encrypted home directory,
+  when an external media with stored encrypted password is available).
+- Subdirectories for fingerprint data of different drivers are now named after
+  the driver name.
+- A wrapper for proprietary device drivers is now used for those devices.
+- Proprietary driver libraries are now dynamically loaded at runtime. Different
+  executables (linked to proprietary drivers) are not needed any more.
+- A preliminary mechanism is used for identifying an unmounted encrypted homedir
+  of the identified user:
+  - if the homedir is empty, it is assumed to be encrypted and unmounted;
+  - if it is not empty _and_ a file "README.TXT" exists _and_ this file is a
+    symlink _and_ this symlink points to a path that contains a string
+    "ecryptfs-utils" in pathname, the homedir is assumed to be encrypted and
+    unmounted.
+  In case the homedir of the identified user is encrypted and unmounted _and_
+  an external media containing the users password can not be found, the login
+  with fingerprint is stopped and an error message
+  "!!!ERROR: FOUND ENCRYPTED HOMEDIR BUT NO PASSWORD!!!"
+  is given via PAM conversation. This protects the user from being logged-in
+  into a session with unmounted homedir.
+  Maybe I find a more elegant procedure for detecting an encrypted and unmounted
+  homedir in a later version. Suggestions welcome!
+
+
+version 0.12 (2009-10-23):
+- "with-upek" binaries are linked against UPEKs libbsapi version 3.6 now.
+- libbsapi is now availbale as 32bit and 64bit version (install.sh).
+- changed displaying behaviour of fingerprint icons while acquire to support
+  more than 5 required swipes.
+
+
+version 0.11 (2009-07-15):
+- new feature "Save encrypted password to removable media".
+
+
+version 0.10 (2009-05-13):
+- fixed: GDM login on Ubuntu 9.04 didn't work.
+
+
+version 0.9 (2009-02-23):
+- fixed: Identifying didn't work with some libfprint drivers on 64bit systems.
+- new: "configure.sh" script that creates makefiles for 32bit and 64bit.
+- new: Precompiled 64bit and 32bit binaries for all modules.
+- new: Installation script "install.sh" can now install on 32bit and 64bit
+  systems with "--fprin-only" and "--with-upek" arguments. It makes use of
+  "getlibs" to overcome the limitation that results from "libbsapi" being 32bit
+  only for UPEK devices.
+
+
+version 0.8 (2009-02-05):
+- fixed: Ignoring users with empty "gecos" field in /etc/passwd
+
+
+version 0.7 (2009-01-29):
+- fixed: "Abnormal Program Termination" when called from KDM;
+- new "Troubleshooting" section in tutorial.
+
+
+version 0.6 (2009-01-24):
+- fixed: Segfault in GUI when pam_unix2.so was called from "Test" button;
+- complete new designed libpam_fingerprint.so (see Hacking.pdf);
+- new module "fingerprintPlugin" to beused with gnome-screensaver;
+- "Install-step-by-step" tutorial enhanced for Fedora 10;
+- new "Hacking" tutorial.
+
+
+version 0.5 (2008-10-27):
+- fixed: Segfault in Identifier and PAM when no fingerprint devices are available;
+- fixed: Segfault in GUI when more than one fingerprint device is connected;
+- removed: Blacklist for services in fingerprintPAM.cpp.
+- added: Error messages to stderr when no devices or fingerprints are available
+    for fingerprintIdentifier;
+- added: Error message in Identifier when fingerprint device could not opened.
+- added: "Test" button for important PAM services in fingerprintGUI.
+- added: "Ubuntu Step by Step" configuration tutorial.
+- tested with standalone device HP Compaq SK-3350 (AuthenTec AES2501A). 
+
+
+version 0.4 (2008-10-09):
+- fingerprintIdentifier returns login name of the identified user now,
+  (to be used in scripts or other programs);
+- fingerprintPAM can identify users while login before promting for username,
+  (the former planned fingerprintLogin module is no longer needed);
+- target of fingerprintPAM library was renamed to "libpam_fingerprint.so";
+- changed layouts and window decorations;
+- login tested on Ubuntu 8.04 and SuSE 11.0 (with gdm);
+- directory structure and makefiles are changed to build "with-upek" and
+  "fprint-only" versions of all targets now.
+
+
+version 0.3 (2008-09-20):
+- lots of code cleanup,
+- many bugs fixed (compiles and runs now with undefined "HAS_LIBBSAPI"),
+- tested on SuSE 11.0 with KDE 3.5.
+
+
+version 0.2 (2008-08-29):
+- added module fingerprintPAM (libfingerprintPAM.so) for using with PAM authentication.
+Known issues:
+- doesn't show the gui when called from "gksu" or "gnome-screensaver",
+    ATTENTION: TEST CAREFULLY! Configure pam to use it with
+    "gnome-screensaver" only if you know what you are doing. It can make your
+    system unaccessible!
+- doesn't authenticate "seahorse" with login (I don't know why yet);
+- ONLY TESTED ON Ubuntu 8.04 with UPEK built-in TouchStrip on an IBM R52
+
+
+version 0.1 (2008-08-22):
+Initial version for testing and proof of concept only, containing
+fingerprintGUI and fingerprintIdentifier

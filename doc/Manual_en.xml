@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article lang="">
+  <title>Fingerprint GUI User's Manual</title>
+
+  <subtitle>(Version 1.07)</subtitle>
+
+  <articleinfo>
+    <author>
+      <firstname>Wolfgang</firstname>
+
+      <surname>Ullrich</surname>
+    </author>
+
+    <date>2015/06/29</date>
+  </articleinfo>
+
+  <sect1>
+    <title>Preface</title>
+
+    <para>Fingerprint GUI is a set of tools for the use of fingerprint
+    scanners on Linux systems. It enables recording and checking of
+    fingerprint data and allows login and authentication of users by their
+    fingerprint using a fingerprint scanner.</para>
+
+    <sect2>
+      <title>Security Advice</title>
+
+      <para>The safety and reliability of the fingerprint-recognition depends
+      very much on the hardware used, the associated device drivers and the
+      software used to verify the biometric data. According to the current
+      state of the art fingerprint recognition for security-critical
+      applications is only limited suitable. More information about the safety
+      of fingerprints can be found here: <ulink
+      url="http://www.bromba.com/faq/fpfaqe.htm">http://www.bromba.com/faq/fpfaqe.htm</ulink></para>
+    </sect2>
+
+    <sect2>
+      <title>License</title>
+
+      <para>Fingerprint GUI is subject to the GNU General Public License
+      Version 2 (GPLv2) <ulink
+      url="http://www.gnu.org/licenses/gpl-2.0.html">http://www.gnu.org/licenses/gpl-2.0.html</ulink></para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>Fingerprint Enrollment</title>
+
+    <para>Start the program "<command>Fingerprint GUI</command>" from the menu
+    "<command>System | Preferences</command>”, or by the command:</para>
+
+    <para>&gt; <command>fingerprint-gui -d</command></para>
+
+    <para>in a terminal window. The argument "<parameter>-d</parameter>"
+    generates debugging information to syslog (auth facility). You can find
+    the log output in <filename>/var/log/auth.log</filename>.</para>
+
+    <graphic fileref="start.png" />
+
+    <para></para>
+
+    <sect2>
+      <title>Choosing a Fingerprint Scanner</title>
+
+      <para>In the “Devices” tab a list of all detected USB devices appears in
+      the list “Attached USB Devices”. In the combo box “Finger Print Devices”
+      appears a selection of the detected fingerprint scanners. If more than
+      one fingerprint scanners have been detected, the desired scanner can be
+      selected here. With the "Rescan" button, a re-examination on the USB bus
+      can be initiated. By selecting "Show Vendor/Device" and "Show Driver
+      Name" you can switch between displaying the device name or the device
+      driver name.</para>
+    </sect2>
+
+    <sect2>
+      <title>Choosing a Finger</title>
+
+      <para>With the "Next" button or by selecting the "Finger" tab you get
+      the finger selection.</para>
+
+      <graphic fileref="fingerchoice.png" />
+
+      <para>Above the fingers are radio buttons. Here are the fingers marked
+      green that are already enrolled. Select the finger to be
+      detected.</para>
+    </sect2>
+
+    <sect2>
+      <title>Scanning and Verifying</title>
+
+      <para>With the "Next" button or by selecting the tab "Scan/Verify" you
+      get the card for enrolling or verifying of the fingerprint.</para>
+
+      <graphic fileref="acquire.png" />
+
+      <para>Now enroll the fingerprint. Depending on the scanner hardware, the
+      driver software and the quality of the data you have to repeat this
+      process until a message about the successful storage of the data
+      appears.</para>
+
+      <graphic fileref="saved.png" />
+
+      <para>Click “Yes” to return to the finger choice if you want to enroll
+      another finger or click “No” if you don't want it.</para>
+
+      <para>If a finger was selected that has been enrolled already a dialog
+      appears where this finger can be verified or newly enrolled.</para>
+
+      <graphic fileref="verify.png" />
+
+      <para>With the “Verify” button you can verify the existing fingerprint
+      data against this finger. With “Acquire new” the existing fingerprint
+      data for this finger is removed and the finger is newly enrolled. Click
+      “Cancel” to go back to the finger choice.</para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>Testing Settings and exporting Fingerprint Data</title>
+
+    <para>With the "Next" button or by selecting the tab "Settings" you get
+    the card for saving your fingerprint data and testing your PAM
+    settings.</para>
+
+    <graphic fileref="settings.png" />
+
+    <para>By clicking “Export now” all existing fingerprint data of the
+    current user are saved to a file. This is only required if these data need
+    to be external backed up or if you want to use them on another computer. A
+    file “<filename>Fingerprints.tar.gz</filename>“ will be created in the
+    selected directory.</para>
+
+    <para>With the “Test” button you can check the PAM settings for
+    authentication. Chose the PAM service to be tested first then click
+    “Test”. If all PAM settings for this service are correct the
+    fingerprint-authentication dialog appears.</para>
+
+    <graphic fileref="test.png" />
+
+    <para>If a valid fingerprint was recognized a message “Authentication
+    successful” appears in the text field.</para>
+
+    <graphic fileref="success.png" />
+
+    <para>If the fingerprint dialog doesn't appear some settings are invalid.
+    You can stop the test by pressing the “Enter” key. A message “Fingerprint
+    authentication failed” appears in the text field then.</para>
+
+    <para><graphic depth="11.643cm" fileref="failed.png"
+    width="14.553cm" /></para>
+
+    <para>In this case the settings in the appropriate
+    “<filename>/etc/pam.d/...</filename>“ file for this service are invalid
+    and need to be corrected.</para>
+  </sect1>
+
+  <sect1>
+    <title>Saving a Password</title>
+
+    <para>With the “Next” button or by selecting the “Password” tab you arrive
+    at the dialog for storing a password to an external media.</para>
+
+    <para><remark>PLEASE USE THIS FEATURE ONLY IF YOU COMPLETELY UNDERSTAND
+    HOW IT WORKS. THIS FEATURE CAN OPEN A SECURITY RISK FOR YOUR
+    DATA!</remark></para>
+
+    <para><graphic depth="11.643cm" fileref="password.png"
+    width="14.553cm" /></para>
+
+    <para><remark>Explanation:</remark> If you use fingerprints for log-on to
+    your system, no password is entered, since you were detected on the basis
+    of your fingerprint. Depending on the configuration of your system a
+    password might be needed to decrypt important data. For example this is
+    the case if your home directory or the gnome-keyring is encrypted with
+    your login password. Fingerprint GUI features the use of an external
+    storage (USB stick) to store your password in an encrypted file on that
+    media. If this media is connected to your computer while login, this file
+    can be decrypted and the password can be used to unlock gnome-keyring or
+    your home directory.</para>
+
+    <para><remark>Security warning:</remark> Everyone who has access to both,
+    your computer and the external media, can decrypt the password-file! Never
+    leave the computer and the media unattended at the same place! Connect
+    this media only while logon and don't use it if other persons have
+    root-access to your computer.</para>
+
+    <para>If you want to save your password, first connect the external media
+    to your computer. The media must be mounted, you must have write access to
+    it and it must be a removable device.</para>
+
+    <para><graphic depth="11.643cm" fileref="pwsave.png"
+    width="14.553cm" /></para>
+
+    <para>Chose the path to the mounted device, invoke your password twice
+    into the password fields and click “Save”. A hidden directory
+    “<filename>.fingerprints</filename>“ will be created in the given path and
+    a file “<filename>&lt;username&gt;@&lt;hostname&gt;.xml</filename>“ will
+    be created there. This file contains the encrypted login password.
+    Moreover a file
+    „<filename>/var/lib/fingerprint-gui/&lt;username&gt;/config.xml</filename>“
+    will be created on your local harddrive containing the UUID of the media,
+    the given path and the key to decrypt the password.</para>
+
+    <para><remark>Note:</remark> If you later change your login password, you
+    need to repeat this process.</para>
+
+    <para>You can now exit the program by clicking “Finish”.</para>
+  </sect1>
+
+  <sect1>
+    <title>Special Settings</title>
+
+    <para>Here are some special settings for advanced users, that can not be
+    automatically setup by the installation.</para>
+
+    <sect2>
+      <title>Disabling the User List</title>
+
+      <para>In the menu "System | Administration | Login Screen" it is
+      possible to disable the "Show list of users" item. While login there is
+      shown only a text field for typing the username then. For showing the
+      fingerprint request below this field the file
+      "<filename>/etc/pam.d/gdm</filename>" must be changed. Insert the
+      following text as the first line: <command>auth optional
+      pam_fingerprint-gui.so -d</command></para>
+
+      <para>Please check the file
+      "<filename>/etc/pam.d/common-auth</filename>" for having the argument
+      "<parameter>try_first_identified</parameter>" in the line with the
+      <command>pam_fingerprint-gui.so</command> entry. If missing, append this
+      argument to the line. You need root permissions to make changes to these
+      files.</para>
+
+      <para>If this is properly setup and the user list is disabled, you
+      should be identified by your fingerprint and logged-in
+      automatically.</para>
+    </sect2>
+
+    <sect2>
+      <title>Authentication by Policykit-1</title>
+
+      <para>The autentication by policykit-1 is performed by the
+      <command>polkit-gnome-authentication-agent</command>, that is started
+      for each session. For starting this agent a starter file
+      "<filename>/etc/xdg/autostart/polkit-gnome-authentication-agent.desktop</filename>"
+      is used. By the installation of fingerprint-gui a starter
+      "<filename>/etc/xdg/autostart/fingerprint-polkit-agent.desktop</filename>"
+      has been added to this directory, that starts the
+      <command>fingerprint-polkit-agent</command>. To avoid conflicts between
+      these two agents, the file
+      "<filename>polkit-gnome-authentication-agent.desktop</filename>" must be
+      removed from "<filename>/etc/xdg/autostart</filename>". After removing
+      you need to logoff and login again for being able to authenticate by
+      fingerprint in policykit-1.</para>
+    </sect2>
+
+    <sect2>
+      <title>NVM Emulation</title>
+
+      <para>The installation package installs default settings for UKEK
+      devices that require NVM emulation. However it might be necessary to
+      fine tune these settings. Below are quoted some excerpts from the
+      documentation for UPEK fingerprint scanners:</para>
+
+      <para>1 Introduction</para>
+
+      <para>UPEK TCD4C and TCD4E sensors exist in two variants - with and
+      without the EEPROM chip. The NVM functionality for sensors without
+      EEPROM must be emulated. BSAPI for Linux uses file emulation for NVM
+      functionality. This document describes the fundamental
+      configuration.</para>
+
+      <para>...</para>
+
+      <para>2 NVM emulation configuration</para>
+
+      <para>NVM contents for EEPROMless sensors is stored in files. There is
+      one file per sensor. The location of these files is determined by
+      'nvmprefix' configuration parameter. This parameter contains a path to
+      NVM-emulation files and a prefix of their names. This allows (for
+      example) to make the files hidden (names start by '.'). The 'nvmprefix'
+      parameter can be set the following way: …</para>
+
+      <para>As root create the configuration file
+      “<filename>/etc/upek.cfg</filename>“ with the following line
+      (Example):</para>
+
+      <para><command>nvmprefix="/var/upek_data/.NVM"</command></para>
+
+      <para>...</para>
+
+      <para>The setup directory must have read and write access rights set for
+      everyone who can use BSAPI. The /etc/upek.cfg file must have read access
+      right set for everybody.</para>
+
+      <para>...</para>
+
+      <para>3 Additional DSN parameters</para>
+
+      <para>The EEPROMless sensors are preconfigured for dual direction
+      swipes. If you prefer to swipe only in one direction, you can override
+      this setting by using dualswipe=0 parameter. ...In the /etc/upek.cfg
+      configuration file Add the following line to the file:</para>
+
+      <para><command>dualswipe=0</command></para>
+
+      <para>...</para>
+
+      <para><remark>Note:</remark> Use the 'dualswipe' parameter only in the
+      cofiguration where you have used the 'nvmprefix' parameter.</para>
+
+      <para>…</para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>Troubleshooting</title>
+
+    <sect2>
+      <title>Installed Files and Helper Applications</title>
+
+      <para>Fingerprint GUI makes use of the following programs, helper
+      applications, libraries and files. Depending of  compiler settings while
+      creating the installation packages the location in the file system can
+      differ slightly (located in <filename>/usr/...</filename> or
+      <filename>/usr/local/...</filename>).<orderedlist>
+          <listitem>
+            <para><filename>/usr/local/bin/fingerprint-gui</filename></para>
+
+            <para>Main application for enrollment and verification of
+            fingerprints and for special settings;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/usr/local/bin/fingerprint-identifier</filename></para>
+
+            <para>Program for testing fingerprint identification, usable in
+            scripts and other applications. The login name of the  identified
+            user is printed to stdout;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/usr/local/lib/fingerprint-gui/fingerprint-helper</filename></para>
+
+            <para>Helper application for prompting finger swipes out of
+            PAM;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/usr/local/lib/fingerprint-gui/fingerprint-plugin</filename></para>
+
+            <para>Helper application for embedding the finger swipe dialog
+            into the gnome-screensaver instead of a on screen keyboard;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/usr/local/lib/fingerprint-gui/fingerprint-rw</filename></para>
+
+            <para>Helper application for reading and writing fingerprint data and settings with required
+            permissions;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/usr/local/lib/fingerprint-gui/fingerprint-polkit-agent</filename></para>
+
+            <para>Authentication agent for policykit-1;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/lib/security/pam_fingerprint-gui.so</filename></para>
+
+            <para>PAM library module for identification and authentication of
+            users by their fingerprints;</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>/var/lib/fingerprint-gui/&lt;benutzername&gt;</filename></para>
+
+            <para>Directory per user to store fingerprints and user settings
+            to.</para>
+          </listitem>
+        </orderedlist></para>
+    </sect2>
+
+    <sect2>
+      <title>Debugging</title>
+
+      <para>All programs and libraries can create debug output in syslog (auth
+      facility), if they are called with the argument
+      “<parameter>-d</parameter>“ or “<parameter>--debug</parameter>“. By
+      default the debug output goes to
+      <filename>/var/log/auth.log</filename>.</para>
+    </sect2>
+
+    <sect2>
+      <title>Special Arguments</title>
+
+      <para>“<parameter>decorated</parameter>” - Argument given on the command
+      line to <command>fingerprint-identifier</command> shows the finger swipe
+      dialog as decorated window. Default is undecorated;</para>
+
+      <para>“<parameter>try_first_identified</parameter>” - Argument given to
+      <command>pam_fingerprint-gui.so</command> in PAM configuration files
+      causes <command>pam_fingerprint-gui.so</command> to return “PAM_SUCCESS”
+      immediately if the given user was identified already by a previous run
+      of the module in the same PAM stack.</para>
+    </sect2>
+
+    <sect2>
+      <title>Online-Help</title>
+
+      <para>Online-Help is available in the Fingerprint GUI forum on:</para>
+
+      <para><ulink
+      url="http://home.ullrich-online.cc/fingerprint/Forum">http://home.ullrich-online.cc/fingerprint/Forum</ulink></para>
+
+      <para>or on the homepage:</para>
+
+      <para><ulink
+      url="http://www.ullrich-online.cc/fingerprint">http://www.ullrich-online.cc/fingerprint</ulink></para>
+
+      <para></para>
+    </sect2>
+  </sect1>
+</article>

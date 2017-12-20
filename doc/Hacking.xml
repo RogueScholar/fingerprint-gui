@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article lang="">
+  <articleinfo>
+    <title>Hacking Fingerprint GUI</title>
+
+    <author>
+      <firstname>Wolfgang</firstname>
+
+      <surname>Ullrich</surname>
+
+      <surname></surname>
+    </author>
+
+    <date>2015-06-29</date>
+  </articleinfo>
+
+  <para>For developers who want to understand and possible change something in
+  the Fingerprint GUI project it might be required to give some hints about
+  how the system works. It is assumed the reader of this document has a
+  certain understanding of PAM.</para>
+
+  <para>There are 6 executables and one library used:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>“<command>fingerprint-gui</command>”</para>
+
+      <para>The main application to be used for discovering fingerprint
+      scanners on the USB bus, acquiring (enrollment) and verification of
+      fingerprints and testing the PAM settings.</para>
+    </listitem>
+
+    <listitem>
+      <para>“<command>fingerprint-identifier</command>”</para>
+
+      <para>An application for testing the identification of users by their
+      fingerprints and to be used in special cases for any user-defined
+      scripts in which a fingerprint identification is required.</para>
+    </listitem>
+
+    <listitem>
+      <para>“<command>fingerprint-helper</command>”</para>
+
+      <para>A helper application to be called out of PAM for requesting
+      fingerprints while identifying or authenticating a user. This
+      application should not be called from the command line.</para>
+    </listitem>
+
+    <listitem>
+      <para>“<command>fingerprint-rw</command>”</para>
+
+      <para>Another helper application to be called from “fingerprint-gui”
+      and other modules when user settings and fingerprint (bir)
+      data in
+      “/var/lib/fingerprint-gui/” must be written or read.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>“<command>fingerprint-plugin</command>”</para>
+
+      <para>A helper application to be plugged in into some other applications
+      (like gnome-screensaver) that don't allow other GUI applications to be
+      displayed on top of their own screen. This application should not be
+      called from the command line.</para>
+    </listitem>
+
+    <listitem>
+      <para>“<command>pam_fingerprint-gui.so</command>”</para>
+
+      <para>A PAM module that is called by PAM when a user has to be
+      identified or authenticated by their fingerprint.</para>
+    </listitem>
+
+    <listitem>
+      <para>“<command>fingerprint-polkit-agent</command>”</para>
+
+      <para>An authentication agent for policykit-1 with fingerprint
+      recognition.</para>
+    </listitem>
+  </orderedlist>
+
+  <sect1>
+    <title>Debug Output</title>
+
+    <para>All modules accept a “<parameter>debug</parameter>” (or
+    “<parameter>-d</parameter>” or “<parameter>--debug</parameter>”) argument
+    to be given for execution. This argument causes a lot of debug output
+    printed to syslog. Depending on syslog settings the output might be
+    printed to “<filename>/var/log/auth.log</filename>”,
+    “<filename>/var/log/messages</filename>” or
+    “<filename>/var/log/syslog</filename>”.</para>
+  </sect1>
+
+  <sect1>
+    <title>fingerprint-gui</title>
+
+    <para>This software should be self explanatory. So no further information
+    is needed at the moment. When running, a users manual is available in the
+    help menu.</para>
+  </sect1>
+
+  <sect1>
+    <title>fingerprint-identifier</title>
+
+    <para>This program first tries to collect all stored fingerprint data of
+    all users from user-specific directories in
+    “<filename>/var/lib/fingerprint-gui/&lt;username&gt;/&lt;drivername&gt;/</filename>”.
+    If a directory named after the user is available and can be read it
+    collects all fingerprint data and tries to identify the user after a
+    finger swipe was given. If it doesn't run with root permissions the
+    directories of other users are not readable. In this case the fingerprints
+    of the current user are accessible only. So only the current user can be
+    identified or authenticated. After a successful authentication the user's
+    login name is printed to stdout and the program exits.</para>
+  </sect1>
+
+  <sect1>
+    <title>fingerprint-helper</title>
+
+    <para>All Fingerprint GUI modules are developed using the Qt system,
+    except the
+    “<application><filename>pam_fingerprint-gui.so</filename></application>”
+    module. This means the executables create a QApplication or a
+    QCoreApplication object when running. Qt doesn't allow more than one of
+    these objects to be created in an executable. Now, if some other Qt
+    application would call PAM for authenticating a user and PAM would call
+    the “<application>pam_fingerprint-gui.so</application>” library this would
+    cause a crash, when “<application>pam_fingerprint-gui.so</application>”
+    would try to create a (second) QApplication or QCoreApplication object
+    while prompting for a finger swipe. Therefore
+    <application>“<filename>pam_fingerprint-gui.so</filename>”</application>
+    is not a Qt application but forks a child process (the
+    <application><filename>fingerprint-helper</filename></application>) to
+    prompt the user for a finger swipe and handle fingerprints.</para>
+  </sect1>
+
+  <sect1>
+    <title>fingerprint-rw</title>
+
+    <para>
+    This application
+    is called via two symlinks (<application>fingerprint-rw-read</application> and <application>fingerprint-rw-write</application>)
+    and should not be called from the command
+    line. Since version 1.07 files and directories in “<filename>/var/lib/fingerprint-gui/</filename>” are owned by
+    root.root. Subdirectories have mode 655. Files have mode 600. For security reasons 
+    "fingerprint-rw" requests additional user authentication via polkit when creating 
+    subdirectories and writing files.</para>
+  </sect1>
+
+  <sect1>
+    <title>fingerprint-plugin</title>
+
+    <para>Some applications (namely
+    "<application>gnome-screensaver</application>") don't accept for security
+    reasons any GUI window to be displayed on top of their own screen. This
+    means if <application>gnome-screensaver</application> calls PAM to prompt
+    the user for authentication for the screensaver to be unlocked, the
+    “<application>pam_fingerprint-gui.so</application>” module is called by
+    PAM. This module forkes the
+    “<application>fingerprint-helper</application>” process to request a
+    finger swipe, but the window of this process is not visible (it is
+    displayed “under” the locked screen). Therefore an additional
+    “<application>fingerprint-plugin</application>” was created. This
+    application is “plugged in” into the
+    <application>gnome-screensaver</application> the same way an “embedded
+    keyboard command” would be (by
+    <application>gnome-screensaver</application> configuration).</para>
+
+    <para>When <application>gnome-screensaver</application> starts its unlock
+    prompt, it starts the “<application>fingerprint-plugin</application>”
+    module. This module plugs into the screensaver and is displayed below the
+    normal unlock prompt. Then the
+    “<application>fingerprint-plugin</application>” listens for “display
+    commands” at a named pipe “<filename>/tmp/fingerprint-plugin</filename>”.
+    The “<application>fingerprint-helper</application>” process, forked from
+    “<application>pam_fingerprint-gui.so</application>” finds this named pipe
+    and sends all strings to be displayed at the GUI to this pipe. If no
+    fingerprints for the user are available a “stop” command is sent to the
+    pipe that causes the “<application>fingerprint-plugin</application>” to
+    exit before “fingerprint-helper” exits itself. If some other command has
+    to be displayed to the user (e.g. “ready...” or “authenticating
+    &lt;username&gt;”) this command will be received by
+    “<application>fingerprint-plugin</application>” via it's named pipe and
+    then displayed on its GUI window.</para>
+  </sect1>
+
+  <sect1>
+    <title>pam_fingerprint-gui.so</title>
+
+    <para>This is the PAM module to be called out of PAM in case some
+    application requests authentication. When its
+    “<function>pam_sm_authenticate</function>” entry is called the module
+    determines whether DISPLAY and XAUTHORITY environment variables are
+    available. If DISPLAY is available and <anchor id="DDE_LINK" />XAUTHORITY
+    is missing the module tries to find the xauthority filename by searching
+    the command line of the X display process. If it was found
+    “<application>pam_fingerprint-gui.so</application>” sets the  XAUTHORITY
+    environment variable.</para>
+
+    <para>The module then creates an anonymous pipe and forkes into a child
+    process. This process executes
+    “<application>fingerprint-helper</application>” with pipe, display, PAM
+    service to authenticate and username (if available) as arguments. After
+    forking, a random number (10 digits) is sent to the child process via the
+    anonymous pipe. This number will be given back (via the anonymous pipe) as
+    a “password” if the user was identified or authenticated by his
+    fingerprint. If the helper process has sent something to the pipe, it uses
+    libfakekey or uinput to exit the “PAM conversation function”.</para>
+
+    <para>The parent process then calls the “PAM conversation function” of the
+    calling application for prompting the username and/or password by keyboard
+    while the child process (<application>fingerprint-helper</application>)
+    prompts the user for swiping their finger.</para>
+
+    <para>Now the two processes wait for input in the following cases:</para>
+
+    <sect2>
+      <title>Case 1 (username was given by keyboard)</title>
+
+      <para><anchor id="DDE_LINK5" />The PAM conversation function returns to
+      the parent process (<application>pam_fingerprint-gui.so</application>)
+      with a non empty username. This means the user did type his name on the
+      keyboard. The helper process is stopped immediately by sending SIGUSR1
+      to it, the helper widget disappears and the user must type his password
+      for login.</para>
+    </sect2>
+
+    <sect2>
+      <title>Case 2 (user was identified by fingerprint)</title>
+
+      <para>In this case the child process
+      (<application>fingerprint-helper</application>) writes &lt;enter&gt; to
+      the prompt using libfakekey or uinput and sends the username of the
+      identified user via the pipe to his parent process
+      (<application>pam_fingerprint-gui.so</application>). So the PAM
+      conversation function returns an empty username field.
+      <application>Pam_fingerprint-gui.so</application> then polls the fifo
+      for a username and, if it can read it, sets this username to the PAM
+      stack and sends SIGUSR1 to the helper. The helper then continues with
+      case 3 below.</para>
+
+      <para>If there is nothing in the pipe to read, the user might have typed
+      &lt;enter&gt; on the keyboard. In this case
+      <application>pam_fingerprint-gui.so</application> sends SIGUSR2 to the
+      helper to stop it immediately and returns PAM_AUTHINFO_UNAVAIL.</para>
+    </sect2>
+
+    <sect2>
+      <title>Case 3 (user was known already; authentication)</title>
+
+      <para>If the helper process has given the username to
+      <application>pam_fingerprint-gui.so</application> via the pipe and
+      receives SIGUSR1 it tries to get the users password from an encrypted
+      file on the external media (USB stick, see 9. below). If available it
+      sends this password via the pipe to
+      <application>pam_fingerprint-gui.so</application>. If no “real” password
+      is available it sends the random number to the pipe. Then the helper
+      sends the &lt;enter&gt; key to the PAM prompt (via libfakekey or uinput)
+      and exits. The same procedure happens, when the helper was forked with a
+      known username from
+      <application>pam_fingerprint-gui.so</application>.</para>
+
+      <para>Then the PAM module returns from its password prompt with an empty
+      password. It polls the pipe for the password and compares this with the
+      random number. If it matches, there was no “real” password available and
+      the module returns PAM_SUCCESS. If it doesn't match it is the “real”
+      password of this user. The PAM module then sets this password to the PAM
+      stack and returns PAM_IGNORE. This causes the other PAM modules in the
+      PAM stack to check the given username against this password.</para>
+    </sect2>
+
+    <sect2>
+      <title>Case 4 (user has typed the password)</title>
+
+      <para>If the PAM module returns from its password prompt with a non
+      empty password field the user has typed his password at the prompt. Then
+      the module sends SIGUSR2 to the helper to stop it immediately and
+      returns PAM_IGNORE. So the other PAM modules can check the given
+      username/password.</para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>Using the “try_first_identified” argument</title>
+
+    <para>The <application>pam_fingerprint-gui.so</application> module allows
+    to be called with the argument
+    “<parameter>try_first_identified</parameter>”. This allows calling the
+    module more then once in a given PAM stack without the effect to request a
+    finger swipe more then once. If the user was successful
+    identified/authenticated by his fingerprint in the first call of
+    <application>pam_fingerprint-gui.so</application> the module saves this
+    username to the PAM stack by a “pam_set_data” call. If
+    <application>pam_fingerprint-gui.so</application> is then called a second
+    time with the “<parameter>try_first_identified</parameter>” argument, it
+    tries to read this username by a “<function>pam_get_data</function>” call.
+    If there is a username available and this name matches the current
+    username to be authenticated, it returns PAM_SUCCESS immediately.</para>
+  </sect1>
+
+  <sect1>
+    <title>Saving Passwords to Removable Media</title>
+
+    <para>With “<application>fingerprint-gui</application>” (“Password” Tab)
+    the user can chose some directory on a mounted removable media, invoke his
+    login password and save it to this media. This way the system can provide
+    the login password to PAM while the user logs in with fingerprint to avoid
+    a password request when e.g. gnome-keyring has to be opened or an
+    encrypted home directory has to be mounted.</para>
+
+    <para>This login password information is split into 2 different
+    locations:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>A file
+        “<filename>&lt;username&gt;@&lt;machinename&gt;.xml</filename>” in a
+        subdirectory “<filename>.fingerprints</filename>” on the chosen
+        removable media, containing the encrypted password;</para>
+      </listitem>
+
+      <listitem>
+        <para>A file “<filename>config.xml</filename>” in the directory
+        “<filename>/var/lib/fingerprint-gui/&lt;username&gt;</filename>”
+        containing the path to the
+        “<filename>&lt;username&gt;@&lt;machinename&gt;.xml</filename>” file,
+        the UUID of the chosen partition on removable media and the key for
+        decrypting the password.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>The password is encrypted with a random symmetric key
+    (AES128-CBC-PKS7).</para>
+
+    <para><remark>THERE IS A SECURITY RISK</remark> when this user is not the
+    only one who has root access to the machine! Someone with root permission
+    could connect to this machine (e.g. via <application>ssh</application>)
+    and copy the “<filename>config.xml</filename>” file and the
+    “<filename>&lt;username&gt;@&lt;machinename&gt;.xml</filename>” from the
+    connected removable media and then decrypt the user's password.</para>
+
+    <para>When configured (see users manual) and the removable media is
+    connected while fingerprint login, the system takes the following
+    steps:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>After the user is identified (by fingerprint) the
+        “<application>fingerprint-helper</application>” looks for the user's
+        “<filename>/var/lib/fingerprint-gui/&lt;username&gt;/config.xml</filename>”
+         and, if found, reads the UUID, the decryption key and the
+        initialization vector;</para>
+      </listitem>
+
+      <listitem>
+        <para>Then creates a temporary directory
+        “<filename>/tmp/&lt;UUID&gt;</filename>” and tries to mount the
+        partition with this UUID there;</para>
+      </listitem>
+
+      <listitem>
+        <para>Then reads the encrypted key from
+        “<filename>&lt;username&gt;@&lt;machinename&gt;.xml</filename>” file
+        and unmounts the media immediately;</para>
+      </listitem>
+
+      <listitem>
+        <para>If the password can be decrypted it is given to
+        <application>pam_fingerprint-gui.so</application> by an anonymous
+        pipe;</para>
+      </listitem>
+
+      <listitem>
+        <para>The <application>pam_fingerprint-gui.so</application> sets this
+        password to PAM by a “<function>pam_set_item()</function>” call. If
+        this call was successful it returns PAM_IGNORE. Then PAM calls the
+        next module in stack (<application>pam_unix.so</application>) to
+        validate username and password and complete the login process.</para>
+      </listitem>
+    </orderedlist>
+
+    <para><remark>I'M NOT A CRYPTO EXPERT! If you are, please have a look at
+    the sources (UserSettings.cpp) and let me know if there are possible
+    problems.</remark></para>
+  </sect1>
+
+  <sect1>
+    <title>Compiling the Sources</title>
+
+    <para>You need the Qt4 environment (incl. libqca2) and the “developer”
+    packages of the used libraries installed on your system for being able to
+    compile the sources. You can then use the “<command>qmake-qt4</command>”
+    command to create the makefiles for your system. Then call
+    “<command>make</command>” and it will create all executables in
+    “<filename>./bin/...</filename>” subdirectories. After binaries are
+    successful created you can use “<command>sudo make install</command>” to
+    copy them to their proper locations. If you have a fingerprint scanner
+    manufactured by UPEK inc. or SGS Thomson, you can install the bundled
+    proprietary driver “<application>libbsapi.so</application>” by executing
+    “<command>sudo make install-upek</command>”. This is needed because the
+    open source driver (in libfprint) lacks the ability of comparing
+    one-to-many fingerprints. Please have a look into the README file for more
+    informations about the build options.</para>
+
+    <para>
+    If you have fingerprint data created by a version 1.06 or below they have
+    invalid ownership and permissions for version 1.07 or above. In this case you can 
+    execute “<command>sudo make user-data</command>” to setup correct ownership and permissions
+    of the existing files and directories for version 1.07.
+    </para>
+  </sect1>
+</article>
