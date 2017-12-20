@@ -27,7 +27,7 @@
 #define	_USERSETTINGS_H
 
 #include <QString>
-#include <QtCrypto/QtCrypto>
+#include <QtCrypto>
 
 class UserSettings {
 public:

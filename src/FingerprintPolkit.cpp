@@ -30,7 +30,7 @@
 #include <QtGui>
 #include <QApplication>
 #include <qstring.h>
-#include <polkit-qt-1/PolkitQt1/Subject>
+#include <polkit-qt5-1/PolkitQt1/Subject>
 
 #include "../include/PolkitListener.h"
 #include "../include/Globals.h"

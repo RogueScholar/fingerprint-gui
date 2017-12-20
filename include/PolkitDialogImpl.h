@@ -27,8 +27,8 @@
 #define	POLKITDIALOGIMPL_H
 
 #include <QtGui>
-#include <polkit-qt-1/PolkitQt1/Authority>
-#include <polkit-qt-1/PolkitQt1/Details>
+#include <polkit-qt5-1/PolkitQt1/Authority>
+#include <polkit-qt5-1/PolkitQt1/Details>
 #include "ui_PolkitDialog.h"
 #include "ui_PolkitDetails.h"
 #include "ui_FingerprintPlugin.h"

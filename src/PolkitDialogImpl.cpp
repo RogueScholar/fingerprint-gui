@@ -27,8 +27,8 @@
  * This code is based on the analysis of the "polkit-kde-1-0.95.1" project
  */
 
-#include <polkit-qt-1/PolkitQt1/Authority>
-#include <polkit-qt-1/PolkitQt1/Details>
+#include <polkit-qt5-1/PolkitQt1/Authority>
+#include <polkit-qt5-1/PolkitQt1/Details>
 #include <pwd.h>
 #include <sys/wait.h>
 

@@ -39,7 +39,7 @@
 
 #include <QFile>
 #include <QDir>
-#include <QtCrypto/QtCrypto>
+#include <QtCrypto>
 #include <QtXml>
 
 using namespace std;
