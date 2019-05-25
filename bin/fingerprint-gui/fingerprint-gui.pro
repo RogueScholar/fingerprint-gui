@@ -1,4 +1,5 @@
 TEMPLATE = app
+LANGUAGES = en
 CONFIG += qt thread crypto
 TARGET = fingerprint-gui
 QT += xml widgets
@@ -17,6 +18,7 @@ isEmpty(LIBEXEC) {
 BINDIR     = $${PREFIX}/bin
 LIBEXECDIR = $${PREFIX}/$${LIBEXEC}/fingerprint-gui
 SHAREDIR   = $${PREFIX}/share
+LOCALEDIR  = $${PREFIX}/share/fingerprint-gui/
 MAN1DIR    = $${PREFIX}/share/man/man1
 DOCDIR     = $${PREFIX}/share/doc/fingerprint-gui
 
@@ -39,12 +41,13 @@ manpage.path    = $${MAN1DIR}
 manpage.files   = ../../man/$${TARGET}.1
 help.path       = $${DOCDIR}
 help.files      = ../../doc/Manual_??.html \
-		  ../../doc/*.png
+                  ../../doc/*.png
 directory.path  = /var/lib/fingerprint-gui
 directory.extra = :
 INSTALLS += target desktop pixmaps icons16x16 icons24x24 icons32x32 icons48x48 icons96x96 manpage help directory
 
 DEFINES +=LIBEXECDIR=\\\"$${LIBEXECDIR}\\\"
+DEFINES +=LOCALEDIR=\\\"$${LOCALEDIR}\\\"
 QMAKE_CXXFLAGS+=-fno-strict-aliasing
 
 LIBS += -lusb-1.0 -lfprint -lpam -ldl -lqca-qt5

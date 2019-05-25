@@ -24,7 +24,8 @@ desktop.path    = $${XDGDIR}/autostart
 desktop.files = fingerprint-polkit-agent.desktop
 
 INSTALLS += target desktop
-
+LOCALEDIR = $${PREFIX}/share/fingerprint-gui/
+DEFINES +=LOCALEDIR=\\\"$${LOCALEDIR}\\\"
 DEFINES +=LIBEXECDIR=\\\"$${LIBEXECDIR}\\\"
 QMAKE_CXXFLAGS+=-fno-strict-aliasing
 

@@ -22,7 +22,8 @@ target.path   = $${BINDIR}
 manpage.path  = $${MAN1DIR}
 manpage.files = ../../man/$${TARGET}.1
 INSTALLS += target manpage
-
+LOCALEDIR  = $${PREFIX}/share/fingerprint-gui/
+DEFINES +=LOCALEDIR=\\\"$${LOCALEDIR}\\\"
 DEFINES +=LIBEXECDIR=\\\"$${LIBEXECDIR}\\\"
 QMAKE_CXXFLAGS+=-fno-strict-aliasing
 

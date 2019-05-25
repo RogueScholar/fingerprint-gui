@@ -25,7 +25,8 @@ rename.extra = mv $(INSTALL_ROOT)$${target.path}/lib$${TARGET}.so $(INSTALL_ROOT
 INSTALLS += target manpage rename
 # Caveat: The target is renamed after being copied to its final destination. Hence,
 # "make uninstall" will be unable to delete it. There seems to be no workaround applicable.
-
+LOCALEDIR = $${PREFIX}/share/fingerprint-gui/
+DEFINES +=LOCALEDIR=\\\"$${LOCALEDIR}\\\"
 DEFINES +=LIBEXECDIR=\\\"$${LIBEXECDIR}\\\"
 QMAKE_CXXFLAGS+=-fno-strict-aliasing
 
