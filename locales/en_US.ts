@@ -207,6 +207,59 @@
     </message>
 </context>
 <context>
+    <name>IdentifierGUI</name>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="47"/>
+        <source>Fingerprint Identifier </source>
+        <extracomment>title of the dialog (also the name of this module)</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="77"/>
+        <location filename="../src/IdentifierGUI.cpp" line="165"/>
+        <location filename="../src/IdentifierGUI.cpp" line="176"/>
+        <source>Ready...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="109"/>
+        <source>Identified: %1 (%2)</source>
+        <extracomment>%1 = user name %2 = finger name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="122"/>
+        <source>Not identified!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="139"/>
+        <source>No match!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="143"/>
+        <source>Swipe too short...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="147"/>
+        <source>Please center...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="152"/>
+        <source>Try again...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/IdentifierGUI.cpp" line="195"/>
+        <source>ENTER pressed.</source>
+        <extracomment>shown on status bar when ENTER key got pressed</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>IdentifierWindow</name>
     <message>
         <location filename="../src/FingerprintIdentifier.ui" line="447"/>

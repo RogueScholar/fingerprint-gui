@@ -43,7 +43,8 @@ IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintDa
     }
     else{
         setWindowFlags(Qt::Dialog);
-        string title=string("Fingerprint Identifier ");
+        //: title of the dialog (also the name of this module)
+        string title=string(QT_TR_NOOP("Fingerprint Identifier "));
         title.append(VERSION);
         setWindowTitle(QApplication::translate("MainWindow",title.data(), nullptr));
 	SET_TEXT_COLOR
@@ -73,7 +74,7 @@ IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintDa
     font.setBold(false);
     statusBar()->setFont(font);
 */
-    statusBar()->showMessage("Ready...");
+    statusBar()->showMessage(tr("Ready..."));
     syslog(LOG_INFO,"Ready...");
 }
 
@@ -104,13 +105,9 @@ void IdentifierGUI::matchResult(int match,struct fp_pic_data *pic){
         FingerprintData *fingerprintData=identifyData;
         for(int i=0;i<match;i++)fingerprintData=fingerprintData->next;
         syslog(LOG_DEBUG,"Identified: %s (%s).",fingerprintData->getUserName()->data(),fingerprintData->getFingerName());
-        string message;
-        message.append("Identified: ");
-        message.append(fingerprintData->getUserName()->data());
-        message.append(" (");
-        message.append(fingerprintData->getFingerName());
-        message.append(")");
-        statusBar()->showMessage(message.data());
+        //: %1 = user name %2 = finger name
+        QString message = tr("Identified: %1 (%2)").arg(fingerprintData->getUserName()->data()).arg(fingerprintData->getFingerName());
+        statusBar()->showMessage(message);
 //        for(int i=SHOW_DELAY/1000;i>0;i--){ //let 'em see the result before exiting
         qApp->processEvents();
         usleep(SHOW_DELAY);
@@ -122,7 +119,7 @@ void IdentifierGUI::matchResult(int match,struct fp_pic_data *pic){
         return;
     }
     syslog(LOG_DEBUG,"showMessage: Not identified!");
-    statusBar()->showMessage("Not identified!");
+    statusBar()->showMessage(tr("Not identified!"));
     repeatDelay=2;   //let 'em see the result before exiting
 }
 
@@ -139,20 +136,20 @@ void IdentifierGUI::newVerifyResult(int result,struct fp_pic_data *pic){
     switch(result){
         case RESULT_VERIFY_NO_MATCH:
             syslog(LOG_DEBUG,"showMessage: No match!");
-            statusBar()->showMessage("No match!");
+            statusBar()->showMessage(tr("No match!"));
             break;
         case RESULT_VERIFY_RETRY_TOO_SHORT:
             syslog(LOG_DEBUG,"showMessage: Swipe too short...");
-            statusBar()->showMessage("Swipe too short...");
+            statusBar()->showMessage(tr("Swipe too short..."));
             break;
         case RESULT_VERIFY_RETRY_CENTER:
             syslog(LOG_DEBUG,"showMessage: Please center...");
-            statusBar()->showMessage("Please center...");
+            statusBar()->showMessage(tr("Please center..."));
             break;
         case RESULT_VERIFY_RETRY:
         case RESULT_VERIFY_RETRY_REMOVE:
             syslog(LOG_DEBUG,"showMessage: Try again...");
-            statusBar()->showMessage("Try again...");
+            statusBar()->showMessage(tr("Try again..."));
             break;
     }
     repeatDelay=2;   //let 'em see the result before continue
@@ -165,7 +162,7 @@ void IdentifierGUI::timerTick(){
     KEEP_ON_TOP
     switch(repeatDelay){
         case 0:
-            statusBar()->showMessage("Ready...");
+            statusBar()->showMessage(tr("Ready..."));
             break;
         case 1:
             //restart fingerprint scanner
@@ -176,7 +173,7 @@ void IdentifierGUI::timerTick(){
             device->start();
             animationLabel->setMovie(movie);
 	    movie->start();
-            statusBar()->showMessage("Ready...");
+            statusBar()->showMessage(tr("Ready..."));
             syslog(LOG_INFO,"Ready...");
             repeatDelay--;
             break;
@@ -194,7 +191,8 @@ void IdentifierGUI::keyPressEvent(QKeyEvent *e){
 //            font.setPointSize(10);
 //            font.setBold(true);
 //            statusBar()->setFont(font);
-            statusBar()->showMessage("ENTER pressed.");
+            //: shown on status bar when ENTER key got pressed
+            statusBar()->showMessage(tr("ENTER pressed."));
             qApp->processEvents();
             syslog(LOG_DEBUG,"showMessage: ENTER pressed.");
             usleep(SHOW_DELAY);
