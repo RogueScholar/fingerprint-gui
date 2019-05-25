@@ -196,7 +196,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="devicesTab">
        <attribute name="title">
@@ -264,7 +264,7 @@
              <property name="geometry">
               <rect>
                <x>20</x>
-               <y>20</y>
+               <y>6</y>
                <width>131</width>
                <height>154</height>
               </rect>
@@ -603,7 +603,7 @@ QRadioButton::indicator:checked:pressed
              <property name="geometry">
               <rect>
                <x>7</x>
-               <y>174</y>
+               <y>160</y>
                <width>111</width>
                <height>20</height>
               </rect>
@@ -622,7 +622,7 @@ QRadioButton::indicator:checked:pressed
              <property name="geometry">
               <rect>
                <x>190</x>
-               <y>174</y>
+               <y>160</y>
                <width>101</width>
                <height>18</height>
               </rect>
@@ -640,7 +640,7 @@ QRadioButton::indicator:checked:pressed
             <widget class="QLabel" name="currentFingerLabel">
              <property name="geometry">
               <rect>
-               <x>303</x>
+               <x>360</x>
                <y>69</y>
                <width>141</width>
                <height>41</height>
