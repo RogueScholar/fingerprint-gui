@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.2)
 project(fingerprint-gui)
 
 include(FindPkgConfig)
+macro(install_symlink filepath sympath)
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${filepath} ${sympath})")
+    install(CODE "message(\"-- Install: ${sympath} -> ${filepath}\")")
+endmacro(install_symlink)
+
 set (QT_MIN_VERSION "5.5.0")
 
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core Gui Widgets Xml X11Extras)
@@ -38,3 +43,7 @@ set(LIBEXECDIR "${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui/")
 add_subdirectory(src)
 add_subdirectory(upek)
 add_subdirectory(bin)
+
+install(FILES COPYING DESTINATION "share/doc/fingerprint-gui/")
+install(DIRECTORY DESTINATION "/var/lib/fingerprint-gui")
+install(DIRECTORY DESTINATION "/var/upek_data")

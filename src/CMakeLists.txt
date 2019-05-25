@@ -139,6 +139,10 @@ install(TARGETS fingerprint-polkit-agent
   fingerprint-rw
   RUNTIME DESTINATION "lib/fingerprint-gui"
 )
+install_symlink("${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui/fingerprint-rw"
+"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui/fingerprint-rw-read")
+install_symlink("${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui/fingerprint-rw"
+"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui/fingerprint-rw-write")
 install(TARGETS pam_fingerprint-gui
   LIBRARY DESTINATION "lib/security"
 )

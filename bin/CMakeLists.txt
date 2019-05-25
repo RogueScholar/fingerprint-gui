@@ -1,7 +1,7 @@
 configure_file("fingerprint-rw/cc.ullrich-online.fingerprint-gui.policy.in" "fingerprint-rw/cc.ullrich-online.fingerprint-gui.policy" @ONLY)
 configure_file("fingerprint-polkit-agent/fingerprint-polkit-agent.desktop.in" "fingerprint-polkit-agent/fingerprint-polkit-agent.desktop" @ONLY)
 
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../doc/fingerprint-gui" DESTINATION "share/doc")
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../doc/fingerprint-gui" DESTINATION "share/doc" PATTERN "*.xml" EXCLUDE)
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/fingerprint-gui/fingerprint-gui.desktop" DESTINATION "share/applications")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/fingerprint-rw/cc.ullrich-online.fingerprint-gui.policy" DESTINATION "share/polkit-1/actions")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/fingerprint-polkit-agent/fingerprint-polkit-agent.desktop" DESTINATION "/etc/xdg/autostart/")
