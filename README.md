@@ -128,6 +128,17 @@ enable fingerprint-based authentication:
 * [ArchWiki](https://wiki.archlinux.org/index.php/Fingerprint_GUI)
 * [ThinkWiki](http://www.thinkwiki.org/wiki/How_to_enable_the_integrated_fingerprint_reader)
 
+### lxdm / Lubuntu
+
+The lxdm developers should read the PAM documentation, specifically the "Linux
+PAM Application Developers Guide" located [here](http://uw714doc.sco.com/en/SEC_pam/pam_appl.html). Because of the completely
+improper use of PAM authentication in lxdm it is not possible to use
+alternative authentication methods.
+
+If you want to use fingerprint login for Lubuntu or other lxdm desktop
+environments you should install lightdm and lightdm-gtk-greeter and use those
+instead. That will work.
+
 ## License
 
 This software is released under GPL-2+. See [COPYING](COPYING) for the full
