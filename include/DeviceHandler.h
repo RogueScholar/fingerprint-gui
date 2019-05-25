@@ -27,7 +27,7 @@
 #define _DEVICEHANDLER_H
 
 #include <string>
-#include <QtGui>
+#include <QtWidgets>
 #include <QObject>
 #include "FingerprintDevice.h"
 #include "UsbDevice.h"

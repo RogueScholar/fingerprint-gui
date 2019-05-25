@@ -1,7 +1,7 @@
 /*
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: PamGUI.cpp, PamGUI.h
- * Purpose: Main object for pam_fingerprint module for running in gui environments
+ * Purpose: Main object for pam_fingerprint module for running in GUI environments
  *
  * @author  Wolfgang Ullrich
  * Copyright (C) 2008-2016 Wolfgang Ullrich
@@ -30,7 +30,8 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string>
-#include <QtGui>
+#include <QtWidgets>
+#include <QX11Info>
 #include <QObject>
 #include <QEventLoop>
 #include <security/pam_modules.h>

@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <string>
 #include <iostream>
-#include <QtGui>
+#include <QtWidgets>
 #include <security/pam_appl.h>
 #include <security/pam_misc.h>
 #include "Globals.h"

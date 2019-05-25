@@ -60,7 +60,7 @@ private:
     bool gainedAuthorization;
     bool wasCancelled;
     int numTries;
-    QWeakPointer<Session> session;
+    QSharedPointer<Session> session;
     PolkitQt1::Identity::List identities;
     PolkitQt1::Identity selectedUser;
     PolkitQt1::Agent::AsyncResult* result;

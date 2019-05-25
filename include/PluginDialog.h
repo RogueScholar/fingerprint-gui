@@ -31,7 +31,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <QtGui>
+#include <QtWidgets>
 #include "ui_FingerprintPlugin.h"
 #include "Globals.h"
 

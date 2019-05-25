@@ -1,7 +1,7 @@
 /*
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: Fingerprint.cpp, Fingerprint.h
- * Purpose: Repesents a single fingerprint, it's data and the asigned device
+ * Purpose: Represents a single fingerprint, it's data and the assigned device
  *
  * @author  Wolfgang Ullrich
  * Copyright (C) 2008-2016 Wolfgang Ullrich
@@ -26,7 +26,7 @@
 #ifndef _FINGERPRINT_H
 #define _FINGERPRINT_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "FingerprintDevice.h"
 
 #include "Globals.h"
