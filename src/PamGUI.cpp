@@ -71,7 +71,7 @@ void PamGUI::CinnamonFix () {
     Display* display; // XLib Display
     unsigned int count = 0, screen_num;
     Window rootWindow, root, parent = 0; // screen root window, return root window from XQueryTree, return parent window from XQueryTree and new parent window
-    Window *list = NULL; // for enumerate windows
+    Window *list = nullptr; // for enumerate windows
     XWindowAttributes attr; // window attributes for test
 
     display = QX11Info::display(); // get Display from QT
@@ -108,7 +108,7 @@ void PamGUI::CinnamonFix () {
 
                 snprintf ( procname, CINNAMONFIX_BUFSIZE, "/proc/%d/cmdline", *((int*)prop) );
 
-                if ( NULL != ( fprocname = fopen ( procname, "r" ) ) ) {
+                if ( nullptr != ( fprocname = fopen ( procname, "r" ) ) ) {
                     if ( ( size = fread ( procname, sizeof ( char ), CINNAMONFIX_BUFSIZE, fprocname ) ) > 0 ) {
                         if ( '\n' == procname [ size - 1 ] ) {
                             procname [ size - 1 ] = '\0';
@@ -212,14 +212,14 @@ void PamGUI::setFocusToUnityGreeter(){
     if(focusIsSet)return;	//Do it only once
     focusIsSet=true;
     Display *display=XOpenDisplay(getenv("DISPLAY"));
-    if(display!=NULL){
+    if(display!=nullptr){
         Window window=DefaultRootWindow(display);
     	Atom _atomPID=XInternAtom(display,"_NET_WM_PID",True);
     	if(_atomPID!=None){
     	    if(0!=XQueryTree(display,window,&wRoot,&wParent,&wChild,&nChildren)){
     		for(unsigned i=0;i<nChildren;i++){
 		    if(Success==XGetWindowProperty(display,wChild[i],XInternAtom(display,"WM_NAME",False),0,1024,False,XA_STRING,&type,&format,&nItems,&bytesAfter,&name)){
-			if(name!=NULL){
+			if(name!=nullptr){
 //			    syslog(LOG_DEBUG,"WINDOW: \"%ld\", NAME: %s.",wChild[i],name);
 			    if(strcmp((const char *)name,"unity-greeter")==0){
 				syslog(LOG_DEBUG,"Setting focus to window: %ld \"%s\", result: %d.",wChild[i],name,XSetInputFocus(display,wChild[i],RevertToNone,CurrentTime));

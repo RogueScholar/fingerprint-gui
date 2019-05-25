@@ -44,9 +44,8 @@
 #include "../include/AboutImpl.h"
 #include "../include/UserSettings.h"
 #include "../include/GlobalsImg.h"
+#include "../include/Fingernames.h"
 
-FINGERS
-        
 MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
     : QMainWindow(parent, f){
     setupUi(this);
@@ -91,8 +90,8 @@ MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
     currentTab=0;
     tabWidget->setCurrentIndex(currentTab);
     movie = new QMovie(QString::fromUtf8(":/new/prefix1/res/Animation.gif"));
-    movie->start();    
-    movie->setPaused(true);    
+    movie->start();
+    movie->setPaused(true);
     animationLabel->setMovie(movie);
     textLabels[0]=fpStatusLabel1;
     textLabels[1]=fpStatusLabel2;
@@ -105,7 +104,7 @@ MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
     iconLabels[3]=fpResultLabel4;
     iconLabels[4]=fpResultLabel5;
     currentFinger=6;
-    currentFingerprint=NULL;
+    currentFingerprint=nullptr;
     resultLabel->clear();
     fpPixMap=QPixmap(QString::fromUtf8(":/new/prefix1/res/Fingerprint.png"));
     fpPix = QPixmap();
@@ -314,7 +313,7 @@ void MainWindowImpl::setPwdPath2(){
 }
 
 void MainWindowImpl::closeApp(){
-    if(currentFingerprint!=NULL){
+    if(currentFingerprint!=nullptr){
         syslog(LOG_INFO,"Stopping device...");
         currentFingerprint->getDevice()->stop();
         currentFingerprint->getDevice()->wait(1000);
@@ -329,7 +328,7 @@ void MainWindowImpl::closeApp(){
 void MainWindowImpl::testPam(){
     string service=string("");
     bool identify=false;
-    for(int i=0;services[i].button!=NULL;i++){
+    for(int i=0;services[i].button!=nullptr;i++){
         if(services[i].button->isChecked()){
             service=string(services[i].name);
             identify=services[i].identify;
@@ -413,7 +412,7 @@ void MainWindowImpl::savedDialogChosen(savedDialogChoice choice){
         case SAVED_NO:
             bool v=currentFingerprint->isValid();
             scanTabToBack();
-            if(!v) 
+            if(!v)
                 scanTabToFront();
             break;
     }
@@ -449,7 +448,7 @@ int MainWindowImpl::saveToFile(){  //save fingerprints to tar-file (needs tar an
     syslog(LOG_DEBUG,"Execute command: %s.",command.data());
     return system(command.data());
 }
-        
+
 void MainWindowImpl::nextTab(){
     if(currentTab==PASSWORD_TAB){
         if(haveFingerprints()){
@@ -468,18 +467,18 @@ void MainWindowImpl::tabChanged(){
 }
 
 void MainWindowImpl::newDevice(string name){
-    deviceCombo->addItem(QString::fromStdString(name),(int) NULL);
+    deviceCombo->addItem(QString::fromStdString(name), 0);
 }
 
 void MainWindowImpl::showAttachedUSBDevices(){
     usbDeviceListWidget->show();
     usbDeviceListWidget->clear();
-    if(deviceHandler->getAttachedUsbDevices()!=NULL){
-        for(USBDevice *attachedUSB=deviceHandler->getAttachedUsbDevices();attachedUSB!=NULL;attachedUSB=attachedUSB->next)
+    if(deviceHandler->getAttachedUsbDevices()!=nullptr){
+        for(USBDevice *attachedUSB=deviceHandler->getAttachedUsbDevices();attachedUSB!=nullptr;attachedUSB=attachedUSB->next)
             usbDeviceListWidget->addItem(attachedUSB->getDeviceDescriptor());
     }
     //are devices available??
-    if(deviceHandler->getFingerprintDevices()==NULL){ //NO
+    if(deviceHandler->getFingerprintDevices()==nullptr){ //NO
         const char* msg="No Devices Found!";
         syslog(LOG_ERR,"%s",msg);
         deviceCombo->addItem(QString::fromStdString(msg));
@@ -570,7 +569,7 @@ void MainWindowImpl::displayModeDriver(){
 
 // private helpers -------------------------------------------------------------
 void MainWindowImpl::tabChanged(int newTab){
-   
+
     if(newTab==currentTab)
         return;
     switch (currentTab){
@@ -633,7 +632,7 @@ void MainWindowImpl::fingerTabToBack(){
 
 void MainWindowImpl::scanTabToBack(){
     movie->setPaused(true);
-    if(currentFingerprint!=NULL){
+    if(currentFingerprint!=nullptr){
         disconnect(currentFingerprint->getDevice(),SIGNAL(noDeviceOpen()),this,SLOT(noDeviceOpen()));
         disconnect(currentFingerprint->getDevice(),SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
         disconnect(currentFingerprint,SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
@@ -642,7 +641,7 @@ void MainWindowImpl::scanTabToBack(){
         disconnect(currentFingerprint,SIGNAL(acquireFinished(int,struct fp_pic_data*)),this,SLOT(acquireFinished(int,struct fp_pic_data*)));
         disconnect(currentFingerprint,SIGNAL(verifyFinished(int,struct fp_pic_data*)),this,SLOT(verifyFinished(int,struct fp_pic_data*)));
         delete(currentFingerprint);
-        currentFingerprint=NULL;
+        currentFingerprint=nullptr;
     }
     //enable other widgets
     tabWidget->setTabEnabled(DEVICE_TAB,true);
@@ -660,7 +659,7 @@ void MainWindowImpl::settingsTabToBack(){
 }
 
 void MainWindowImpl::passwordTabToBack(){
-    okButton->setText("&Next");
+    okButton->setText(tr("&Next"));
     cancelButton->setEnabled(true);
 }
 
@@ -668,7 +667,7 @@ void MainWindowImpl::deviceTabToFront(){
 }
 
 void MainWindowImpl::markFinger(int finger){
-    QRadioButton *f=NULL;
+    QRadioButton *f=nullptr;
 
     switch (finger){
         case 0:
@@ -702,7 +701,7 @@ void MainWindowImpl::markFinger(int finger){
             f=rsButton;
             break;
     }
-    if(f==NULL)
+    if(f==nullptr)
         return;
     f->setStyleSheet(QString::fromUtf8(
     "QRadioButton::indicator::unchecked \n"
@@ -723,7 +722,7 @@ void MainWindowImpl::fingerTabToFront(){
     stopTester=true;
     setLabel(currentFinger);
     for(int i=0;i<10;i++){  // mark fingers with existing bir data
-        Fingerprint *f=new Fingerprint(i,deviceHandler->getCurrentDevice(NULL),textLabels,iconLabels);
+        Fingerprint *f=new Fingerprint(i,deviceHandler->getCurrentDevice(nullptr),textLabels,iconLabels);
         if(f->isValid()){
             markFinger(i);
         }
@@ -735,8 +734,7 @@ void MainWindowImpl::scanTabToFront(){
 	setScanTabNeededStages(1);
     stopTester=true;
     animationLabel->setMovie(movie);
-    QString s("Please Swipe Your ");
-    s.append(fingers[currentFinger]);
+    QString s = tr("Please Swipe Your %1").arg(tr(fingers[currentFinger]));
     syslog(LOG_DEBUG,"%s.",s.toStdString().data());
     acquireLabel->setText(s);
     //disable other widgets
@@ -748,7 +746,7 @@ void MainWindowImpl::scanTabToFront(){
     vendornameButton->setEnabled(false);
     drivernameButton->setEnabled(false);
     deviceCombo->setEnabled(false);
-    currentFingerprint=new Fingerprint(currentFinger,deviceHandler->getCurrentDevice(NULL),textLabels,iconLabels);
+    currentFingerprint=new Fingerprint(currentFinger,deviceHandler->getCurrentDevice(nullptr),textLabels,iconLabels);
     disconnect(currentFingerprint->getDevice(),SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
     connect(currentFingerprint->getDevice(),SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
     disconnect(currentFingerprint,SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
@@ -764,7 +762,7 @@ void MainWindowImpl::scanTabToFront(){
     disconnect(currentFingerprint,SIGNAL(verifyFinished(int,struct fp_pic_data*)),this,SLOT(verifyFinished(int,struct fp_pic_data*)));
     connect(currentFingerprint,SIGNAL(verifyFinished(int,struct fp_pic_data*)),this,SLOT(verifyFinished(int,struct fp_pic_data*)));
     if(currentFingerprint->isValid()){
-        eDialog=new ExistDialogImpl(fingers[currentFinger],this);
+        eDialog=new ExistDialogImpl(tr(fingers[currentFinger]).toStdString(),this);
         eDialog->show();
         connect(eDialog,SIGNAL(choice(existDialogChoice)),this,SLOT(existDialogChosen(existDialogChoice)));
     }
@@ -794,11 +792,11 @@ void MainWindowImpl::settingsTabToFront(){
         fprintLabel1->hide();
         fprintLabel2->hide();
         noFingerprintsLabel->show();
-        okButton->setText("&Back");
+        okButton->setText(tr("&Back"));
     }
 
     findPamServices();
-    if(!deviceHandler->getCurrentDevice(NULL)->canIdentify()){
+    if(!deviceHandler->getCurrentDevice(nullptr)->canIdentify()){
 	syslog(LOG_DEBUG,"The selected device doesn't support \"identification\".");
     }
 
@@ -829,11 +827,11 @@ void MainWindowImpl::findPamServices(){
     services[3]=(pamService){string("su"),false,suButton,true};
     services[4]=(pamService){string("gnome-screensaver"),false,gnomescreensaverButton,true};
     services[5]=(pamService){string("lightdm"),false,lightdmButton,true};
-    services[6]=(pamService){string(""),false,NULL,false};
+    services[6]=(pamService){string(""),false,nullptr,false};
     bool checked=false;
     bool haveServices=false;
 
-    for(int i=0;services[i].button!=NULL;i++){
+    for(int i=0;services[i].button!=nullptr;i++){
         QRadioButton *button=services[i].button;
         if(services[i].implemented){
             string *srvc=&services[i].name;
@@ -858,8 +856,7 @@ void MainWindowImpl::findPamServices(){
 
 void MainWindowImpl::setLabel(int finger){
     currentFinger=finger;
-    QString f(fingers[currentFinger]);
-    currentFingerLabel->setText(f);
+        currentFingerLabel->setText(tr(fingers[currentFinger]));
 }
 
 #include "moc_MainWindowImpl.cpp"

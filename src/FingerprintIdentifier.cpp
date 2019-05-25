@@ -85,24 +85,24 @@ int main(int argc, char** argv) {
     syslog(LOG_INFO,"Started.");
 
     //find "identifier" devices
-    FingerprintDevice *devices=NULL;
+    FingerprintDevice *devices=nullptr;
     DeviceHandler deviceHandler(DISPLAY_DRIVER_NAME);
     deviceHandler.rescan();
     devices=deviceHandler.getIdentifiers();
     
-    if(devices==NULL){
+    if(devices==nullptr){
         string message="Found no devices that can identify. Aborting.";
         syslog(LOG_ERR,"%s",message.data());
         cerr<<message.data()<<endl;
         IDENTIFIER_RETURN
     }
-    if(devices->next!=NULL){
+    if(devices->next!=nullptr){
         syslog(LOG_WARNING,"Found more then one devices. Using %s.",devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
     }
     //collect fingerprints from all users for this device
     FingerprintDiscoverer discoverer(devices,debug);
     FingerprintData *identifyData=discoverer.getIdentifyData();
-    if(identifyData==NULL){  // We have no fingerprints at all
+    if(identifyData==nullptr){  // We have no fingerprints at all
         string message="No fingerprintData! Aborting.";
         syslog(LOG_ERR,"%s",message.data());
         cerr<<message.data()<<endl;

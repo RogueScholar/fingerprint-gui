@@ -138,8 +138,8 @@ UserSettings::UserSettings(char *userName,bool debug){
             	rc=execl("/usr/bin/pkexec","pkexec",READ_COMMAND,
                     ARG_USER,userName,
 		    ARG_FILE,"config.xml",
-                    debug?ARG_DEBUG1:NULL,
-                    NULL);
+                    debug?ARG_DEBUG1:nullptr,
+                    nullptr);
            	syslog(LOG_ERR,"ERROR: Could not execute %s %d (%s).",READ_COMMAND,rc,strerror(errno));
             	_exit(EXIT_FAILURE);
             case -1:            // Fork error
@@ -247,7 +247,7 @@ UserSettings::UserSettings(char *userName,bool debug){
 }
 
 QString UserSettings::mountUuid(QString uuid){
-    const char *filesystems[6]={"vfat","ext2","ext3","ext4","ntfs",(const char*)NULL};
+    const char *filesystems[6]={"vfat","ext2","ext3","ext4","ntfs",(const char*)nullptr};
     QString mountPoint;
     QString devName=("/dev/disk/by-uuid/");
     devName.append(uuid);
@@ -337,7 +337,7 @@ bool UserSettings::getPassword(char **passwd){
 
 const char* UserSettings::getPathToMedia(){
     if(!providePassword|password.isEmpty())
-        return NULL;
+        return nullptr;
     QString pathToMedia(pathToPassword.left(pathToPassword.indexOf(QString(PASSWORD_DIR),0)));
     return pathToMedia.toStdString().data();
 }
@@ -377,7 +377,7 @@ bool UserSettings::writeConfig(char *passwd,bool debug){
         return false;
     }
 
-    if(passwd!=NULL){
+    if(passwd!=nullptr){
         QCA::Initializer init;
         if(!QCA::isSupported("aes128-cbc-pkcs7")){
             syslog(LOG_ERR,"AES128-CBC not supported! Provider (libqca-ossl.so) not installed?");
@@ -467,8 +467,8 @@ bool UserSettings::writeConfig(char *passwd,bool debug){
             rc=execl("/usr/bin/pkexec","pkexec",WRITE_COMMAND,
                     ARG_USER,user.toStdString().data(),
 		    ARG_FILE,"config.xml",
-                    debug?ARG_DEBUG1:NULL,
-                    NULL);
+                    debug?ARG_DEBUG1:nullptr,
+                    nullptr);
            syslog(LOG_ERR,"ERROR: Could not execute %s %d (%s).",WRITE_COMMAND,rc,strerror(errno));
             _exit(EXIT_FAILURE);
         case -1:            // Fork error

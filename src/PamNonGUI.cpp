@@ -40,7 +40,7 @@
 void PamNonGUI::pamMessage(const char *target,const char *style,const char *msg){
     if(prompt)
         printf("%s%s%s\n",style,msg,NORMAL);
-    if(target==NULL)
+    if(target==nullptr)
         return;
     string fifoMsg(""); // Compose a message for fingerprint-plugin
     fifoMsg.append(target);
@@ -67,17 +67,17 @@ PamNonGUI::PamNonGUI(bool writeToPrompt,FingerprintDevice *dev,const char *user,
 
     string title=string("\nFingerprint Login ");
     title.append(VERSION);
-    pamMessage(NULL,MAGENTA,title.data());
+    pamMessage(nullptr,MAGENTA,title.data());
     string s=string("Authenticating ");
     s.append(user);
     pamMessage(MSG_NORMAL,MAGENTA,s.data());
     s=string("Swipe your ");
-    if(finger==NULL)
+    if(finger==nullptr)
         s.append("finger");
     else
         s.append(finger);
     s.append(" or type your password:");
-    pamMessage(NULL,MAGENTA,s.data());
+    pamMessage(nullptr,MAGENTA,s.data());
     START_TIMER
 }
 
@@ -145,12 +145,12 @@ void PamNonGUI::timerTick(){
             syslog(LOG_INFO,"Stopped, restarting");
             //restart fingerprint scanner
             s=string("Swipe your ");
-            if(finger==NULL)
+            if(finger==nullptr)
                 s.append("finger");
             else
                 s.append(finger);
             s.append(" or type your password:");
-            pamMessage(NULL,MAGENTA,s.data());
+            pamMessage(nullptr,MAGENTA,s.data());
             device->start();
             repeatDelay--;
             break;

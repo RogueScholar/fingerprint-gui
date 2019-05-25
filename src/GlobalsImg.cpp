@@ -3,7 +3,7 @@
 #include "GlobalsImg.h"
 
 void createQPixmapFromFpImg ( QPixmap * pix, struct fp_pic_data *fp_pic, unsigned int mw, unsigned int mh ) {
-	if ( fp_pic == NULL || (*fp_pic).data == NULL ) {
+    if ( fp_pic == nullptr || (*fp_pic).data == nullptr ) {
 		*pix = QPixmap();
 		return;
 	}

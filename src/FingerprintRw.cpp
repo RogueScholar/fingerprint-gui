@@ -47,11 +47,11 @@ int main(int argc, char** argv) {
     bool put=false;
     string userdir(DATA_DIR);
     string tempdir("/tmp/");
-    const char* user=NULL;
-    const char* driver=NULL;
+    const char* user=nullptr;
+    const char* driver=nullptr;
     gid_t gid;
     uid_t uid;
-    char* filename=NULL;
+    char* filename=nullptr;
     FILE *source,*target;
     int ch;
 
@@ -83,11 +83,11 @@ int main(int argc, char** argv) {
     }
 
     syslog(LOG_DEBUG,"Called as %s.",argv[0]);
-    if(strstr(argv[0],"fingerprint-rw-read")!=NULL){		// read file
+    if(strstr(argv[0],"fingerprint-rw-read")!=nullptr){		// read file
 	put=false;
     }
     else{
-	if(strstr(argv[0],"fingerprint-rw-write")!=NULL){	// write file
+	if(strstr(argv[0],"fingerprint-rw-write")!=nullptr){	// write file
 	    put=true;
 	}
 	else{
@@ -97,12 +97,12 @@ int main(int argc, char** argv) {
     }
 
     // Do we have a valid username?
-    if(user==NULL){
+    if(user==nullptr){
         syslog(LOG_ERR,"Username unknown. Aborting!");
         return (EXIT_FAILURE);
     }
     passwd=getpwnam(user);
-    if(passwd==NULL){
+    if(passwd==nullptr){
         syslog(LOG_ERR,"Invalid username. Aborting!");
         return (EXIT_FAILURE);
     }
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
     uid=passwd->pw_uid;
 
     //do we have a valid filename?
-    if(filename==NULL){
+    if(filename==nullptr){
         syslog(LOG_ERR,"Filename unknown. Aborting!");
         return (EXIT_FAILURE);
     }
@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
             return (EXIT_FAILURE);
 	}
 	// Do we have a drivername?
-	if(driver==NULL){
+	if(driver==nullptr){
 	    syslog(LOG_ERR,"Drivername unknown. Aborting!");
             return (EXIT_FAILURE);
 	}
@@ -225,7 +225,7 @@ int main(int argc, char** argv) {
 	// copy file from /tmp to userdir
 	source=fopen(tempdir.data(),"rb");
 	target=fopen(userdir.data(),"wb");
-	if((source==NULL)||(target==NULL)){
+    if((source==nullptr)||(target==nullptr)){
 	    syslog(LOG_ERR,"Could not copy file %s to %s!",tempdir.data(),userdir.data());
             return (EXIT_FAILURE);
 	}
@@ -252,7 +252,7 @@ int main(int argc, char** argv) {
 	// copy file from userdir to /tmp
 	source=fopen(userdir.data(),"rb");
 	target=fopen(tempdir.data(),"wb");
-	if((source==NULL)||(target==NULL)){
+    if((source==nullptr)||(target==nullptr)){
 	    syslog(LOG_ERR,"Could not copy file %s to %s!",userdir.data(),tempdir.data());
             return (EXIT_FAILURE);
 	}

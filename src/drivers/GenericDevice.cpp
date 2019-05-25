@@ -36,9 +36,9 @@ using namespace std;
 
 GenericDevice::GenericDevice(struct fp_dscv_dev *fp,USBDevice *knownUSBDevices):FingerprintDevice(){
     fpDevice=fp;
-    fpData=NULL;
-    identifyData=NULL;
-    dev=NULL;
+    fpData=nullptr;
+    identifyData=nullptr;
+    dev=nullptr;
     struct libusb_device_descriptor desc;
 
     if(libusb_get_device_descriptor(fp->udev,&desc)<0){
@@ -55,8 +55,8 @@ GenericDevice::GenericDevice(struct fp_dscv_dev *fp,USBDevice *knownUSBDevices):
     displayName=string("");
     driverName.append(fp_driver_get_name(fp_dscv_dev_get_driver(fpDevice)));
     syslog(LOG_INFO,"initializing libfprint device (vend/prod) 0x%x/0x%x, driver: %s",vendorId,productId,driverName.data());
-    if(knownUSBDevices!=NULL){
-        for(USBDevice *u=knownUSBDevices;u!=NULL;u=u->next){
+    if(knownUSBDevices!=nullptr){
+        for(USBDevice *u=knownUSBDevices;u!=nullptr;u=u->next){
             if(u->vendorID==vendorId&&u->deviceID==productId){
                 displayName.append(string(u->vendorName));
                 displayName.append(" ");
@@ -84,7 +84,7 @@ void GenericDevice::setMode(int m){
 void GenericDevice::setIdentifyData(FingerprintData *iData){
     int i,numPrints;
     FingerprintData *d;
-    for(d=iData,numPrints=0;d!=NULL;numPrints++){
+    for(d=iData,numPrints=0;d!=nullptr;numPrints++){
         d=d->next;
     }
     if(numPrints==0){
@@ -92,17 +92,17 @@ void GenericDevice::setIdentifyData(FingerprintData *iData){
         return;
     }
     identifyData=new fp_print_data*[numPrints+1];
-    for(d=iData,i=0;d!=NULL;i++){
+    for(d=iData,i=0;d!=nullptr;i++){
         identifyData[i]=fp_print_data_from_data((unsigned char*)d->getData(),d->getSize());
         d=d->next;
     }
-    identifyData[numPrints]=NULL;
+    identifyData[numPrints]=nullptr;
 }
 
 bool GenericDevice::canIdentify(){
     bool rc=false;
-    if(fpDevice==NULL){  //Uups!
-        syslog(LOG_ERR,"FIXME: fpDevice NULL.");
+    if(fpDevice==nullptr){  //Uups!
+        syslog(LOG_ERR,"FIXME: fpDevice nullptr.");
         return rc;
     }
     dev=fp_dev_open(fpDevice);
@@ -115,26 +115,26 @@ bool GenericDevice::canIdentify(){
             rc=true;
         }
         fp_dev_close(dev);
-        dev=NULL;
+        dev=nullptr;
     }
     return rc;
 }
 
 int GenericDevice::getData(void **d,struct fp_pic_data **pic){
     int size=0;
-    if ( NULL != pic ) *pic = &fpPic;
+    if ( nullptr != pic ) *pic = &fpPic;
     if((size=fp_print_data_get_data(fpData,(unsigned char**)d))==0){
         syslog(LOG_ERR,"Could not convert fpData!");
     }
     fp_print_data_free(fpData);
-    fpData=NULL;
+    fpData=nullptr;
     return size;
 }
 
 void GenericDevice::setData(void *d,int size){
-    if(fpData!=NULL){
+    if(fpData!=nullptr){
         fp_print_data_free(fpData);
-        fpData=NULL;
+        fpData=nullptr;
     }
     fpData=fp_print_data_from_data((unsigned char*)d,size);
 }
@@ -165,7 +165,7 @@ static void sync_close_cb(struct fp_dev *dev,void *user_data){
 void GenericDevice::stop(){
     bool stopped;
 
-    if(dev==NULL)
+    if(dev==nullptr)
 	return;
 	syslog(LOG_DEBUG,"FP_DEV_STOP.");
 
@@ -203,8 +203,8 @@ void GenericDevice::stop(){
 
 //open fp_dev
 bool GenericDevice::fpDevOpen(struct fp_dscv_dev *fpDevice){
-    if(fpDevice==NULL){
-        syslog(LOG_ERR,"FIXME: fpDevice NULL.");
+    if(fpDevice==nullptr){
+        syslog(LOG_ERR,"FIXME: fpDevice nullptr.");
         return false;
     }
     dev=fp_dev_open(fpDevice);
@@ -217,12 +217,12 @@ bool GenericDevice::fpDevOpen(struct fp_dscv_dev *fpDevice){
 
 bool GenericDevice::fpDevClose(){
     if(!dev){
-        syslog(LOG_ERR,"FIXME: dev NULL (fpDevClose).");
+        syslog(LOG_ERR,"FIXME: dev nullptr (fpDevClose).");
         return false;
     }
     syslog(LOG_DEBUG,"FP_DEV_CLOSE.");
     fp_dev_close(dev);
-    dev=NULL;
+    dev=nullptr;
     return true;
 }
 
@@ -302,7 +302,7 @@ int translateAcquire(int fp_result){
 bool GenericDevice::verify(){
     int result;
 
-    if(fpDevice!=NULL){
+    if(fpDevice!=nullptr){
         if(!fpDevOpen(fpDevice)){
             syslog(LOG_ERR,"Could not open generic device (verify).");
             emit noDeviceOpen();
@@ -315,7 +315,7 @@ bool GenericDevice::verify(){
         sleep(1);   //don't know what this is good for; found it in some sample code of libfprint
 //        result=fp_verify_finger(dev,fpData);
         //"img" to be used in later version
-        struct fp_img *img=NULL;
+        struct fp_img *img=nullptr;
         result=fp_verify_finger_img(dev,fpData,&img);
         //"img" to be used in later version
         if(img){
@@ -324,7 +324,7 @@ bool GenericDevice::verify(){
             fp_img_free(img);
         }
         else {
-            img_to_pixmap ( NULL );
+            img_to_pixmap ( nullptr );
         }
         if(result<0){
             syslog(LOG_ERR,"Verify failed with error %d.",result);
@@ -348,7 +348,7 @@ bool GenericDevice::verify(){
 bool GenericDevice::acquire(){
     int result;
     mode=MODE_ACQUIRE;
-    if(fpDevice!=NULL){
+    if(fpDevice!=nullptr){
         if(!fpDevOpen(fpDevice)){
             syslog(LOG_ERR,"Could not open generic device (acquire).");
             emit noDeviceOpen();
@@ -362,7 +362,7 @@ bool GenericDevice::acquire(){
         sleep(1);   //don't know what this is good for; found it in some sample code of libfprint
         //result=fp_enroll_finger(dev,&fpData);
         //"img" to be used in later version
-        struct fp_img *img=NULL;
+        struct fp_img *img=nullptr;
         result=fp_enroll_finger_img(dev,&fpData,&img);
         if(img){
             syslog(LOG_DEBUG,"Acquire: have image.");
@@ -370,7 +370,7 @@ bool GenericDevice::acquire(){
             fp_img_free(img);
         }
         else {
-            img_to_pixmap ( NULL );
+            img_to_pixmap ( nullptr );
         }
         if(result<0){
             syslog(LOG_ERR,"Acquire failed with error %d.",result);
@@ -388,23 +388,23 @@ bool GenericDevice::acquire(){
 bool GenericDevice::identify(){
     long match=-1L;
 
-    if(identifyData==NULL){
+    if(identifyData==nullptr){
         syslog(LOG_ERR,"No data to identify."); 
         return false;
     }
-    if(fpDevice!=NULL){
+    if(fpDevice!=nullptr){
         if(!fpDevOpen(fpDevice)){
             syslog(LOG_ERR,"Could not open generic device (identify).");
-            if(fpData!=NULL){
+            if(fpData!=nullptr){
                 fp_print_data_free(fpData);
-                fpData=NULL;
+                fpData=nullptr;
             }
             emit noDeviceOpen();
             return false;
         }
     }
 
-	struct fp_img *img=NULL;
+    struct fp_img *img=nullptr;
 	int result=fp_identify_finger_img(dev,identifyData,(size_t*)&match,&img);
     // result=fp_identify_finger(dev,identifyData,(size_t*)&match);
     if(img){
@@ -413,16 +413,16 @@ bool GenericDevice::identify(){
         fp_img_free(img);
     }
     else {
-        img_to_pixmap ( NULL );
+        img_to_pixmap ( nullptr );
     }
     if(result<0){
         syslog(LOG_ERR,"Identify failed with error %d.",result);
         match=-1L;
     }
     fpDevClose();
-    if(fpData!=NULL){
+    if(fpData!=nullptr){
         fp_print_data_free(fpData);
-        fpData=NULL;
+        fpData=nullptr;
     }
     syslog(LOG_DEBUG,"Match result %u.",(int)match);
     emit matchResult(match,&fpPic);

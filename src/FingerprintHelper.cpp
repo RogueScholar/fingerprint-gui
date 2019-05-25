@@ -53,7 +53,7 @@ using namespace std;
 static string syslogIdent=string(HELPER_NAME);
 static volatile bool userSent=false;
 static volatile bool exitNow=false;
-static const char *user=NULL;
+static const char *user=nullptr;
 
 // Send messages to FingerprintPlugin
 void pluginMessage(const char *msg){
@@ -78,7 +78,7 @@ bool uinputSendEnter(int uinput){
     struct input_event event;
     memset(&event,0,sizeof(event));
     // PRESS
-    gettimeofday(&event.time,NULL);
+    gettimeofday(&event.time,nullptr);
     event.type=EV_KEY;
     event.code=KEY_ENTER;
     event.value=1;
@@ -94,7 +94,7 @@ bool uinputSendEnter(int uinput){
         return false;
     }
     // RELEASE
-    gettimeofday(&event.time,NULL);
+    gettimeofday(&event.time,nullptr);
     event.type=EV_KEY;
     event.code=KEY_ENTER;
     event.value=0;
@@ -134,13 +134,13 @@ bool exitPrompt(const char *display,const char *service){
     if(strcmp(service,"polkit-1")==0)   // No prompt required
         return false;
 
-    if(display!=NULL){  // We have a X display, using libfakekey
+    if(display!=nullptr){  // We have a X display, using libfakekey
         syslog(LOG_DEBUG,"Using libfakekey to exit PAM conversation.");
-        if((xdpy=XOpenDisplay(display))==NULL){
+        if((xdpy=XOpenDisplay(display))==nullptr){
             syslog(LOG_ERR,"ERROR: XOpenDisplay.");
             return false;
         }
-        if((fakekey=fakekey_init(xdpy))==NULL){
+        if((fakekey=fakekey_init(xdpy))==nullptr){
             syslog(LOG_ERR,"ERROR: Initializing FAKEKEY.");
             return false;
         }
@@ -157,7 +157,7 @@ bool exitPrompt(const char *display,const char *service){
             child=fork();  // here we start "modprobe" as child process
             switch(child){
                 case 0:             // This is the child
-                    rc=execl(MODPROBE_COMMAND,"modprobe","uinput",NULL);
+                    rc=execl(MODPROBE_COMMAND,"modprobe","uinput",nullptr);
                     syslog(LOG_ERR,"ERROR: Child returned %d (%s).",rc,strerror(errno));
                     _exit(EXIT_FAILURE);
                 case -1:            // Fork error
@@ -220,8 +220,8 @@ static void handler_SIGUSR(int sig){
 // Returns false on error, true on success
 bool requestFingerprint(int pipe_w,const char *display,char *service,char *username,int argc,char **argv,bool debug){
     int lastResult;
-    FingerprintData *identifyData=NULL;
-    FingerprintDevice *devices=NULL;
+    FingerprintData *identifyData=nullptr;
+    FingerprintDevice *devices=nullptr;
 
     // Find fingerprint device to be used
     // If no identifier device is found we fallback to verifying the first fingerprint discovered for this user
@@ -230,33 +230,33 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     deviceHandler.rescan();
     devices=deviceHandler.getIdentifiers();
 
-    if(devices==NULL){
+    if(devices==nullptr){
         mode=MODE_VERIFY;
         syslog(LOG_WARNING,"WARNING: No devices can identify. Fallback to verifying only.");
         devices=deviceHandler.getVerifiers();
-        if(devices==NULL){
+        if(devices==nullptr){
             syslog(LOG_WARNING,"No useful devices found.");
             deviceHandler.release();
             return false;
         }
     }
-    if(devices->next!=NULL){
+    if(devices->next!=nullptr){
         syslog(LOG_WARNING,"Found more then one devices.");
     }
 
-    if(username==NULL){             // user not known yet, maybe it's a login
+    if(username==nullptr){             // user not known yet, maybe it's a login
         if(mode==MODE_IDENTIFY){    // device can identify. So identifying the user is possible
             // Find the first device with fingerprints available
-            for(;devices!=NULL;devices=devices->next){
+            for(;devices!=nullptr;devices=devices->next){
                 syslog(LOG_DEBUG,"Looking for fingerprints for device %s.",devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
                 FingerprintDiscoverer discoverer(devices,debug);
                 identifyData=discoverer.getIdentifyData();
-                if(identifyData!=NULL){  // Data for this device available
+                if(identifyData!=nullptr){  // Data for this device available
                     break;
                 }
                 syslog(LOG_DEBUG,"Nothing found.");
             }
-            if(identifyData==NULL){  // We have no fingerprints at all
+            if(identifyData==nullptr){  // We have no fingerprints at all
                 syslog(LOG_ERR,"No fingerprintData!");
                 deviceHandler.release();
                 return false;
@@ -323,16 +323,16 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     // The user was known already (authentication only)
     syslog(LOG_INFO,"Authenticating USER: %s",username);
     // Find the first device with fingerprints for this user
-    for(;devices!=NULL;devices=devices->next){
+    for(;devices!=nullptr;devices=devices->next){
         syslog(LOG_DEBUG,"Looking for fingerprints for user %s with device %s.",username,devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
         FingerprintDiscoverer discoverer(devices,username,debug);
         identifyData=discoverer.getIdentifyData();
-        if(identifyData!=NULL){  // Data for this user available
+        if(identifyData!=nullptr){  // Data for this user available
             break;
         }
         syslog(LOG_DEBUG,"Nothing found.");
     }
-    if(identifyData==NULL){
+    if(identifyData==nullptr){
         syslog(LOG_ERR,"No fingerprint data for this user.");
         deviceHandler.release();
         return false;
@@ -340,11 +340,11 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     else{
         int i;
         FingerprintData *f=identifyData;
-        for(i=0;f!=NULL;f=f->next,i++);
+        for(i=0;f!=nullptr;f=f->next,i++);
         syslog(LOG_DEBUG,"Have %d fingerprints for %s.",i,username);
     }
 
-    const char *fingername=NULL;
+    const char *fingername=nullptr;
     devices->setMode(mode);
 
     if(mode==MODE_VERIFY){
@@ -406,8 +406,8 @@ int main(int argc,char** argv) {
     int pipe_r;
     int pipe_w;
     int rc;
-    char *username=NULL;
-    char *service=NULL;
+    char *username=nullptr;
+    char *service=nullptr;
     const char *display=getenv("DISPLAY");
     const char *xauth=getenv("XAUTHORITY");
     char randomString[11];
@@ -459,7 +459,7 @@ int main(int argc,char** argv) {
         syslog(LOG_DEBUG,"ERROR: Read random string (%s).",strerror(errno));
         return(EXIT_FAILURE);
     }
-    if(username==NULL)
+    if(username==nullptr)
         syslog(LOG_DEBUG,"Have no username.");
 
     // If another helper process is running kill him

@@ -1,7 +1,7 @@
 /*
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
- * Module: FingerprintData.cpp, FingerprintData.h
- * Purpose: Object to hold fingerprint data of one finger and user information
+ * Module: Fingercodes.h
+ * Purpose: defines numbering of fingers
  *
  * @author  Wolfgang Ullrich
  * Copyright (C) 2008-2016 Wolfgang Ullrich
@@ -23,34 +23,24 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "FingerprintData.h"
-#include "Fingernames.h"
+#ifndef _FINGERNAMES_H
+#define _FINGERNAMES_H
 
+#include <QtGlobal>
 
-FingerprintData::FingerprintData(string userName,int fi,void *bir,int size){
-    birData=bir;
-    birSize=size;
-    user=userName;
-    next=nullptr;
-    finger=fi;
-}
+#include "Globals.h"
 
-//public getters and setters ---------------------------------------------------
+static const char* fingers[]={
+        QT_TRANSLATE_NOOP("Fingernames", "Left Little"),
+        QT_TRANSLATE_NOOP("Fingernames", "Left Ring"),
+        QT_TRANSLATE_NOOP("Fingernames", "Left Middle"),
+        QT_TRANSLATE_NOOP("Fingernames", "Left Index"),
+        QT_TRANSLATE_NOOP("Fingernames", "Left Thumb"),
+        QT_TRANSLATE_NOOP("Fingernames", "Right Thumb"),
+        QT_TRANSLATE_NOOP("Fingernames", "Right Index"),
+        QT_TRANSLATE_NOOP("Fingernames", "Right Middle"),
+        QT_TRANSLATE_NOOP("Fingernames", "Right Ring"),
+        QT_TRANSLATE_NOOP("Fingernames", "Right Little")
+};
 
-void *FingerprintData::getData(){
-    return birData;
-}
-
-int FingerprintData::getSize(){
-    return birSize;
-}
-
-const char *FingerprintData::getFingerName(){
-    return fingers[finger];
-}
-
-string *FingerprintData::getUserName(){
-    return &user;
-}
-
-#include "moc_FingerprintData.cpp"
+#endif /* _FINGERCODES_H */

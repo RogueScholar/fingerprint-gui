@@ -25,6 +25,7 @@
 
 #ifndef _FINGERPRINTDATA_H
 #define	_FINGERPRINTDATA_H
+#define QT_I18N 1
 
 #include <string>
 #include <QObject>

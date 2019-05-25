@@ -55,7 +55,7 @@ SavedDialogImpl::SavedDialogImpl(int mode, QWidget * parent, struct fp_pic_data 
             break;
     }
 
-    if ( NULL != pic->data ) {
+    if ( nullptr != pic->data ) {
         int height = pic->height, width = pic->width;
         QSize max = fp_img->maximumSize();
         if ( height > max.height() ) {

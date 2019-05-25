@@ -87,7 +87,7 @@ void IdentifierGUI::matchResult(int match,struct fp_pic_data *pic){
     }
     createQPixmapFromFpImg ( &fpPix, pic, animationLabel->width(), animationLabel->height() );
     if ( !fpPix.isNull() ) {
-        animationLabel->setMovie(NULL);
+        animationLabel->setMovie(nullptr);
         animationLabel->setPixmap ( fpPix );
     }
 /*
@@ -133,7 +133,7 @@ void IdentifierGUI::newVerifyResult(int result,struct fp_pic_data *pic){
 	}
 	createQPixmapFromFpImg ( &fpPix, pic, animationLabel->width(), animationLabel->height() );
 	if ( !fpPix.isNull() ) {
-		animationLabel->setMovie(NULL);
+        animationLabel->setMovie(nullptr);
 		animationLabel->setPixmap ( fpPix );
 	}
     switch(result){
