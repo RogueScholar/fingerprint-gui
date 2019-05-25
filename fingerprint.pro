@@ -5,7 +5,7 @@ isEmpty(PREFIX) {
         PREFIX = /usr
 }
 isEmpty(LIB) {
-	LIB = lib
+        LIB = lib
 }
 
 LIBDIR = $${PREFIX}/$${LIB}
@@ -46,3 +46,5 @@ user-data.commands = find /var/lib/fingerprint-gui -exec chown root:root {} +; f
 
 QMAKE_EXTRA_TARGETS += upek-lib upek-rules upek-cfg upek-dir upek-udevadm install-upek uninstall-upek user-data
 
+HEADERS += \
+        i18nhelper.h

@@ -67,7 +67,8 @@ HEADERS += ../../include/GlobalsImg.h \
            ../../include/PamTester.h \
            ../../include/xmlwriter.h \
            ../../include/UserSettings.h \
-           ../../include/UsbDevice.h
+           ../../include/UsbDevice.h \
+           ../../include/i18nHelper.h
 
 FORMS += ../../src/About.ui \
          ../../src/ExistDialog.ui \

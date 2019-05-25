@@ -32,27 +32,55 @@ Package Control.user-ca-bundle
 oscrypto-ca-bundle.crt
 bh_unicode_properties.cache
 
-# Sublime-github package stores a github token in this file
+# Sublime-GitHub package stores a GitHub token in this file
 GitHub.sublime-settings
 
 # Don't accidentally publish your GPG secret keyring
 secring.*
 
+# C++ objects and libs
+*.slo
+*.lo
+*.o
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Qt-es
+object_script.*.Release
+object_script.*.Debug
+*_plugin_import.cpp
+/.qmake.cache
+/.qmake.stash
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.qmlc
+*.jsc
+Makefile*
+*build-*
+
+# Qt unit tests
+target_wrapper.*
+
+# QtCreator
+*.autosave
+
+# QtCreator Qml
+*.qmlproject.user
+*.qmlproject.user.*
+
+# QtCreator CMake
+CMakeLists.txt.user*
+
 # Project specific files
-asbru-cm/rpm/BUILD
-asbru-cm/rpm/BUILDROOT
-asbru-cm/rpm/RPMS
-asbru-cm/rpm/SOURCES
-asbru-cm/rpm/SRPMS
-asbru-cm/rpm/tmp
-asbru-cm/tmp
-libgnome2-gconf-perl/tmp
-libgnome2-vte-perl/tmp
-libgtk2-ex-simple-list-perl/tmp
-libgtk2-gladexml-perl/tmp
-libgtk2-unique-perl/tmp
-*/.debhelper
-*/*.debhelper.log
-*/debhelper-build-stamp
-*/files
-*/*.substvars
+/build

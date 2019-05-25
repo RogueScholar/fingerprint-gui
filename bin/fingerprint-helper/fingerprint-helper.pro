@@ -43,7 +43,8 @@ HEADERS += \
             ../../include/UserSettings.h \
             ../../include/PamGUI.h \
             ../../include/PamNonGUI.h \
-            ../../include/Globals.h
+            ../../include/Globals.h \
+            ../../include/i18nHelper.h
 
 FORMS += ../../src/FingerprintPlugin.ui
 
