@@ -27,11 +27,11 @@
  * This code is based on the analysis of the "polkit-kde-1-0.95.1" project
  */
 
-#include <polkit-qt-1/PolkitQt1/Agent/Listener>
-#include <polkit-qt-1/PolkitQt1/Agent/Session>
-#include <polkit-qt-1/PolkitQt1/Subject>
-#include <polkit-qt-1/PolkitQt1/Identity>
-#include <polkit-qt-1/PolkitQt1/Details>
+#include <polkit-qt5-1/PolkitQt1/Agent/Listener>
+#include <polkit-qt5-1/PolkitQt1/Agent/Session>
+#include <polkit-qt5-1/PolkitQt1/Subject>
+#include <polkit-qt5-1/PolkitQt1/Identity>
+#include <polkit-qt5-1/PolkitQt1/Details>
 //#include <qt4/QtGui/qdialogbuttonbox.h>
 #include <qdialogbuttonbox.h>
 

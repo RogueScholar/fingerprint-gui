@@ -26,7 +26,7 @@
 #ifndef POLKITLISTENER_H
 #define	POLKITLISTENER_H
 
-#include <polkit-qt-1/PolkitQt1/Agent/Listener>
+#include <polkit-qt5-1/PolkitQt1/Agent/Listener>
 #include "PolkitDialogImpl.h"
 
 using namespace PolkitQt1::Agent;

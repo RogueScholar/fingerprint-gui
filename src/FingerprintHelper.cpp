@@ -26,7 +26,7 @@
 #include <QtGui>
 #include <QObject>
 #include <QEventLoop>
-#include <QtCrypto/QtCrypto>
+#include <QtCrypto>
 
 #include <sys/wait.h>
 #include <linux/uinput.h>
