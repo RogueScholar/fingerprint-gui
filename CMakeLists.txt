@@ -34,4 +34,7 @@ set(QT_LIBRARIES
                 Qt5::Xml
     ${CMAKE_THREAD_LIBS_INIT}
         )
+set(LIBEXECDIR "${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui/")
 add_subdirectory(src)
+add_subdirectory(upek)
+add_subdirectory(bin)

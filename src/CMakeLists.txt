@@ -88,6 +88,7 @@ target_link_libraries(fingerprint-polkit-agent
 add_executable(fingerprint-helper
   $<TARGET_OBJECTS:COMMON_OBJS>
   FingerprintPlugin.ui
+  $<TARGET_OBJECTS:WDRES>
 
   FingerprintData.cpp
   FingerprintDiscoverer.cpp
@@ -96,7 +97,6 @@ add_executable(fingerprint-helper
   PamGUI.cpp
   PamNonGUI.cpp
   FingerprintHelper.cpp
-  $<TARGET_OBJECTS:WDRES>
 )
 target_link_libraries(fingerprint-helper
   ${LIBUSB_LINK_LIBRARIES}
@@ -106,3 +106,41 @@ target_link_libraries(fingerprint-helper
   Qt5::X11Extras
   dl qca-qt5
 )
+
+# fingerprint-rw
+add_executable(fingerprint-rw
+  GlobalsImg.cpp
+  FingerprintRw.cpp
+)
+target_link_libraries(fingerprint-rw ${QT_LIBRARIES})
+
+# fingerprint-plugin
+add_executable(fingerprint-plugin
+  FingerprintPlugin.ui
+  $<TARGET_OBJECTS:WDRES>
+
+  GlobalsImg.cpp
+  PluginDialog.cpp
+  FingerprintPlugin.cpp
+)
+target_link_libraries(fingerprint-plugin ${QT_LIBRARIES})
+
+# fingerprint-pam
+add_library(pam_fingerprint-gui SHARED FingerprintPAM.cpp)
+target_link_libraries(pam_fingerprint-gui X11 pam)
+
+# installation steps
+install(TARGETS fingerprint-gui fingerprint-identifier
+  RUNTIME DESTINATION bin
+)
+install(TARGETS fingerprint-polkit-agent
+  fingerprint-plugin
+  fingerprint-helper
+  fingerprint-rw
+  RUNTIME DESTINATION "lib/fingerprint-gui"
+)
+install(TARGETS pam_fingerprint-gui
+  LIBRARY DESTINATION "lib/security"
+)
+
+add_subdirectory(res)
