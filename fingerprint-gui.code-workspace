@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"workbench.colorCustomizations": {
+			"activityBar.background": "#e9c74d",
+			"activityBar.foreground": "#15202b",
+			"activityBar.inactiveForeground": "#15202b99",
+			"activityBarBadge.background": "#128e73",
+			"activityBarBadge.foreground": "#e7e7e7",
+			"statusBar.background": "#e3b920",
+			"statusBarItem.hoverBackground": "#b99617",
+			"statusBar.foreground": "#15202b"
+		}
+	}
+}

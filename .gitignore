@@ -1,0 +1,58 @@
+# All but four Visual Studio Code files are installation-specific
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Kate swap Files
+.*.kate-swp
+.swp.*
+
+# Cache files for Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# Sublime Text workspace files are user-specific
+*.sublime-workspace
+
+# Sublime Text SFTP configuration/credentials file
+sftp-config.json
+
+# Sublime Text package control specific files
+Package Control.last-run
+Package Control.ca-list
+Package Control.ca-bundle
+Package Control.system-ca-bundle
+Package Control.cache/
+Package Control.ca-certs/
+Package Control.merged-ca-bundle
+Package Control.user-ca-bundle
+oscrypto-ca-bundle.crt
+bh_unicode_properties.cache
+
+# Sublime-github package stores a github token in this file
+GitHub.sublime-settings
+
+# Don't accidentally publish your GPG secret keyring
+secring.*
+
+# Project specific files
+asbru-cm/rpm/BUILD
+asbru-cm/rpm/BUILDROOT
+asbru-cm/rpm/RPMS
+asbru-cm/rpm/SOURCES
+asbru-cm/rpm/SRPMS
+asbru-cm/rpm/tmp
+asbru-cm/tmp
+libgnome2-gconf-perl/tmp
+libgnome2-vte-perl/tmp
+libgtk2-ex-simple-list-perl/tmp
+libgtk2-gladexml-perl/tmp
+libgtk2-unique-perl/tmp
+*/.debhelper
+*/*.debhelper.log
+*/debhelper-build-stamp
+*/files
+*/*.substvars
