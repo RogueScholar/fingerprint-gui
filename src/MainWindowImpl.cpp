@@ -47,13 +47,13 @@
 
 FINGERS
         
-MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WFlags f)
+MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
     : QMainWindow(parent, f){
     setupUi(this);
 
     string title=string("Fingerprint GUI ");
     title.append(VERSION);
-    setWindowTitle(QApplication::translate("MainWindow",title.data(), 0, QApplication::UnicodeUTF8));
+    setWindowTitle(QApplication::translate("MainWindow",title.data()));
     deviceHandler=new DeviceHandler(DISPLAY_VENDOR_NAME);
     connect(deviceHandler, SIGNAL(deviceAdded(string)), this, SLOT(newDevice(string)));
     connect(rescanButton, SIGNAL(clicked()),deviceHandler, SLOT(rescan()));
@@ -499,25 +499,25 @@ void MainWindowImpl::showAttachedUSBDevices(){
 void MainWindowImpl::setScanTabNeededStages(int stages){
     switch(stages){
         case 1:
-            fingerprintLabel2->setPixmap(NULL);
-            fingerprintLabel3->setPixmap(NULL);
-            fingerprintLabel4->setPixmap(NULL);
-            fingerprintLabel5->setPixmap(NULL);
+            fingerprintLabel2->setPixmap(QPixmap());
+            fingerprintLabel3->setPixmap(QPixmap());
+            fingerprintLabel4->setPixmap(QPixmap());
+            fingerprintLabel5->setPixmap(QPixmap());
             break;
         case 2:
-            fingerprintLabel3->setPixmap(NULL);
-            fingerprintLabel4->setPixmap(NULL);
-            fingerprintLabel5->setPixmap(NULL);
+            fingerprintLabel3->setPixmap(QPixmap());
+            fingerprintLabel4->setPixmap(QPixmap());
+            fingerprintLabel5->setPixmap(QPixmap());
             fingerprintLabel2->setPixmap(fpPixMap);
             break;
         case 3:
-            fingerprintLabel4->setPixmap(NULL);
-            fingerprintLabel5->setPixmap(NULL);
+            fingerprintLabel4->setPixmap(QPixmap());
+            fingerprintLabel5->setPixmap(QPixmap());
             fingerprintLabel2->setPixmap(fpPixMap);
             fingerprintLabel3->setPixmap(fpPixMap);
             break;
         case 4:
-            fingerprintLabel5->setPixmap(NULL);
+            fingerprintLabel5->setPixmap(QPixmap());
             fingerprintLabel2->setPixmap(fpPixMap);
             fingerprintLabel3->setPixmap(fpPixMap);
             fingerprintLabel4->setPixmap(fpPixMap);

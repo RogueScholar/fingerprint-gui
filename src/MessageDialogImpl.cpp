@@ -27,7 +27,7 @@
 
 #include "MessageDialogImpl.h"
 
-MessageDialogImpl::MessageDialogImpl(QWidget * parent, Qt::WFlags f)
+MessageDialogImpl::MessageDialogImpl(QWidget * parent, Qt::WindowFlags f)
     : QDialog(parent, f){
     setupUi(this);
     okButton->setDefault(true);

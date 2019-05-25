@@ -159,7 +159,7 @@ void GenericDevice::run(){
 static void sync_close_cb(struct fp_dev *dev,void *user_data){
     Q_UNUSED(dev);
     bool *closed=(bool *)user_data;
-    *closed=TRUE;
+    *closed=true;
 }
 
 void GenericDevice::stop(){

@@ -127,7 +127,7 @@ void PolkitListener::tryAgain(){
     syslog(LOG_DEBUG,"Trying again.");
     // We will create a new session only when some user is selected
     if(selectedUser.isValid()){
-        session=new Session(selectedUser,cookie,result);
+        session.reset(new Session(selectedUser,cookie,result));
         connect(session.data(),SIGNAL(request(QString,bool)),this,SLOT(request(QString,bool)));
         connect(session.data(),SIGNAL(completed(bool)),this,SLOT(completed(bool)));
         connect(session.data(),SIGNAL(showError(QString)),this,SLOT(showError(QString)));

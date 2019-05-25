@@ -25,7 +25,7 @@
 
 #include "ExistDialogImpl.h"
 
-ExistDialogImpl::ExistDialogImpl(string finger, QWidget * parent, Qt::WFlags f)
+ExistDialogImpl::ExistDialogImpl(string finger, QWidget * parent, Qt::WindowFlags f)
     : QDialog(parent, f){
     setupUi(this);
 
