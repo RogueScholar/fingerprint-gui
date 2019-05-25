@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>res/radiobutton_checked_gn.png</file>
+        <file>res/radiobutton_checked_hover_gn.png</file>
+        <file>res/radiobutton_checked_hover.png</file>
+        <file>res/radiobutton_checked_pressed_gn.png</file>
+        <file>res/radiobutton_checked_pressed.png</file>
+        <file>res/radiobutton_checked.png</file>
+        <file>res/radiobutton_unchecked_gn.png</file>
+        <file>res/radiobutton_unchecked_hover_gn.png</file>
+        <file>res/radiobutton_unchecked_hover.png</file>
+        <file>res/radiobutton_unchecked_pressed_gn.png</file>
+        <file>res/radiobutton_unchecked_pressed.png</file>
+        <file>res/radiobutton_unchecked.png</file>
+        <file>res/Animation.gif</file>
+        <file>res/Fingerprint.png</file>
+        <file>res/HandL.png</file>
+        <file>res/HandR.png</file>
+        <file>res/fp-error.png</file>
+        <file>res/fp-ok.png</file>
+        <file>res/fp-wait.png</file>
+        <file>res/usb.ids</file>
+        <file>res/fingerprint-gui.png</file>
+    </qresource>
+</RCC>

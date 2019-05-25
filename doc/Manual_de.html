@@ -1,0 +1,166 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Fingerprint GUI Benutzerhandbuch</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="" class="article"><div class="titlepage"><div><div><h2 class="title"><a name="idp50189248"></a>Fingerprint GUI Benutzerhandbuch</h2></div><div><h3 class="subtitle"><i>(Version 1.07)</i></h3></div><div><div class="author"><h3 class="author"><span class="firstname">Wolfgang</span> <span class="surname">Ullrich</span></h3></div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#idp46510400">Einführung</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp46511984">Sicherheitshinweis</a></span></dt><dt><span class="sect2"><a href="#idp46514272">Lizenz</a></span></dt></dl></dd><dt><span class="sect1"><a href="#idp46515968">Registrierung von Fingerabdrücken</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp46626480">Fingerprint-Scanner auswählen</a></span></dt><dt><span class="sect2"><a href="#idp46628352">Finger auswählen</a></span></dt><dt><span class="sect2"><a href="#idp46861904">Scannen und verifizieren</a></span></dt></dl></dd><dt><span class="sect1"><a href="#idp46539136">Einstellungen testen und Daten exportieren</a></span></dt><dt><span class="sect1"><a href="#idp46548048">Passwort speichern</a></span></dt><dt><span class="sect1"><a href="#idp46426224">Spezielle Einstellungen</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp46427648">Benutzerliste abschalten</a></span></dt><dt><span class="sect2"><a href="#idp46492576">Authentifizierung mit Policykit-1</a></span></dt><dt><span class="sect2"><a href="#idp46498736">NVM Emulation</a></span></dt></dl></dd><dt><span class="sect1"><a href="#idp51216208">Problembehebung</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp51216848">Installierte Dateien und Hilfsprogramme</a></span></dt><dt><span class="sect2"><a href="#idp51234144">Debug-Ausgabe</a></span></dt><dt><span class="sect2"><a href="#idp51237456">Spezielle Argumente</a></span></dt><dt><span class="sect2"><a href="#idp51242640">Online-Hilfe</a></span></dt></dl></dd></dl></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp46510400"></a>Einführung</h2></div></div></div><p>Fingerprint GUI ist eine Sammlung von Tools zur Benutzung von
+    Fingerabdruck-Scannern unter Linux. Es ermöglicht die Erfassung und
+    Überprüfung von Fingerabdruckdaten sowie Authentifizierung und
+    Benutzer-Login mittels Fingerabdruck-Scanner.</p><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46511984"></a>Sicherheitshinweis</h3></div></div></div><p>Die Sicherheit und Zuverlässigkeit der Fingerabdruck-Erkennung
+      hängt sehr stark von der verwendeten Hardware, den dazugehörenden
+      Gerätetreibern und der verwendeten Software zur Verifizierung der
+      biometrischen Daten ab. Nach derzeitigem Stand der Technik ist
+      Fingerabdruck-Erkennung für sicherheitskritische Anwendungen nur bedingt
+      geeignet. Weitere Informationen bezüglich der Sicherheit von
+      Fingerabdrücken findet man hier: <a class="ulink" href="http://www.bromba.com/faq/fpfaqd.htm" target="_top">http://www.bromba.com/faq/fpfaqd.htm</a></p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46514272"></a>Lizenz</h3></div></div></div><p>Fingerprint GUI unterliegt der GNU General Public License Version
+      2 (GPLv2) <a class="ulink" href="http://www.gnu.de/documents/gpl-2.0.de.html" target="_top">http://www.gnu.de/documents/gpl-2.0.de.html</a></p></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp46515968"></a>Registrierung von Fingerabdrücken</h2></div></div></div><p>Starten Sie das Programm &#8222;<span class="application"><span class="command"><strong>Fingerprint
+    GUI</strong></span></span>&#8220; aus dem Menü &#8222;<span class="command"><strong>System |
+    Einstellungen</strong></span>&#8220; oder durch das Kommando:</p><p>&gt; <span class="command"><strong>fingerprint-gui -d</strong></span></p><p>in einer Komandozeile. Das Argument &#8222;<em class="parameter"><code>-d</code></em>&#8220;
+    erzeugt Debug-Informationen auf syslog (auth facility). Sie finden die
+    Log-Ausgaben in der Regel unter
+    <code class="filename">/var/log/auth.log</code>.</p><div><img src="start.png"></div><p></p><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46626480"></a>Fingerprint-Scanner auswählen</h3></div></div></div><p>Im Reiter &#8222;Devices&#8220; wird unter &#8222;Attached USB Devices&#8220; eine Liste
+      aller erkannten USB-Geräte angezeigt. In der Combobox &#8222;Fingerprint
+      Devices&#8220; erscheint eine Auswahl der erkannten Fingerabdruck-Scanner.
+      Sollten mehrere Fingerabdruck-Scanner erkannt worden sein, kann der
+      gewünschte Scanner hier ausgewählt werden. Mit dem &#8222;Rescan&#8220; Button kann
+      eine erneute Prüfung am USB-Bus veranlasst werden. Mit der Auswahl &#8222;Show
+      Vendor/Device&#8220; bzw. &#8222;Show Drivername&#8220; kann man zwischen der Anzeige des
+      Gerätenamens bzw. des Gerätetreibers umschalten.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46628352"></a>Finger auswählen</h3></div></div></div><p>Mit dem &#8222;Next&#8220; Button oder durch Auswahl des Reiters &#8222;Finger&#8220;
+      erreicht man die Karte zur Finger-Auswahl.</p><div><img src="fingerchoice.png"></div><p>Oberhalb der Finger befindet sich ein Auswahlknopf. Dabei sind die
+      Finger, für die bereits ein Abdruck registriert wurde grün
+      gekennzeichnet. Wählen Sie hier den zu erfassenden Finger aus.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46861904"></a>Scannen und verifizieren</h3></div></div></div><p>Mit dem &#8222;Next&#8220; Button oder durch Auswahl des Reiters &#8222;Scan/Verify&#8220;
+      erreicht man die Karte zur Erfassung oder Verifizierung des
+      Fingerabdrucks.</p><div><img src="acquire.png"></div><p>Registrieren Sie nun den Fingerabdruck. Dabei müssen Sie in
+      Abhängigkeit vom Scanner, dessen Treiber-Software und der Qualität der
+      erfassten Daten diesen Vorgang so lange wiederholen, bis eine Meldung
+      über die erfolgreiche Speicherung der Daten erfolgt ist.</p><div><img src="saved.png"></div><p>Danach können Sie mit &#8222;Yes&#8220; zur Fingerauswahl zurückkehren, wenn
+      Sie einen weiteren Finger registrieren wollen. Klicken Sie &#8222;No&#8220;, wenn
+      keine weiteren Finger registriert werden sollen.</p><p>Wurde ein Finger ausgewählt, für den bereits ein Abdruck
+      registriert ist, erscheint ein Auswahl-Dialog zur Verifizierung oder
+      erneuten Registrierung dieses Fingers.</p><div><img src="verify.png"></div><p>Mit dem Button &#8222;Verify&#8220; kann der bereits registrierte
+      Fingerabdruck überprüft werden. Mit &#8222;Acquire new&#8220; werden die vorhandenen
+      Fingerabdruckdaten verworfen und ein neuer Abdruck erfasst. Mit &#8222;Cancel&#8220;
+      kehrt man zur Finger-Auswahl zurück.</p></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp46539136"></a>Einstellungen testen und Daten exportieren</h2></div></div></div><p>Mit &#8222;Next&#8220; oder durch Auswahl des Reiters &#8222;Settings&#8220; erreicht man
+    den Dialog zur Prüfung und Speicherung der Einstellungen.</p><div><img src="settings.png"></div><p>Mit dem Button &#8222;Export now&#8220; können die vorhandenen
+    Fingerabdruck-Daten in einer Datei gesichert werden. Dies ist nur
+    erforderlich, wenn diese Daten extern gesichert oder auch auf einem
+    anderen Computer verwendet werden sollen. Es wird dann eine Datei
+    &#8222;<code class="filename">Fingerprints.tar.gz</code>&#8220; im ausgewählten Verzeichnis
+    erzeugt.</p><p>Mit dem &#8222;Test&#8220; Button können die Einstellungen zur Authentifizierung
+    überprüft werden. Wählen Sie zunächst den zu überprüfenden Dienst &#8222;PAM
+    service&#8220; aus und klicken Sie dann auf Test. Sind alle PAM-Einstellungen
+    korrekt, erscheint die Aufforderung zur Fingerabdruck-Authentifizierung in
+    einem entsprechenden Dialog.</p><div><img src="test.png"></div><p>Wurde der Fingerabdruck erkannt und eine erfolgreiche
+    Authentifizierung durchgeführt, erscheint eine entsprechende Ausgabe im
+    Textfeld.</p><div><img src="success.png"></div><p>Falls der Dialog zur Authentifizierung nicht erscheint, kann man den
+    Test mit der &#8222;Enter&#8220;-Taste abbrechen. Es erscheint dann im Textfeld eine
+    entsprechende Fehlermeldung.</p><div><img src="failed.png"></div><p>In diesem Fall sind die Einstellungen für den betreffenden Dienst
+    unter &#8222;<code class="filename">/etc/pam.d/...</code>&#8220; fehlerhaft und müssen
+    korrigiert werden.</p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp46548048"></a>Passwort speichern</h2></div></div></div><p>Mit &#8222;Next&#8220; oder durch Auswahl des Reiters &#8222;Password&#8220; erreicht man
+    den Dialog zur Passwort-Speicherung.</p><p><em><span class="remark">BITTE BENUTZEN SIE DIESE FUNKTION NUR, WENN SIE VOLLSTÄNDIG
+    VERSTANDEN HABEN, WIE SIE FUNKTIONIERT. DIESE FUNKTION KANN EIN
+    SICHERHEITSRISIKO FÜR IHRE DATEN SEIN!</span></em></p><div><img src="password.png"></div><p><em><span class="remark">Zur Erklärung:</span></em> Bei der Verwendung von
+    Fingerabdrücken zur Anmeldung (Login) an Ihrem System wird kein Passwort
+    eingegeben, da Sie an Hand Ihres Fingerabdrucks erkannt wurden. Abhängig
+    von der Konfiguration Ihres Systems wird jedoch eventuell ein Passwort zur
+    Entschlüsselung wichtiger Daten benötigt. Dies ist z.B. der Fall, wenn Ihr
+    Home-Verzeichnis oder der Gnome-Keyring mit Ihrem Login-Passwort
+    verschlüsselt ist. Fingerprint GUI bietet eine Möglichkeit, Ihr
+    Login-Passwort auf einem externen Speichermedium (USB-Stick) verschlüsselt
+    zu speichern. Ist dieses Medium beim Login-Prozess mit dem Computer
+    verbunden, kann das dort gespeicherte Login-Passwort zur Entschlüsselung
+    des Home-Verzeichnisses oder des Gnome-Keyring verwendet werden.</p><p><em><span class="remark">Sicherheitswarnung:</span></em> Jeder, der Zugriff sowohl auf
+    Ihren Computer als auch auf das externe Speichermedium hat, kann das
+    verschlüsselt gespeicherte Login-Passwort ausspionieren! Sorgen Sie
+    deshalb stets dafür, dass der Computer und das Speichermedium sich niemals
+    unbeaufsichtigt am gleichen Ort befinden! Verbinden Sie dieses Medium nur
+    während des Login-Vorgangs und benutzen Sie es nicht, wenn andere Personen
+    mit Root-Rechten Zugriff auf Ihren Computer haben.</p><p>Wenn Sie Ihr Login-Passwort speichern wollen, verbinden Sie zunächst
+    das Speichermedium mit dem Computer. Das Medium muss gemountet sein, Sie
+    müssen Schreibrechte auf diesem Medium haben und es muss sich um einen
+    Wechseldatenträger handeln.</p><div><img src="pwsave.png"></div><p>Wählen Sie den Pfad zum Medium, geben Sie In den Passwortfeldern Ihr
+    Login-Passwort zweimal ein und klicken Sie auf &#8222;Save&#8220;. Es wird auf dem
+    angegebenen Pfad ein verstecktes Verzeichnis
+    &#8222;<code class="filename">.fingerprints</code>&#8220; erzeugt. In diesem Verzeichnis wird
+    eine Datei &#8222;<code class="filename">&lt;username&gt;@&lt;hostname&gt;.xml</code>&#8220;
+    angelegt, welche das verschlüsselte Login-Passwort enthält. Außerdem wird
+    auf der lokalen Festplatte eine Datei
+    &#8222;<code class="filename">/var/lib/fingerprint-gui/&lt;username&gt;/config.xml</code>&#8220;
+    erzeugt, welche die UUID des betreffenden Mediums, den angegebenen Pfad
+    sowie den Schlüssel zur Entschlüsselung des Login-Passworts
+    enthält.</p><p><em><span class="remark">Hinweis:</span></em> Sollten Sie später Ihr Login-Passwort
+    ändern, müssen Sie diesem Vorgang wiederholen.</p><p>Sie können nun das Programm mit dem &#8222;Finish&#8220; Button beenden.</p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp46426224"></a>Spezielle Einstellungen</h2></div></div></div><p>Nachfolgend werden einige spezielle Einstellungen für
+    fortgeschrittene Benutzer beschrieben, die nicht automatisch bei der
+    Installation vorgenommen werden können.</p><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46427648"></a>Benutzerliste abschalten</h3></div></div></div><p>Unter "System | Systemverwaltung | Anmeldebildschirm" haben Sie
+      die Möglichkeit, die Anzeige der Benutzerliste bei Login abzuschalten.
+      Es erscheint dann am Login-Dialog nur noch ein Eingabefeld für den
+      Benutzernamen. Damit unter diesem Eingabefeld der Dialog zur Eingabe des
+      Fingerabdrucks angezeigt werden kann, müssen Sie die Datei
+      "<code class="filename">/etc/pam.d/gdm</code>" ändern. Fügen Sie als erste Zeile
+      den folgenden Text ein: <span class="command"><strong>auth optional pam_fingerprint-gui.so
+      -d</strong></span></p><p>Kontrollieren Sie bitte auch, ob in der Datei
+      "<code class="filename">/etc/pam.d/common-auth</code>" in der Zeile mit dem
+      Aufruf von <span class="command"><strong>pam_fingerprint-gui.so</strong></span> das Argument
+      "<em class="parameter"><code>try_first_identified</code></em>" angegeben ist. Ggf. fügen
+      Sie es an diese Zeile an. Sie benötigen root Rechte, um diese Änderungen
+      vornehmen zu können.</p><p>Wenn Sie diese Einstellungen richtig vorgenommen haben und die
+      Benutzerliste abgeschaltet ist, werden Sie beim Login an Hand Ihres
+      Fingerabdrucks identifiziert und automatisch angemeldet.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46492576"></a>Authentifizierung mit Policykit-1</h3></div></div></div><p>Für die Authentifizierung eines Benutzers über Policykit-1 wird in
+      jeder Sitzung ein <span class="command"><strong>polkit-gnome-authentication-agent</strong></span>
+      gestartet. Der Start erfolgt durch eine Starter-Datei
+      "<code class="filename">/etc/xdg/autostart/polkit-gnome-authentication-agent.desktop</code>".
+      Bei der Installation wird diesem Verzeichnis eine Starter-Datei
+      "<code class="filename">/etc/xdg/autostart/fingerprint-polkit-agent.desktop</code>"
+      hinzugefügt und damit der <span class="command"><strong>fingerprint-polkit-agent</strong></span>
+      gestartet. Um einen Konflikt zwischen den beiden Agents zu vermeiden,
+      müssen Sie die Datei
+      "<code class="filename">polkit-gnome-authentication-agent.desktop</code>" aus dem
+      Verzeichnis "<code class="filename">/etc/xdg/autostart</code>" löschen. Danach
+      müssen Sie sich ab- und wieder anmelden, um eine Authentifizierung
+      mittels Fingerprint über Policykit-1 zu ermöglichen.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp46498736"></a>NVM Emulation</h3></div></div></div><p>Das Installationspaket installiert Standardeinstellungen für UPEK
+      Fingerprintscanner, die NVM-Emulation benutzen. Dennoch kann es
+      erforderlich sein, ein Feintuning dieser Einstellungen vorzunehmen.
+      Nachfolgend wird auszugsweise aus der Dokumentation für
+      Fingerabdruck-Scanner der Firma UPEK zitiert:</p><p>1 Einleitung</p><p>UPEK TCD4C und TCD4E Sensoren gibt es in zwei Varianten - mit und
+      ohne Chip-EEPROM. Die NVM-Funktionalität für Sensoren ohne EEPROM muss
+      emuliert werden. BSAPI für Linux verwendet Datei-Emulation für
+      NVM-Funktionalität. Dieses Dokument beschreibt die grundlegende
+      Konfiguration.</p><p>...</p><p>2 Konfiguration der NVM-Emulation</p><p>Der NVM Inhalt für EEPROM-lose Sensoren ist in Dateien
+      gespeichert. Es gibt eine Datei pro Sensor. Der Speicherort dieser
+      Dateien wird durch den "<em class="parameter"><code>nvmprefix</code></em>"
+      Konfigurationsparameter bestimmt. Dieser Parameter enthält einen Pfad zu
+      den Dateien der NVM-Emulation und einen Präfix für die Dateinamen. Dies
+      ermöglicht (zum Beispiel) versteckte Dateien (Namen beginnen mit '.').
+      Der "<em class="parameter"><code>nvmprefix</code></em>"-Parameter kann wie folgt
+      eingestellt werden:</p><p>&#8230;</p><p>Erzeugen Sie als root die Konfigurationsdatei
+      &#8222;<code class="filename">/etc/upek.cfg</code>&#8220; mit der folgenden Zeile
+      (Beispiel):</p><p><span class="command"><strong>nvmprefix="/var/upek_data/.NVM</strong></span>"</p><p>&#8230;</p><p>Das Setup-Verzeichnis muss Lese- und Schreibrechte für alle
+      Benutzer haben, die BSAPI verwenden können. Die Datei
+      &#8222;<code class="filename">/etc/upek.cfg</code>&#8220; muss für jedermann lesbar
+      sein.</p><p>...</p><p>3 Zusätzliche DSN-Parameter</p><p>Die Sensoren ohne EEPROM sind für Durchzug in zwei Richtungen
+      vorkonfiguriert. Wenn Sie es vorziehen, den Durchzug nur in eine
+      Richtung zuzulassen, können Sie diese Einstellung ändern, indem Sie den
+      &#8222;<em class="parameter"><code>dualswipe</code></em>&#8220; Parameter überschreiben.</p><p>...</p><p>Fügen Sie die folgende Zeile in die Datei
+      &#8222;<code class="filename">/etc/upek.cfg</code>&#8220; ein:</p><p><span class="command"><strong>dualswipe=0</strong></span></p><p>...</p><p><em><span class="remark">Anmerkung:</span></em> Der
+      '"<em class="parameter"><code>dualswipe</code></em>" Parameter muss immer gemeinsam mit
+      dem "<em class="parameter"><code>nvmprefix</code></em>" Parameter angegeben
+      werden.</p><p>...</p></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp51216208"></a>Problembehebung</h2></div></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp51216848"></a>Installierte Dateien und Hilfsprogramme</h3></div></div></div><p>Fingerprint GUI benutzt folgende Programme, Hilfsprogramme,
+      Bibliotheken und Dateien. Abhängig von Compilereinstellungen beim
+      Erstellen der Installationspakete kann die Lokalisierung im Dateisystem
+      leicht abweichen (vorhanden in <code class="filename">/usr...</code> oder
+      <code class="filename">/usr/local/...</code>).</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p><code class="filename">/usr/local/bin/fingerprint-gui</code></p><p>Hauptprogramm zur Erfassung und Verifizierung von
+          Fingerabdrücken und für spezielle Einstellungen;</p></li><li class="listitem"><p><code class="filename">/usr/local/bin/fingerprint-identifier</code></p><p>Programm zum Test der Fingerabdruck-Identifikation, verwendbar
+          in Scripten und anderen Programmen. Der Anmeldename des
+          identifizierten Benutzers wird auf stdout ausgegeben;</p></li><li class="listitem"><p><code class="filename">/usr/local/lib/fingerprint-gui/fingerprint-helper</code></p><p>Hilfsanwendung zum Start des Fingerabdruck-Dialogs über
+          PAM;</p></li><li class="listitem"><p><code class="filename">/usr/local/lib/fingerprint-gui/fingerprint-plugin</code></p><p>Hilfsanwendung zur Einbettung des Fingerabdruck-Dialogs in den
+          gnome-screensaver anstelle einer Bildschirmtastatur;</p></li><li class="listitem"><p><code class="filename">/usr/local/lib/fingerprint-gui/fingerprint-rw</code></p><p>Hilfsanwendung zum Lesen und Abspeichern von Fingerabdruckdaten und Einstellungen der Benutzer
+          mit den erforderlichen Zugriffsrechten;</p></li><li class="listitem"><p><code class="filename">/usr/local/lib/fingerprint-gui/fingerprint-polkit-agent</code></p><p>Authentication Agent für policykit-1;</p></li><li class="listitem"><p><code class="filename">/lib/security/pam_fingerprint-gui.so</code></p><p>PAM-Bibliothek zur Authentifizierung und Identifizierung von
+          Benutzern an Hand von Fingerabdrücken;</p></li><li class="listitem"><p><code class="filename">/var/lib/fingerprint-gui/&lt;benutzername&gt;</code></p><p>Verzeichnis zum Abspeichern von benutzerabhängigen
+          Fingerabdruckdaten und Einstellungen.</p></li></ol></div></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp51234144"></a>Debug-Ausgabe</h3></div></div></div><p>Allen Programmmodule und Bibliotheken erzeugen Debug-Ausgaben über
+      syslog (auth facility), wenn sie mit dem Argument
+      &#8222;<em class="parameter"><code>-d</code></em>&#8220; oder &#8222;<em class="parameter"><code>--debug</code></em>&#8220;
+      aufgerufen werden. In der Regel erfolgt die Ausgabe in
+      <code class="filename">/var/log/auth.log</code>.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp51237456"></a>Spezielle Argumente</h3></div></div></div><p>&#8222;<em class="parameter"><code>decorated</code></em>&#8220; - Argument für den Aufruf von
+      <span class="command"><strong>fingerprint-identifier</strong></span> auf der Kommandozeile. Zeigt
+      den Fingerprint-Dialog als dekoriertes Fenster. Standard ist
+      undekoriert;</p><p>&#8222;<em class="parameter"><code>try_first_identified</code></em>&#8220; - Argument für den
+      Aufruf von <span class="command"><strong>pam_fingerprint-gui.so</strong></span> in den PAM
+      Konfigurationsdateien, welches <span class="command"><strong>pam_fingerprint-gui.so</strong></span>
+      veranlasst, sofort &#8222;PAM_SUCCESS&#8220; zurückzugeben, falls der betreffende
+      Benutzer bereits in einem früheren Aufruf des Moduls im gleichen PAM
+      Stack identifiziert wurde.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp51242640"></a>Online-Hilfe</h3></div></div></div><p>Online-Hilfe erhält man im Fingerprint GUI Forum unter:</p><p><a class="ulink" href="http://home.ullrich-online.cc/fingerprint/Forum" target="_top">http://home.ullrich-online.cc/fingerprint/Forum</a></p><p>oder auf der Homepage:</p><p><a class="ulink" href="http://www.ullrich-online.cc/fingerprint/" target="_top">http://www.ullrich-online.cc/fingerprint</a></p><p></p></div></div></div></body></html>

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>res/Animation.gif</file>
+        <file>res/fingerprint-gui.png</file>
+    </qresource>
+</RCC>

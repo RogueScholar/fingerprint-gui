@@ -1,0 +1,177 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Fingerprint GUI Step-by-Step Manual</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="" class="article"><div class="titlepage"><div><div><h2 class="title"><a name="idp38164384"></a>Fingerprint GUI Step-by-Step Manual</h2></div><div><h3 class="subtitle"><i>Package Maintainer's Manual (version 1.07)</i></h3></div><div><div class="author"><h3 class="author"><span class="firstname">Wolfgang</span> <span class="surname">Ullrich</span></h3></div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#idp35119296">Preface</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp35121344">Debugging and Getting Help</a></span></dt><dt><span class="sect2"><a href="#idp35126240">Distribution</a></span></dt><dt><span class="sect2"><a href="#idp34613440">Library Dependencies</a></span></dt><dt><span class="sect2"><a href="#idp34614928">Conflicting Software</a></span></dt></dl></dd><dt><span class="sect1"><a href="#idp34581408">Installing Fingerprint GUI</a></span></dt><dt><span class="sect1"><a href="#idp34495504">Accessing Fingerprint Devices</a></span></dt><dt><span class="sect1"><a href="#idp34497424">First Start and Enrolling Fingerprints</a></span></dt><dt><span class="sect1"><a href="#idp34500608">System Configuration</a></span></dt><dd><dl><dt><span class="sect2"><a href="#idp34502864">Configuring the PAM Stack</a></span></dt><dt><span class="sect2"><a href="#idp39185648">Configuring Gnome-Screensaver</a></span></dt><dt><span class="sect2"><a href="#idp39189920">Configuring Policykit-1</a></span></dt></dl></dd><dt><span class="sect1"><a href="#idp39200000">Testing the System</a></span></dt><dt><span class="sect1"><a href="#idp39225040">Advanced Tests</a></span></dt><dt><span class="sect1"><a href="#idp39231744">Known Limitations</a></span></dt></dl></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp35119296"></a>Preface</h2></div></div></div><p>This guide is not intended for normal users. It is intended for
+    package maintainers and those advanced users, who want to test Fingerprint
+    GUI on a Linux system, that has no installation package available yet. All
+    settings, filenames and locations, packet names and so on are based on a
+    fresh installation of Ubuntu Linux 10.10. Ubuntu users, who want to use
+    Fingerprint GUI only, can install a package from a personal package
+    archive (ppa) on <a class="ulink" href="https://launchpad.net/~fingerprint/+archive/fingerprint-gui" target="_top">https://launchpad.net/~fingerprint/+archive/fingerprint-gui</a>
+    that is maintained by David Jurenka.</p><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp35121344"></a>Debugging and Getting Help</h3></div></div></div><p>If you encounter any problems with your installation, please try
+      to debug. When started with the &#8220;<em class="parameter"><code>-d</code></em>&#8221; (or
+      &#8220;<em class="parameter"><code>--debug</code></em>&#8221;) argument, all executables print lots
+      of debug output to the auth facility of syslog. The debug output goes by
+      default into <code class="filename">/var/log/auth.log</code>. If this can't solve
+      the problem, try to get help by using the forum on <a class="ulink" href="http://home.ullrich-online.cc/fingerprint/Forum/" target="_top">http://home.ullrich-online.cc/fingerprint/Forum/</a>
+      or looking at the homepage <a class="ulink" href="http://www.ullrich-online.cc/fingerprint/" target="_top">http://www.ullrich-online.cc/fingerprint/</a>
+      for newest informations and known bugs. If this doesn't help, contact me
+      (the author) directly by mail to
+      contact_at_ullrich_dash_online_dot_cc.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp35126240"></a>Distribution</h3></div></div></div><p>Since version 1.00 the software is not distributed as executable
+      binaries any more on the homepage. If there is no installation package
+      available for your system, you need to compile and install by makefile.
+      Please read the README file for information about compiling and
+      installing.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp34613440"></a>Library Dependencies</h3></div></div></div><p>On Ubuntu 10.10 the following libraries (incl. their development
+      headers) must be installed: libfakekey, libqca2, libpam0g, libfprint,
+      libusb-1.0-0, qt4-dev-tools, libpolkit-qt-1. Other Linux distributions
+      might require more packages to be installed or might have different
+      package names.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp34614928"></a>Conflicting Software</h3></div></div></div><p>The following applications are known to conflict with Fingerprint
+      GUI: <span class="command"><strong>thinkfinger</strong></span>, <span class="command"><strong>pam-fprint,
+      pam-fprintd</strong></span> and, of course, earlier versions of
+      <span class="command"><strong>Fingerprint GUI</strong></span>. Remove these software and undo all
+      configuration changes made for them.</p><p><em><span class="remark">IMPORTANT NOTE ABOUT KDE:</span></em> Because
+      <span class="command"><strong>kdm</strong></span> and <span class="command"><strong>kscreenlocker</strong></span> don't meet
+      the requirements in the &#8220;<a class="ulink" href="http://www.kernel.org/pub/linux/libs/pam/Linux-PAM-html/adg-overview.html" target="_top">PAM
+      Application Developers Guide</a>&#8221; they will not work (see <a class="ulink" href="https://bugs.kde.org/show_bug.cgi?id=105631" target="_top">Bug 105631</a>).
+      Please don't report &#8220;bugs&#8221; against Fingerprint GUI about login or
+      unlocking the screensaver on KDE systems. Other services like
+      <span class="command"><strong>su</strong></span>, <span class="command"><strong>sudo</strong></span>,
+      <span class="command"><strong>kdesudo</strong></span> and <span class="command"><strong>policykit-1</strong></span> should
+      work. At least on Kubuntu 10.10 they do.</p></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp34581408"></a>Installing Fingerprint GUI</h2></div></div></div><p>When installing by executing &#8220;<span class="command"><strong>sudo make install</strong></span>&#8221;
+    the following files and directories are installed to your system:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>in <code class="filename">/usr/local/bin/</code>:
+        <span class="command"><strong>fingerprint-gui</strong></span>,
+        <span class="command"><strong>fingerprint-identifier</strong></span>;</p></li><li class="listitem"><p>in <code class="filename">/usr/local/lib/fingerprint-gui/</code>:
+        <span class="command"><strong>fingerprint-helper</strong></span>,
+        <span class="command"><strong>fingerprint-plugin</strong></span>,
+        <span class="command"><strong>fingerprint-polkit-agent</strong></span>,
+        <span class="command"><strong>fingerprint-rw</strong></span> with symlinks <span class="command"><strong>fingerprint-rw-write</strong></span> and <span class="command"><strong>fingerprint-rw-read</strong></span>;</p></li><li class="listitem"><p>in <code class="filename">/lib/security/</code>:
+        <span class="command"><strong>pam_fingerprint-gui.so</strong></span>;</p></li><li class="listitem"><p>in <code class="filename">/var/lib/</code>:
+        <code class="filename">fingerprint-gui/</code> (directory for user fingerprint
+        data);</p></li><li class="listitem"><p>in <code class="filename">/usr/share/applications/</code>:
+        <code class="filename">fingerprint-gui.desktop</code>;</p></li><li class="listitem"><p>in <code class="filename">/usr/share/doc/</code>:
+        <code class="filename">fingerprint-gui/</code> (directory containing html
+        documentation);</p></li><li class="listitem"><p>in <code class="filename">/usr/share/man/man.1/</code>:
+        <code class="filename">fingerprint-gui.1.gz</code>,
+        <code class="filename">fingerprint-identifier.1.gz</code>,
+        <code class="filename">pam_fingerprint-gui.1.gz</code>;</p></li><li class="listitem"><p>in <code class="filename">/etc/xdg/autostart/</code>:
+        <code class="filename">fingerprint-polkit-agent.desktop</code>;</p></li></ol></div><p>When installing the proprietary driver
+    &#8220;<code class="filename">libbsapi.so</code>&#8221; for fingerprint scanners manufactured
+    by UPEK Inc. or SGS Thomson, that is made by executing &#8220;<span class="command"><strong>sudo make
+    install-upek</strong></span>&#8221;, the following additional files and directories
+    are installed:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>in <code class="filename">/etc/</code>:
+        <code class="filename">upek.cfg</code>;</p></li><li class="listitem"><p>in <code class="filename">/var/</code>: <code class="filename">upek_data/</code>
+        (directory for NVM emulation);</p></li><li class="listitem"><p>in <code class="filename">/etc/udev/rules.d/</code>:
+        <code class="filename">91-fingerprint-gui-upek-rules</code>;</p></li></ol></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp34495504"></a>Accessing Fingerprint Devices</h2></div></div></div><p>For Fingerprint GUI to work, all users need read and write
+    permissions to the connected fingerprint reader. By default you need a
+    group named &#8220;plugdev&#8221; that all users are members of. If you don't want to
+    create or use this group you need to change the group name in the udev
+    rules file and restart or reconfigure udev with udevadm.</p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp34497424"></a>First Start and Enrolling Fingerprints</h2></div></div></div><p>By default a start entry &#8220;Fingerprint GUI&#8221; is installed in the
+    &#8220;System | Preferences&#8221; menu. Start Fingerprint GUI from there or start it
+    in a terminal with &#8220;<span class="command"><strong>fingerprint-gui -d</strong></span>&#8221;. Enroll your
+    fingerprints. The &#8220;Test&#8221; button in the &#8220;Settings&#8221; tab will
+    <span class="command"><strong>not</strong></span> work in this stage yet. If acquiring fingerprints
+    does work with Fingerprint GUI you can go ahead with the system
+    configuration.</p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp34500608"></a>System Configuration</h2></div></div></div><p>Because configuration errors can lock access to your system
+    completely, you should always keep open a root session in a secure tty for
+    being able to undo configuration changes.</p><p>You need root permissions to make the following changes.</p><p>The following settings are only examples, working on Ubuntu 10.10,
+    that demonstrate the configuration principles. On other Linux
+    distributions the filenames in question or file contents might
+    differ.</p><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp34502864"></a>Configuring the PAM Stack</h3></div></div></div><p>First of all make a copy of your <code class="filename">/etc/pam.d/</code>
+      directory. So you can easily revert all changes if something goes
+      wrong.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Edit the file <code class="filename">/etc/pam.d/common-auth</code>:
+          insert a line &#8220;<span class="command"><strong>auth sufficient pam_fingerprint-gui.so -d
+          try_first_identified</strong></span>&#8221; before the line &#8220;<span class="command"><strong>auth &#8230;
+          pam_unix.so ...</strong></span>&#8221;, so that
+          <span class="command"><strong>pam_fingerprint-gui.so</strong></span> is called before a
+          password is requested;</p></li><li class="listitem"><p>Edit the file <code class="filename">/etc/pam.d/gdm</code>: insert a
+          line &#8220;<span class="command"><strong>auth optional pam_fingerprint-gui.so -d</strong></span>&#8221;,
+          so that <span class="command"><strong>pam_fingerprint-gui.so</strong></span> is called as a
+          first action when a user performs a login;</p></li></ol></div><p>These settings assume, that all other configuration files for the
+      PAM authentication services include the file
+      &#8220;<code class="filename">common-auth</code>&#8221;.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp39185648"></a>Configuring Gnome-Screensaver</h3></div></div></div><p><span class="command"><strong>Gnome-screensaver</strong></span> needs a plugin for showing a
+      widget that requests a finger-swipe from the user when he tries to
+      unlock the screensaver. This plugin is configured as an &#8220;embedded
+      keyboard&#8221; in the <span class="command"><strong>gnome-screensaver</strong></span> settings. Open the
+      &#8220;<span class="command"><strong>gconf-editor</strong></span>&#8221;, find the &#8220;apps | gnome-screensaver&#8221;
+      entry and edit the &#8220;embedded_keyboard_command&#8221;. Edit the command line to
+      &#8220;<code class="filename">/usr/local/lib/fingerprint-gui/fingerprint-plugin
+      -d</code>&#8221; and enable the &#8220;embedded_keyboard_enabled&#8221;
+      checkbox.</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="idp39189920"></a>Configuring Policykit-1</h3></div></div></div><p>For authenticating by <span class="command"><strong>policykit-1</strong></span> a polkit
+      authentication agent must run in every user's session. Therefore the
+      file &#8220;<code class="filename">fingerprint-polkit-agent.desktop</code>&#8221; is
+      installed to <code class="filename">/etc/xdg/autostart/</code> by &#8220;<span class="command"><strong>sudo
+      make install</strong></span>&#8221;. This file starts the
+      <span class="command"><strong>fingerprint-polkit-agent</strong></span> when a user session is
+      started. But the <span class="command"><strong>fingerprint-polkit-agent</strong></span> conflicts
+      with the &#8220;<span class="command"><strong>polkit-gnome-authentication-agent-1</strong></span>&#8221; or the
+      &#8220;<span class="command"><strong>polkit-kde-authentication-agent-1</strong></span>&#8221; that are
+      installed by default on your system. To solve this conflict remove the
+      &#8220;<code class="filename">polkit-gnome-authentication-agent-1.desktop</code>&#8221; or
+      &#8220;<code class="filename">polkit-kde-authentication-agent-1.desktop</code>&#8221; file
+      from the directory <code class="filename">/etc/xdg/autostart/</code>.</p><p>Brave users can restart their system now. The less brave should
+      continue with some tests as follows:</p></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp39200000"></a>Testing the System</h2></div></div></div><p>The following should work after configuration is done:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p><span class="command"><strong>sudo</strong></span>: Open a terminal and type &#8220;<span class="command"><strong>sudo
+        xterm</strong></span>&#8221;. In the terminal should appear a line prompting for a
+        password while at the same time a GUI widget should request a
+        finger-swipe. You should be able to open <span class="command"><strong>xterm</strong></span> with
+        root permissions by typing your password and by swiping your finger
+        over the reader as well.</p></li><li class="listitem"><p><span class="command"><strong>su</strong></span>: If you have registered a fingerprint for
+        the root user (start <span class="command"><strong>fingerprint-gui</strong></span> with
+        <span class="command"><strong>sudo</strong></span> to do this), you can &#8220;<span class="command"><strong>su</strong></span>&#8221;
+        with root's finger. Open a terminal and type &#8220;<span class="command"><strong>su</strong></span>&#8221;.
+        The terminal should prompt as follows:</p><div class="blockquote"><blockquote class="blockquote"><p>Password:</p><p>Fingerprint Login 1.07</p><p>Authenticating root</p><p>Swipe your finger or type your password:</p></blockquote></div><p>No GUI widget should appear and you should be able to
+        &#8220;<span class="command"><strong>su</strong></span>&#8221; with root's password or root's
+        fingerprint.</p></li><li class="listitem"><p><span class="command"><strong>login</strong></span> (in a secure tty): Change to a secure
+        tty (<span class="command"><strong>Ctrl-Alt_F2</strong></span>), type your username and press
+        enter. You'll be prompted with:</p><div class="blockquote"><blockquote class="blockquote"><p>Password:</p><p>Fingerprint Login 1.07</p><p>Authenticating &lt;username&gt;</p><p>Swipe your finger or type your password:</p></blockquote></div><p>You should be able to login with your password or your
+        fingerprint.</p></li><li class="listitem"><p><span class="command"><strong>gnome-screensaver</strong></span>: Lock your screen and move
+        the mouse. The unlock dialog should appear and a GUI widget requesting
+        a finger-swipe should appear below. Unlocking should work with
+        password and with fingerprint.</p></li><li class="listitem"><p><span class="command"><strong>gdm login</strong></span>: Logout from your gnome session and
+        try to login with your fingerprint again. Please note: This will not
+        work if you have an encrypted home directory. Please read about
+        &#8220;password on external media&#8221; in the user's manual about this problem
+        and it's solution.</p></li><li class="listitem"><p><span class="command"><strong>policykit-1</strong></span>: Before you can test
+        <span class="command"><strong>policykit-1</strong></span> you must reboot or kill the
+        &#8220;<span class="command"><strong>polkit-gnome-authentication-agent-1</strong></span>&#8221; or the
+        &#8220;<span class="command"><strong>polkit-kde-authentication-agent-1</strong></span>&#8221; for your
+        session and start the
+        <span class="command"><strong>/usr/lib/fingerprint-polkit-agent</strong></span> manually. Then
+        open &#8220;System | Administration | Users and Groups&#8221; and click the
+        &#8220;Advanced Settings&#8221; button. A GUI dialog should appear, requesting a
+        password and a finger-swipe for a user with administration rights.
+        Unlocking the advanced settings should be possible with fingerprint
+        and with password as well.</p></li></ol></div></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp39225040"></a>Advanced Tests</h2></div></div></div><p>By default, the <span class="command"><strong>GDM</strong></span> (and other display managers)
+    login screen presents a list of users possible for login. Fingerprint GUI
+    is not only able to authenticate a user by his fingerprint but can
+    &#8220;identify&#8221; the user by a one-to-many comparison of the given finger-swipe
+    to all available fingerprint data for login. This allows to &#8220;switch off&#8221;
+    the userlist and to identify and login an user only by his fingerprint. On
+    Ubuntu 10.10 you can open &#8220;System | Administration | Login Screen&#8221;, unlock
+    it and uncheck the &#8220;Show list of users&#8221; entry. On other
+    <span class="command"><strong>GDM</strong></span> versions you can execute the following command to
+    disable the user list (this is one line): "<span class="command"><strong>sudo gconftool-2
+    --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults
+    --type bool --set /apps/gdm/simple-greeter/disable_user_list
+    true</strong></span>". After this is done, you can logout. The GDM greeter
+    should show only the username-prompt and the fingerprint widget now. By
+    swiping your finger, the system should recognize you and login you
+    immediately.</p><p>When authenticating an user for an administrative task by
+    <span class="command"><strong>policykit-1</strong></span>, an user who is member of the admin group
+    is requested to authenticate. If there are more than one users members of
+    this group, a list of admin users is shown by
+    <span class="command"><strong>fingerprint-polkit-agent</strong></span> for selecting the user to be
+    authenticated. You should be able to select the user and, depending
+    whether fingerprint data for this user is availbale, the fingerprint
+    widget should be shown or not below the password field for authentication.
+    If the current user is member of the admin group, this user will be
+    preselected.</p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp39231744"></a>Known Limitations</h2></div></div></div><p>While requesting a finger-swipe, the fingerprint device is opened
+    exclusively. This means you can not authenticate by fingerprint for more
+    than one service at the same time. For example you can not request
+    &#8220;<span class="command"><strong>su</strong></span>&#8221; in one terminal and &#8220;<span class="command"><strong>sudo</strong></span>
+    something&#8221; in another. In this case both authentications will fail.</p><p>Because <span class="command"><strong>pam_fingerprint-gui.so</strong></span> always requests a
+    fingerprint and a password at the same time, an &lt;enter&gt; key is fed
+    into the password prompt by <span class="command"><strong>libfakekey</strong></span> or
+    <span class="command"><strong>uinput</strong></span>, when the user was authenticated by his
+    fingerprint. If the keyboard focus has been moved away from the requesting
+    application, this &lt;enter&gt; key can not complete the password prompt
+    and the authentication procedure &#8220;hangs&#8221;. For example open two terminals,
+    then perform a &#8220;<span class="command"><strong>sudo</strong></span> something&#8221; in one terminal and
+    click into the other one before swiping your finger. The authentication
+    for <span class="command"><strong>sudo</strong></span> will fail.</p></div></div></body></html>

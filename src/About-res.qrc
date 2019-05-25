@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/newPrefix">
+        <file>res/bitcoin.png</file>
+        <file>res/gplv3-88x31.png</file>
+        <file>res/Green_dollar.png</file>
+        <file>res/fingerprint-gui.png</file>
+    </qresource>
+</RCC>

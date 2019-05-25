@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.docbook.org/xml/4.5/docbookx.dtd"
+[
+	<!ENTITY dhfirstname "David">
+	<!ENTITY dhsurname   "Jurenka">
+	<!ENTITY dhemail     "fingerprint-gui.box@mail.jurenka.cz">
+	<!ENTITY dhusername  "&dhfirstname; &dhsurname;">
+	<!-- The version information can also be suppressed (just
+	remove it or comment it out. -->
+	<!ENTITY dhrelease   "1.06">
+	<!-- TITLE should be something like "User commands",
+	"&dhpackage; command-line reference" or similar (see e.g.
+	http://www.tldp.org/HOWTO/Man-Page/q2.html). But limit
+	the length to 30 chars.	-->
+	<!ENTITY dhtitle     "User Manuals">
+
+	<!-- This is the application/package name. -->
+	<!ENTITY dhproduct   "fingerprint-gui">
+	<!-- If the application e.g. belongs to a package like X.org,
+	this should be set to the package/suite name instead of
+	dhpackage. -->
+	<!ENTITY dhsuite     "Fingerprint GUI">
+	<!-- SECTION should be 1-8, maybe w/ subsection other
+	parameters are allowed: see man(7), man(1) and
+	http://www.tldp.org/HOWTO/Man-Page/q2.html. -->
+	<!ENTITY dhsection   "1">
+	<!ENTITY dhdate      "September 16, 2014">
+]>
+<refentry>
+	<refentryinfo>
+		<title>&dhtitle;</title>
+		<!-- Better put a suite name instead of &dhpackage; into productname -->
+		<productname>&dhsuite;</productname>
+		<releaseinfo role="version">&dhrelease;</releaseinfo>
+		<authorgroup>
+			<author>
+				<contrib>Developer</contrib>
+				<firstname>Wolfgang</firstname>
+				<surname>Ullrich</surname>
+				<address>
+					<email>contact@ullrich-online.cc</email>
+				</address>
+			</author>
+			<author>
+				<contrib>Manual pages and Debian packaging</contrib>
+				<firstname>&dhfirstname;</firstname>
+				<surname>&dhsurname;</surname>
+			</author>
+		</authorgroup>
+		<date>&dhdate;</date>
+	</refentryinfo>
+	<refmeta>
+		<refentrytitle>&dhproduct;</refentrytitle>
+		<manvolnum>&dhsection;</manvolnum>
+		<refmiscinfo class="version">&dhrelease;</refmiscinfo>
+	</refmeta>
+	<refnamediv>
+		<refname>&dhproduct;</refname>
+		<refpurpose>fingerprint management GUI</refpurpose>
+	</refnamediv>
+	<refsynopsisdiv>
+		<cmdsynopsis>
+			<command>&dhproduct;</command>
+			<group choice="opt">
+				<arg choice="plain"><option>-d</option></arg>
+				<arg choice="plain"><option>--debug</option></arg>
+			</group>
+		</cmdsynopsis>
+	</refsynopsisdiv>
+	<refsect1 id="description">
+		<title>DESCRIPTION</title>
+		<para><command>&dhproduct;</command> is a GUI application for enrolling, verifying and managing user's fingerprints.
+		The application can be also used to test the correctness of settings of the PAM stack and to store user's password
+		on a removable medium in order to overcome the limitation of a passwordless login.</para>
+	</refsect1>
+	<refsect1 id="options">
+		<title>OPTIONS</title>
+		<variablelist>
+			<!-- Use the variablelist.term.separator and the
+			     variablelist.term.break.after parameters to
+			     control the term elements. -->
+			<varlistentry>
+				<term><option>-d</option></term>
+				<term><option>--debug</option></term>
+				<listitem>
+					<para>Send debugging information to syslog, using the auth facility. Depending on system settings the output
+					may end up in <filename>/var/log/auth.log</filename>, <filename>/var/log/messages</filename> or
+					<filename>/var/log/syslog</filename>.</para>
+				</listitem>
+			</varlistentry>
+		</variablelist>
+	</refsect1>
+	<refsect1 id="bugs">
+		<title>BUGS</title>
+		<para>Bugs can be sent directly to the developer or submitted at <ulink url="http://home.ullrich-online.cc/fingerprint/Forum/"/> .</para>
+	</refsect1>
+	<refsect1 id="see_also">
+		<title>SEE ALSO</title>
+		<!-- In alphabetical order. -->
+		<para>
+			<citerefentry>
+				<refentrytitle>fingerprint-identifier</refentrytitle>
+				<manvolnum>1</manvolnum>
+			</citerefentry>
+		</para>
+	</refsect1>
+</refentry>

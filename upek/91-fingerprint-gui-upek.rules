@@ -1,0 +1,17 @@
+# udev rules for fingerprint-gui (libbsapi)
+
+# set permissions
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="201[56]",   SYMLINK+="input/touchchip-%k", MODE="0664", GROUP="plugdev"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="201[56]",   SYMLINK+="input/touchchip-%k", MODE="0664", GROUP="plugdev"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="202[0]",    SYMLINK+="input/touchchip-%k", MODE="0664", GROUP="plugdev"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="100[0123]", SYMLINK+="input/touchchip-%k", MODE="0664", GROUP="plugdev"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="300[01]",   SYMLINK+="input/touchchip-%k", MODE="0664", GROUP="plugdev"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="500[23]",   SYMLINK+="input/touchchip-%k", MODE="0664", GROUP="plugdev"
+
+# enable power saving
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="201[56]",   ATTR{power/control}=="*", ATTR{power/control}="auto"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="201[56]",   ATTR{power/control}=="*", ATTR{power/control}="auto"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="202[0]",    ATTR{power/control}=="*", ATTR{power/control}="auto"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="100[0123]", ATTR{power/control}=="*", ATTR{power/control}="auto"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="300[01]",   ATTR{power/control}=="*", ATTR{power/control}="auto"
+ATTRS{idVendor}=="147e", ATTRS{idProduct}=="500[23]",   ATTR{power/control}=="*", ATTR{power/control}="auto"
