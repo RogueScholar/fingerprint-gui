@@ -1,0 +1,51 @@
+Source: fingerprint-gui
+Section: contrib/misc
+Priority: extra
+Maintainer: Peter J. Mello <admin@petermello.net>
+Build-Depends: debhelper-compat (= 11), cdbs (>= 0.4.93),
+ libfprint-dev (>= 0.1.0), libqt4-dev, libqca2-dev, libfakekey-dev,
+ libusb-1.0-0-dev, libpam-dev, libbsapi-dev (>= 4.0), libpolkit-qt-1-dev
+Standards-Version: 4.3.0
+Homepage: http://www.ullrich-online.cc/fingerprint/
+
+Package: fingerprint-gui
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqca2-plugins
+Recommends: policykit-1-fingerprint-gui
+Suggests: libbsapi (>= 4.0~rc1)
+Description: application for fingerprint-based authentication
+ Fingerprint GUI is an application providing fingerprint-based authentication
+ on Linux desktops. It features a simple GUI for fingerprint management and
+ a PAM module.
+ .
+ Fingerprint GUI is based on the libfprint library. Additionally, if the
+ non-free libbsapi library is installed as well, it will automatically support
+ all UPEK fingerprint readers.
+
+Package: policykit-1-fingerprint-gui
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, policykit-1,
+ fingerprint-gui (= ${binary:Version})
+Provides: policykit-1-gnome, polkit-kde-1
+#Conflicts: policykit-1-gnome, polkit-kde-1
+#Replaces: policykit-1-gnome, polkit-kde-1
+Description: Fingerprint GUI dialogs for PolicyKit
+ PolicyKit-1-Fingerprint-GUI provides a D-Bus session bus service that is used
+ to bring up authentication dialogs for obtaining privileges using Fingerprint
+ GUI.
+
+Package: fingerprint-gui-dev
+Section: contrib/devel
+Architecture: all
+Depends: ${misc:Depends}
+Recommends: fingerprint-gui (= ${binary:Version})
+Description: development documentation for fingerprint-gui
+ Fingerprint GUI is an application providing fingerprint-based authentication
+ on Linux desktops. It features a simple GUI for fingerprint management and
+ a PAM module.
+ .
+ Fingerprint GUI is based on the libfprint library. Additionally, if the
+ non-free libbsapi library is installed as well, it will automatically support
+ all UPEK fingerprint readers.
+ .
+ This package contains the development documentation for fingerprint-gui.

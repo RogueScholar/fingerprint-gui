@@ -1,0 +1,3 @@
+version=3
+opts=dversionmangle=s/.dfsg.*//,uversionmangle=s/-/~/ \
+http://www.ullrich-online.cc/fingerprint/downloads.php download/fingerprint-gui-(.+).md5

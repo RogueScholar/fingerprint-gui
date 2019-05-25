@@ -1,0 +1,7 @@
+Name: Fingerprint authentication by Fingerprint GUI
+Default: yes
+Priority: 260
+Conflicts: fprint fprintd fprintd.i386 fprintd.amd64
+Auth-Type: Primary
+Auth:
+	[success=end default=ignore]	pam_fingerprint-gui.so try_first_identified debug

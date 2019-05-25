@@ -1,0 +1,4 @@
+# udev rules for fingerprint-gui
+
+# make uinput writeable
+KERNEL=="uinput", MODE="0660", GROUP="plugdev"

@@ -1,0 +1,3 @@
+[org.gnome.desktop.screensaver]
+embedded-keyboard-command='/usr/lib/fingerprint-gui/fingerprint-plugin -d'
+embedded-keyboard-enabled=true
