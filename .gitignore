@@ -82,5 +82,8 @@ target_wrapper.*
 # QtCreator CMake
 CMakeLists.txt.user*
 
+# Qmake
+*.qm
+
 # Project specific files
 /build

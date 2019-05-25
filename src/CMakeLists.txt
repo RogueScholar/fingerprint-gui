@@ -24,7 +24,8 @@ qt5_wrap_ui(GUI_OBJS About.ui
             FingerprintGUI.ui
             SavedDialog.ui
             Message.ui)
-add_definitions("-DLIBEXECDIR=\"${CMAKE_PREFIX_PATH}/lib/fingerprint-gui\"")
+add_definitions("-DLIBEXECDIR=\"${CMAKE_INSTALL_PREFIX}/lib/fingerprint-gui\"")
+add_definitions("-DLOCALE_DIR=\"${CMAKE_INSTALL_PREFIX}/share/fingerprint-gui\"")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 add_executable(fingerprint-gui
    ${GUI_OBJS}

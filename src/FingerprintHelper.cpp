@@ -229,7 +229,7 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     DeviceHandler deviceHandler(DISPLAY_DRIVER_NAME);
     deviceHandler.rescan();
     devices=deviceHandler.getIdentifiers();
-    
+
     if(devices==NULL){
         mode=MODE_VERIFY;
         syslog(LOG_WARNING,"WARNING: No devices can identify. Fallback to verifying only.");
@@ -243,7 +243,7 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     if(devices->next!=NULL){
         syslog(LOG_WARNING,"Found more then one devices.");
     }
-    
+
     if(username==NULL){             // user not known yet, maybe it's a login
         if(mode==MODE_IDENTIFY){    // device can identify. So identifying the user is possible
             // Find the first device with fingerprints available
@@ -318,7 +318,7 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
         deviceHandler.release();
         return false;
     }
-    
+
     // At this point:
     // The user was known already (authentication only)
     syslog(LOG_INFO,"Authenticating USER: %s",username);
@@ -442,10 +442,10 @@ int main(int argc,char** argv) {
         syslog(LOG_ERR,"Wrong number of arguments.\nIt's not intended to start fingerprint-helper manually.\n");
         return(EXIT_FAILURE);
     }
-    
+
     signal(SIGUSR1,handler_SIGUSR);    // Install a handler for SIGUSR1: Exit when we didn't send a username before
     signal(SIGUSR2,handler_SIGUSR);    // Install a handler for SIGUSR2: Exit immediately
-    
+
     sscanf(argv[1],"%d",&pipe_r); // Get the pipe handle for reading from pam_fingerprint-gui.so
     sscanf(argv[2],"%d",&pipe_w); // Get the pipe handle for writing to pam_fingerprint-gui.so
     syslog(LOG_DEBUG,"Have pipe_r %d and pipe_w %d.",pipe_r,pipe_w);
@@ -457,11 +457,11 @@ int main(int argc,char** argv) {
     memset(randomString,'\0',sizeof(randomString));
     if(read(pipe_r,randomString,sizeof(randomString))<=0){
         syslog(LOG_DEBUG,"ERROR: Read random string (%s).",strerror(errno));
-        return false;
+        return(EXIT_FAILURE);
     }
     if(username==NULL)
         syslog(LOG_DEBUG,"Have no username.");
-        
+
     // If another helper process is running kill him
     FILE *pidfile=fopen(HELPER_PID,"r");
     if(pidfile){
