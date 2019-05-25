@@ -1,6 +1,7 @@
 TEMPLATE = app
 CONFIG += qt thread
 TARGET = fingerprint-polkit-agent
+QT += widgets
 DEPENDPATH += . ../../include ../../src
 INCLUDEPATH += . ../../include ../../upek/include
 
@@ -27,7 +28,7 @@ INSTALLS += target desktop
 DEFINES +=LIBEXECDIR=\\\"$${LIBEXECDIR}\\\"
 QMAKE_CXXFLAGS+=-fno-strict-aliasing
 
-LIBS += -lusb-1.0 -lfprint -lX11 -lpolkit-qt-agent-1 -lpolkit-qt-core-1
+LIBS += -lusb-1.0 -lfprint -lX11 -lpolkit-qt5-agent-1 -lpolkit-qt5-core-1
 
 # Input
 HEADERS += \

@@ -1,6 +1,7 @@
 TEMPLATE = lib
 CONFIG = plugin
 TARGET = pam_fingerprint-gui
+QT += widgets x11extras
 DEPENDPATH += . ../../include ../../src
 INCLUDEPATH += . ../../include ../../upek/include
 
