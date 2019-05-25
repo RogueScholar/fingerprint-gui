@@ -27,7 +27,7 @@ uinput-rules.commands = install -d $(INSTALL_ROOT)/etc/udev/rules.d; \
 
 INSTALLS += target uinput-rules
 
-LIBS += -lusb-1.0 -lfprint -lfakekey -lX11 -ldl
+LIBS += -lusb-1.0 -lfprint -lfakekey -lX11 -ldl -lqca-qt5
 
 # Input
 HEADERS += \

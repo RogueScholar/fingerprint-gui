@@ -29,6 +29,7 @@
 #include <QtGui>
 #include <QObject>
 #include <QEventLoop>
+#include <QDesktopWidget>
 #include "Globals.h"
 #include "ui_FingerprintIdentifier.h"
 #include "FingerprintDevice.h"

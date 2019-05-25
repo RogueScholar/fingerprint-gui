@@ -46,8 +46,8 @@
 #include <iostream>
 #include <fstream>
 #include <dlfcn.h>
-#include <qstring.h>
-#include <qcombobox.h>
+#include <QString>
+#include <QComboBox>
 #include "../include/UsbDevice.h"
 #include "../include/FingerprintDevice.h"
 #include "drivers/GenericDevice.h"

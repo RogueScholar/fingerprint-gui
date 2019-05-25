@@ -263,13 +263,13 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
             else{
                 int i;
                 FingerprintData *f=identifyData;
-                for(i=0;f!=NULL;f=f->next,i++);
+                for(i=0;f!=nullptr;f=f->next,i++);
                 syslog(LOG_DEBUG,"Have %d fingerprints for all users.",i);
             }
             devices->setMode(MODE_IDENTIFY);
             devices->setIdentifyData(identifyData);
 
-            if(display==NULL){
+            if(display==nullptr){
                 //  NonGUI fingerprint identification is not possible! here
                 //  If we would implement this, the first tty would open the fingerprint device
                 //  and GUI login would never be possible.
@@ -355,7 +355,7 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
         syslog(LOG_DEBUG,"Identifying all discovered fingerprints from %s.",username);
     }
 
-    if(display==NULL
+    if(display==nullptr
             // special handling for "su" required since Ubuntu 10.10
             ||strcmp(service,"su")==0   // no widget allowed but libfakekey for prompt required
             ||strcmp(service,"polkit-1")==0 // no widget allowed and no prompt required

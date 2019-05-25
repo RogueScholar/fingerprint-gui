@@ -47,7 +47,7 @@ INSTALLS += target desktop pixmaps icons16x16 icons24x24 icons32x32 icons48x48 i
 DEFINES +=LIBEXECDIR=\\\"$${LIBEXECDIR}\\\"
 QMAKE_CXXFLAGS+=-fno-strict-aliasing
 
-LIBS += -lusb-1.0 -lfprint -lpam -ldl
+LIBS += -lusb-1.0 -lfprint -lpam -ldl -lqca-qt5
 
 # Input
 HEADERS += ../../include/GlobalsImg.h \
