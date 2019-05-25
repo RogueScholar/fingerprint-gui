@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     QApplication agent(argc,argv);
     // Run forever
-        loadTranslations(&agent);
+        loadTranslations(agent);
     agent.setQuitOnLastWindowClosed(false);
     PolkitListener listener;
     PolkitQt1::UnixSessionSubject session(getpid());
