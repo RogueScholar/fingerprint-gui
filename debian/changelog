@@ -1,5 +1,122 @@
-fingerprint-gui (1.09-dfsg1-0ppa2~disco1) disco; urgency=low
+fingerprint-gui (1.09-1~ppa-disco1) disco; urgency=medium
 
-  * New upstream version
+  * LED on UPEK devices are switched off when fingerprint scan was canceled
+    (password invoked)
+  * Conflict (deadlock) while starting webmin fixed
+  * Current version of resource file "usb.ids" used
 
- -- David Jurenka <debian.box@imx.jurenka.cz>  Sat, 28 Apr 2018 08:47:31 +0100
+ -- Peter J. Mello <admin@petermello.net>  Sat, 25 May 2019 09:03:58 -0700
+
+fingerprint-gui (1.08-1~xenial1) xenial; urgency=medium
+
+  * Fixed login not working for Linux Mint 17.2 (Cinnamon and MATE)
+  * Fixed fingerprint-polkit-agent not starting in MATE desktop
+  * Fixed spacebar not working after fingerprint login
+  * Loading fingerprint data via pkexec is only used when not running with
+    root privileges (decrease loading time)
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 15 Jun 2016 00:00:00 +0100
+
+fingerprint-gui (1.07-1~vivid1) vivid; urgency=medium
+
+  * Fixed fingerprint export doesn't handle spaces in custom filenames well
+  * Security fix: Directory "/var/lib/fingerprint-gui" and all its
+    subdirectories are now owned by root:root with mode 0755. All files in
+    these directories are owned by root:root with mode 0600 now.
+  * Security fix: The helper module "fingerprint-suid" was replaced by a new
+    module "fingerprint-rw" and is no longer set to suid root. This module is
+    executed via "pkexec" for reading and modifying fingerprint data.
+  * A new policy file "cc.ullrich-online.fingerprint-gui.policy" is installed
+    in "/usr/share/polkit-1/actions/". This policy requires user authentication
+    via polkit when the user's fingerprint data is modified.
+  * libpolkit-qt-1.0 is no longer supported
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sun, 5 Jul 2015 00:00:00 +0100
+
+fingerprint-gui (1.06-1~trusty1) trusty; urgency=medium
+
+  * Fix for cinnamon-screensaver on Mint 16 and Mint 17 provided by Pavel
+    Sochelnikov
+  * Fixed segfault after failed login on secure tty
+  * fingerprint-helper is aware of multiple screen environments and is always
+    placed on the screen that contains the cursor
+  * Added MATE to fingerprint-polkit-agent.desktop settings
+  * New program icon provided by Anna Petrova
+  * GUI improvements provided by Pavel Sochelnikov
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 24 Sep 2014 00:00:00 +0100
+
+fingerprint-gui (1.05-1~raring1) raring; urgency=medium
+
+  * Loader for UPEK devices is aware of the vendorId/productId:
+    productId < 0x2000 loads bsapi version 4.0
+    productId >= 0x2000 loads bsapi version 4.3
+  * Fixed segfault when stopping libfprint device asynchronously
+  * New usb.ids file (Version: 2013.05.08)
+  * Tested on Ubuntu 13.04
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 8 May 2013 00:00:00 +0100
+
+fingerprint-gui (1.05-1~raring1) raring; urgency=medium
+
+  * Loader for UPEK devices is aware of the vendorId/productId:
+    productId < 0x2000 loads bsapi version 4.0
+    productId >= 0x2000 loads bsapi version 4.3
+  * Fixed segfault when stopping libfprint device asynchronously
+  * Fixed missing environment variable DISPLAY in unity-greeter, making
+    fingerprint-helper dialog not visible (Ubuntu 12.10). DISPLAY is now set
+    before fingerprint-helper is forked
+  * Fixed deadlock when reading /etc/mtab on systems where /etc/mtab is a symlink
+  * Fixed permissions problem with uinput for sudo in secure tty
+  * Fixed compiler errors since Ubuntu 12.10
+  * Fixed some wrong include directives for Qt4 headers
+  * unity-greeter calls pam_sm_authenticate twice for login (Ubuntu 12.10) and
+    kills the first instance immediately, waiting for one second to be killed
+    before going ahead with authentication
+  * unity-greeter releases the keyboard focus when fingerprint-helper is
+    started, so no one can invoke a password while fingerprint-helper waits for
+    finger-swipes. Process now performs a search for unity-greeter's window-id
+    and pushes the keyboard focus back to it
+  * New usb.ids file (Version: 2013.05.08)
+  * Tested on Ubuntu 13.04
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 8 May 2013 00:00:00 +0100
+
+fingerprint-gui (1.04-1~oneiric1) oneiric; urgency=medium
+
+  * Fixed calling "sudo" in a GUI environment: fingerprint-helper is now
+    started with the privileges of the calling user; this avoids Gtk error
+    messages about running a GUI process as suid root
+  * Fixed: lightdm bug #862559 since version 1.1.4, pam_fingerprint-gui.so
+    wasn't starting fingerprint-helper GUI anymore due to a bug in the
+    workaround needed for lightdm versions below 1.1.4 (Ubuntu <=11.10)
+  * Fixed segfault in DeviceHandler.cpp with newer glibc
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sun, 11 Mar 2012 00:00:00 +0100
+
+fingerprint-gui (1.03-1~oneiric1) oneiric; urgency=medium
+
+  * Fixed fingerprint-polkit-agent not starting on Lubuntu 11.10
+  * Fixed no fingerprint login on secure tty (Ubuntu 11.10)
+  * Fixed X11 server not restarting on logout (Ubuntu 11.10)
+  * Fixed error message not printing when user's home directory is encrypted
+    and fingerprint login was without password
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 7 Dec 2011 00:00:00 +0100
+
+fingerprint-gui (1.02-1~oneiric1) oneiric; urgency=medium
+
+  * Fixed segfault in fingerprint-polkit-agent
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sun, 23 Oct 2011 00:00:00 +0100
+
+fingerprint-gui (1.01-1~oneiric1) oneiric; urgency=medium
+
+  * Workaround for lightdm bug #862559: Display ":0" hard coded for service
+    lightdm in pam_fingerprint-gui.so
+  * Fixed missing "Unity" entry in
+    /etc/xdg/autostart/fingerprint-polkit-agent.desktop
+  * Fixed password dialog disabled in polkit agent when more than one
+    administrator user is available
+
+ -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sat, 15 Oct 2011 00:00:00 +0100

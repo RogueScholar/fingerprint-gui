@@ -12,7 +12,7 @@ Package: fingerprint-gui
 Architecture: i386 amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqca2-plugins
 Recommends: policykit-1-fingerprint-gui
-Suggests: libbsapi (>= 4.0~rc1)
+Suggests: libbsapi (>= 4.0)
 Description: application for fingerprint-based authentication
  Fingerprint GUI is an application providing fingerprint-based authentication
  on Linux desktops. It features a simple GUI for fingerprint management and
