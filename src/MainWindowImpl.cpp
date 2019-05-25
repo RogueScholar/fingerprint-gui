@@ -861,3 +861,5 @@ void MainWindowImpl::setLabel(int finger){
     QString f(fingers[currentFinger]);
     currentFingerLabel->setText(f);
 }
+
+#include "moc_MainWindowImpl.cpp"

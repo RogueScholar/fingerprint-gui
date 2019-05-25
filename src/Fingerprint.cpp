@@ -361,3 +361,5 @@ void Fingerprint::setVerifyStage(int result){
             return;
     }
 }
+
+#include "moc_Fingerprint.cpp"

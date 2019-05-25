@@ -173,3 +173,5 @@ void PamTester::haveResult(){
     syslog(LOG_DEBUG,"Caught line input.");
     returnPressed=true;
 }
+
+#include "moc_PamTester.cpp"

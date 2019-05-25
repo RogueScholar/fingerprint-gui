@@ -52,3 +52,5 @@ const char *FingerprintData::getFingerName(){
 string *FingerprintData::getUserName(){
     return &user;
 }
+
+#include "moc_FingerprintData.cpp"

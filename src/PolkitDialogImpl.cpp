@@ -308,3 +308,5 @@ PolkitDetailsImpl::PolkitDetailsImpl(const PolkitQt1::Details &details,
         }
     }
 }
+
+#include "moc_PolkitDialogImpl.cpp"

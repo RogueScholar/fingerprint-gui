@@ -94,3 +94,4 @@ void SavedDialogImpl::noChoice(){
     close();
 }
 
+#include "moc_SavedDialogImpl.cpp"

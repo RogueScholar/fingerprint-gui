@@ -330,3 +330,5 @@ void PamGUI::timerTick(){
             repeatDelay--;  //still wait
     }
 }
+
+#include "moc_PamGUI.cpp"

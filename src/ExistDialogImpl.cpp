@@ -56,3 +56,5 @@ void ExistDialogImpl::acquireChoice(){
     emit choice(EXIST_ACQUIRE);
     close();
 }
+
+#include "moc_ExistDialogImpl.cpp"

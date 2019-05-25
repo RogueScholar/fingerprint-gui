@@ -211,3 +211,5 @@ void IdentifierGUI::closeEvent(QCloseEvent */*e*/){
     device->stop();
     qApp->exit(-1);
 }
+
+#include "moc_IdentifierGUI.cpp"
