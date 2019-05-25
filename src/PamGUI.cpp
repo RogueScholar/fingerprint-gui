@@ -39,18 +39,15 @@ PamGUI::PamGUI(FingerprintDevice *dev,const char *user,const char *finger)
     : QFrame(){
     setupUi(this);
 
-    identifyData=NULL;
+    identifyData=nullptr;
     startupGUI(dev);
-    if(finger!=NULL){
-        QString s("Swipe your ");
-        s.append(finger);
-        s.append(".");
+    if(finger!=nullptr){
+        QString s = tr("Swipe your %1.").arg(finger);
         label->setText(s);
         showMessage(MSG_LABEL,s);
     }
-    if(user!=NULL){
-        QString s="Authenticating ";
-        s.append(user);
+    if(user!=nullptr){
+        QString s = tr("Authenticating %1").arg(user);
         showMessage(MSG_NORMAL,s);
     }
 	fpPix = QPixmap();
@@ -60,7 +57,7 @@ PamGUI::PamGUI(FingerprintDevice *dev,FingerprintData *iData)
     : QFrame(){
     setupUi(this);
 
-    showMessage(MSG_NORMAL,"Ready...");
+    showMessage(MSG_NORMAL,tr("Ready..."));
     identifyData=iData;
     startupGUI(dev);
 }
@@ -251,20 +248,16 @@ void PamGUI::matchResult(int match,struct fp_pic_data *pic){
     }
     if(match>=0){
         movie->setPaused(true);
-        string message;
-        if(identifyData!=NULL){
+        QString message;
+        if(identifyData!=nullptr){
             FingerprintData *fingerprintData=identifyData;
             for(int i=0;i<match;i++)fingerprintData=fingerprintData->next;
-            message.append("Identified: ");
-            message.append(fingerprintData->getUserName()->data());
-            message.append(" (");
-            message.append(fingerprintData->getFingerName());
-            message.append(")");
+            message = tr("Identified: %1 (%2)").arg(fingerprintData->getUserName()->data()).arg(fingerprintData->getFingerName());
         }
         else{
-            message.append("OK");
+            message = tr("OK");
         }
-        showMessage(MSG_BOLD,message.data());
+        showMessage(MSG_BOLD,message);
 	timer->stop();
         //exit with index (match) as exit code
         qApp->processEvents();
@@ -277,7 +270,7 @@ void PamGUI::matchResult(int match,struct fp_pic_data *pic){
         qApp->exit(match);
         return;
     }
-    showMessage(MSG_BOLD,"Not identified!");
+    showMessage(MSG_BOLD,tr("Not identified!"));
     repeatDelay=3;   //let 'em see the result before restarting
 }
 
@@ -291,17 +284,17 @@ void PamGUI::newVerifyResult(int result,struct fp_pic_data *pic){
     }
     switch(result){
         case RESULT_VERIFY_NO_MATCH:
-            showMessage(MSG_NORMAL,"No match!");
+            showMessage(MSG_NORMAL,tr("No match!"));
             break;
         case RESULT_VERIFY_RETRY_TOO_SHORT:
-            showMessage(MSG_NORMAL,"Swipe too short...");
+            showMessage(MSG_NORMAL,tr("Swipe too short..."));
             break;
         case RESULT_VERIFY_RETRY_CENTER:
-            showMessage(MSG_NORMAL,"Please center...");
+            showMessage(MSG_NORMAL,tr("Please center..."));
             break;
         case RESULT_VERIFY_RETRY:
         case RESULT_VERIFY_RETRY_REMOVE:
-            showMessage(MSG_NORMAL,"Try again...");
+            showMessage(MSG_NORMAL,tr("Try again..."));
             break;
         default:
             return;
@@ -329,8 +322,8 @@ void PamGUI::timerTick(){
             syslog(LOG_INFO,"Stopped, restarting");
             //restart fingerprint scanner
             device->start();
-			animationLabel->setMovie(movie);
-            showMessage(MSG_NORMAL,"Ready...");
+            animationLabel->setMovie(movie);
+            showMessage(MSG_NORMAL,tr("Ready..."));
             repeatDelay--;
             break;
         default:
