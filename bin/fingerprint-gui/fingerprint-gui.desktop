@@ -1,11 +1,15 @@
 [Desktop Entry]
-Version=1.0
+Version=1.1
 Terminal=false
 Type=Application
 Name=Fingerprint GUI
-GenericName=Fingerprint Tool
+GenericName=Biometric Authentication Settings
 Comment=Tool for fingerprint enrollment and verification
 Icon=fingerprint-gui
-TryExec=fingerprint-gui
-Exec=fingerprint-gui --debug
-Categories=GNOME;GTK;Settings;HardwareSettings;
+TryExec=/usr/bin/fingerprint-gui
+Exec=fingerprint-gui
+Path=/var/lib/fingerprint-gui
+Categories=GTK;Settings;HardwareSettings;
+NoDisplay=false
+Hidden=false
+StartupNotify=false
