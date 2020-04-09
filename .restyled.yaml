@@ -1,0 +1,18 @@
+---
+enabled: true
+exclude: []
+auto: false
+remote_files: []
+
+pull_requests: true
+request_review:
+  origin: author
+  forked: owner
+
+comments: true
+statuses: true
+labels:
+  - pullassigner-ignore
+ignore_labels:
+  - restyled-ignore
+...
