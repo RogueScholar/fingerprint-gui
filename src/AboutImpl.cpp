@@ -66,3 +66,5 @@ void AboutImpl::homepage(){
     QDesktopServices srv;
     srv.openUrl(QUrl(HOMEPAGE));
 }
+
+#include "moc_AboutImpl.cpp"

@@ -200,3 +200,5 @@ void PolkitListener::userSelected(PolkitQt1::Identity identity){
     }
     tryAgain();
 }
+
+#include "moc_PolkitListener.cpp"
