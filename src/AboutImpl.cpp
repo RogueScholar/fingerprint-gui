@@ -32,10 +32,10 @@ AboutImpl::AboutImpl(QWidget *parent,Qt::WindowFlags f)
 
     string s="Version: ";
     s.append(VERSION);
-    versionLabel->setText(QApplication::translate("AboutDialog", s.data(),nullptr));
-    copyrightLabel->setText(QApplication::translate("AboutDialog", COPYRIGHT,nullptr));
-    homeButton->setText(QApplication::translate("AboutDialog",HOMEPAGE,nullptr));
-    bitcoinButton->setText(QApplication::translate("AboutDialog",BITCOINADDRESS,nullptr));
+    versionLabel->setText(QApplication::translate("AboutDialog", s.data()));
+    copyrightLabel->setText(QApplication::translate("AboutDialog", COPYRIGHT));
+    homeButton->setText(QApplication::translate("AboutDialog",HOMEPAGE));
+    bitcoinButton->setText(QApplication::translate("AboutDialog",BITCOINADDRESS));
     connect(donateButton,SIGNAL(clicked()),this,SLOT(donate()));
     connect(licenseButton,SIGNAL(clicked()),this,SLOT(license()));
     connect(homeButton,SIGNAL(clicked()),this,SLOT(homepage()));
@@ -66,5 +66,3 @@ void AboutImpl::homepage(){
     QDesktopServices srv;
     srv.openUrl(QUrl(HOMEPAGE));
 }
-
-#include "moc_AboutImpl.cpp"

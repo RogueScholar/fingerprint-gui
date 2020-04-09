@@ -45,7 +45,7 @@ IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintDa
         setWindowFlags(Qt::Dialog);
         string title=string("Fingerprint Identifier ");
         title.append(VERSION);
-        setWindowTitle(QApplication::translate("MainWindow",title.data(), nullptr));
+        setWindowTitle(QApplication::translate("MainWindow",title.data()));
 	SET_TEXT_COLOR
     }
         
@@ -211,5 +211,3 @@ void IdentifierGUI::closeEvent(QCloseEvent */*e*/){
     device->stop();
     qApp->exit(-1);
 }
-
-#include "moc_IdentifierGUI.cpp"
