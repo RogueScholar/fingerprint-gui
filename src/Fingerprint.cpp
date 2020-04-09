@@ -44,8 +44,8 @@
 Fingerprint::Fingerprint(int finger,FingerprintDevice *d,QLabel* textLabels[5],QLabel* iconLabels[5]){
     valid=false;
     busy=false;
-    data=NULL;
-    fpPic=NULL;
+    data=nullptr;
+    fpPic=nullptr;
     this->finger=finger;
     this->textLabels[0]=textLabels[0];
     this->textLabels[1]=textLabels[1];
@@ -79,7 +79,7 @@ void Fingerprint::modeVerify(){
 }
 
 bool Fingerprint::swipe(){
-    if(device==NULL||busy)return false;
+    if(device==nullptr||busy)return false;
     busy=true;
     syslog(LOG_DEBUG,"Swipe finger at %s.",device->getDisplayName(DISPLAY_DRIVER_NAME)->data());
     device->start();
@@ -173,8 +173,8 @@ bool Fingerprint::loadData(){   //loads fingerprint data for this finger and thi
                     ARG_USER,pws->pw_name,
 		    ARG_DRIVER,device->getDisplayName(DISPLAY_DRIVER_NAME)->data(),
 		    ARG_FILE,filename.data(),
-                    debugTest?ARG_DEBUG1:NULL,
-                    NULL);
+                     debugTest?ARG_DEBUG1:nullptr,
+                     nullptr);
             syslog(LOG_ERR,"ERROR: Could not execute %s %d (%s).",READ_COMMAND,rc,strerror(errno));
             _exit(EXIT_FAILURE);
         case -1:            // Fork error
@@ -246,8 +246,8 @@ bool Fingerprint::saveData(){  //saves fingerprint data for this finger and this
                     ARG_USER,pws->pw_name,
 		    ARG_DRIVER,devname.data(),
 		    ARG_FILE,filename.data(),
-                    debugTest?ARG_DEBUG1:NULL,
-                    NULL);
+                     debugTest?ARG_DEBUG1:nullptr,
+                     nullptr);
             syslog(LOG_ERR,"ERROR: Could not execute %s %d (%s).",WRITE_COMMAND,rc,strerror(errno));
             _exit(EXIT_FAILURE);
         case -1:            // Fork error
@@ -265,7 +265,7 @@ bool Fingerprint::saveData(){  //saves fingerprint data for this finger and this
 }
 
 void Fingerprint::initLabels(){
-    textLabels[0]->setText("waiting...");
+    textLabels[0]->setText(tr("waiting..."));
     textLabels[1]->setText("");
     textLabels[2]->setText("");
     textLabels[3]->setText("");
@@ -286,28 +286,28 @@ void Fingerprint::setAcquireStage(int result){
     switch(result){
         case RESULT_ENROLL_COMPLETE:
             syslog(LOG_DEBUG,"Acquire stage %d OK.",stage);
-            textLabels[stage%5]->setText("OK");
+            textLabels[stage%5]->setText(tr("OK"));
             iconLabels[stage%5]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-ok.png")));
             return;
         case RESULT_ENROLL_RETRY_TOO_SHORT:
             syslog(LOG_DEBUG,"Acquire stage %d swipe too short...",stage);
-            textLabels[stage%5]->setText("Swipe too short...");
+            textLabels[stage%5]->setText(tr("Swipe too short..."));
             iconLabels[stage%5]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_ENROLL_RETRY_CENTER:
             syslog(LOG_DEBUG,"Acquire stage %d please center...",stage);
-            textLabels[stage%5]->setText("Please center...");
+            textLabels[stage%5]->setText(tr("Please center..."));
             iconLabels[stage%5]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_ENROLL_RETRY:
         case RESULT_ENROLL_RETRY_REMOVE:
             syslog(LOG_DEBUG,"Acquire stage %d try again...",stage);
-            textLabels[stage%5]->setText("Try again...");
+            textLabels[stage%5]->setText(tr("Try again..."));
             iconLabels[stage%5]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_ENROLL_PASS:
             syslog(LOG_DEBUG,"Acquire stage %d OK.",stage);
-            textLabels[stage%5]->setText("OK");
+            textLabels[stage%5]->setText(tr("OK"));
             iconLabels[stage%5]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-ok.png")));
             stage++;
             if(stage%5==0)initLabels();
@@ -328,28 +328,28 @@ void Fingerprint::setVerifyStage(int result){
     switch(result){
         case RESULT_VERIFY_NO_MATCH:
             syslog(LOG_DEBUG,"Verify no match");
-            textLabels[0]->setText("No match!");
+            textLabels[0]->setText(tr("No match!"));
             iconLabels[0]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_VERIFY_MATCH:
             syslog(LOG_DEBUG,"Verify OK");
-            textLabels[0]->setText("OK");
+            textLabels[0]->setText(tr("OK"));
             iconLabels[0]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-ok.png")));
             break;
         case RESULT_VERIFY_RETRY_TOO_SHORT:
             syslog(LOG_DEBUG,"Verify swipe too short...");
-            textLabels[0]->setText("Swipe too short...");
+            textLabels[0]->setText(tr("Swipe too short..."));
             iconLabels[0]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_VERIFY_RETRY_CENTER:
             syslog(LOG_DEBUG,"Verify please center...");
-            textLabels[0]->setText("Please center...");
+            textLabels[0]->setText(tr("Please center..."));
             iconLabels[0]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_VERIFY_RETRY:
         case RESULT_VERIFY_RETRY_REMOVE:
             syslog(LOG_DEBUG,"Verify try again...");
-            textLabels[0]->setText("Try again...");
+            textLabels[0]->setText(tr("Try again..."));
             iconLabels[0]->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/res/fp-error.png")));
             break;
         case RESULT_SWIPE:

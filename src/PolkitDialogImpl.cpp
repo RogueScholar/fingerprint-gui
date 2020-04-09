@@ -50,7 +50,7 @@ PolkitDialogImpl::PolkitDialogImpl(
     setupUi(this);
     errorLabel->hide();
     setModal(true);
-    pluginDialog=NULL;
+    pluginDialog=nullptr;
 
     if(message.isEmpty()){
         syslog(LOG_WARNING,"Could not get action message for action.");
@@ -137,7 +137,7 @@ void PolkitDialogImpl::setRequest(const QString &request,bool requiresAdmin){
     if(pluginDialog){
         horizontalLayoutFingerprint->removeWidget(pluginDialog);
         delete(pluginDialog);
-        pluginDialog=NULL;
+        pluginDialog=nullptr;
         unlink(PLUGIN_FIFO);
         resize();
     }
@@ -209,7 +209,7 @@ void PolkitDialogImpl::userComboboxIndexChanged(int /*index*/){
     if(pluginDialog){
         horizontalLayoutFingerprint->removeWidget(pluginDialog);
         delete(pluginDialog);
-        pluginDialog=NULL;
+        pluginDialog=nullptr;
         unlink(PLUGIN_FIFO);
         resize();
     }

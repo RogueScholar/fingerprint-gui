@@ -93,8 +93,8 @@ bool isEncrypted(const char *homedir){
 
     syslog(LOG_DEBUG,"Checking for encrypted homedir \"%s\".",homedir);
     home=opendir(homedir);
-    if(home!=NULL){
-        while((entry=readdir(home))!=NULL){
+    if(home!=nullptr){
+        while((entry=readdir(home))!=nullptr){
             if(string(entry->d_name).compare(".")==0)continue;
             if(string(entry->d_name).compare("..")==0)continue;
             //directory is not empty
@@ -140,7 +140,7 @@ bool isEncrypted(const char *homedir){
 // Get current time in milliseconds
 double get_time_ms(){
     struct timeval t;
-    gettimeofday(&t,NULL);
+    gettimeofday(&t,nullptr);
     return (t.tv_sec+(t.tv_usec/1000000.0))*1000.0;
 }
 
@@ -228,12 +228,12 @@ bool getargs(int argc,const char **argv){
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const char **argv){
     bool debug=false;
     int rc=PAM_AUTHINFO_UNAVAIL;
-    const char *rhost=NULL;
-    const char *service=NULL;
-    const char *sshconn=NULL;
-    char *username=NULL;
-    const void* firstUsername=NULL;
-    char *password=NULL;
+    const char *rhost=nullptr;
+    const char *service=nullptr;
+    const char *sshconn=nullptr;
+    char *username=nullptr;
+    const void* firstUsername=nullptr;
+    char *password=nullptr;
     pid_t child;
     int fifo[2];
     char identifiedUser[256]; memset(identifiedUser,0,sizeof(identifiedUser));
@@ -259,7 +259,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
 
     // We don't request fingerprints for remote sessions
     pam_get_item(pamh,PAM_RHOST,(const void **)(const void*)&rhost);
-    if (rhost!=NULL&&strlen(rhost)>0){  // remote login?
+    if (rhost!=nullptr&&strlen(rhost)>0){  // remote login?
         gethostname(hostname, HOST_NAME_MAX+1);
 	if((strcmp(rhost,hostname))!=0){        // yes
             syslog(LOG_DEBUG,"Remote session detected from: %s.",rhost);
@@ -278,12 +278,12 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
     }
     syslog(LOG_DEBUG,"Got no SSH_CONNECTION.");
 
-    srand((unsigned)time(NULL));
+    srand((unsigned)time(nullptr));
     memset(randomString,0,sizeof(randomString));
     sprintf(randomString,"%ld",1000000000L+(rand()%1000000000L));
     // If we have a password already; other PAM modules may handle it.
     pam_get_item(pamh,PAM_AUTHTOK,(const void **)(const void*)&password);
-    if(password!=NULL){
+    if(password!=nullptr){
         syslog(LOG_INFO,"Have a password. Should be handled by other PAM modules.");
         goto auth_return;
     }
@@ -293,7 +293,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
     
     // Requested service
     pam_get_item(pamh,PAM_SERVICE,(const void **)(const void*)&service);
-    if (service!=NULL&&strlen(service)>0){
+    if (service!=nullptr&&strlen(service)>0){
         syslog(LOG_DEBUG,"PAM_SERVICE: %s.",(const char*)service);
 	if(strcmp(service,"webmin")==0){	// webmin can not authenticate a user by fingerprint!
             syslog(LOG_INFO,"Have service webmin. Should be handled by other PAM modules.");
@@ -303,9 +303,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
 //!!!! Dirty hack to workaround bug #862559 in lightdm (Ubuntu 11.10)
 // Seems fixed since lightdm 1.1.4 (Ubuntu 12.04)
 // THIS WILL ONLY WORK WITH DISPLAY :0
-        if(xdisp==NULL&&strcmp(service,"lightdm")==0){
+        if(xdisp==nullptr&&strcmp(service,"lightdm")==0){
                 pam_get_item(pamh,PAM_XDISPLAY,(const void **)(const void*)&xdisp);
-                if(xdisp==NULL){
+                if(xdisp==nullptr){
                         syslog(LOG_ERR,"APPLYING WORKAROUND FOR lightdm (setting XDISPLAY to :0).");
                         setenv("DISPLAY",":0",-1);
                         xdisp=getenv("DISPLAY");
@@ -333,19 +333,19 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
 //!!!! A new dirty hack needed since Ubuntu 12.10. They call pam_sm_authenticate twice from unity greeter
 
    //==========================================================================
-    if(xdisp==NULL){    // Trying to get the xdisplay
+   if(xdisp==nullptr){    // Trying to get the xdisplay
         pam_get_item(pamh,PAM_XDISPLAY,(const void **)(const void*)&xdisp);
-        if(xdisp==NULL){
+        if(xdisp==nullptr){
             pam_get_item(pamh,PAM_TTY,(const void **)(const void*)&xdisp);
-            if(xdisp==NULL||strlen(xdisp)==0){
+            if(xdisp==nullptr||strlen(xdisp)==0){
                 syslog(LOG_DEBUG,"Have no PAM_TTY.");
-                xdisp=NULL;
+                xdisp=nullptr;
             }
             else{
                 syslog(LOG_DEBUG,"Have PAM_TTY: %s.",xdisp);
                 if(xdisp[0]!=':'){// looks not like a X-Display
                     syslog(LOG_DEBUG,"Have no DISPLAY from PAM_TTY.");
-                    xdisp=NULL;
+                    xdisp=nullptr;
                 }
                 else{
                     syslog(LOG_DEBUG,"Have DISPLAY %s from PAM_TTY.",xdisp);
@@ -356,7 +356,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
         else{
             if(xdisp[0]!=':'){// looks not like a X-Display
                 syslog(LOG_DEBUG,"Have no DISPLAY from pam_get_item.");
-                xdisp=NULL;
+                xdisp=nullptr;
             }
             else{
                 syslog(LOG_DEBUG,"Have DISPLAY %s from pam_get_item.",xdisp);
@@ -369,8 +369,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
 
 // The following section is only required for systems, who have no XAUTHORITY variable in gdm environment
 // Gentoo is a candidate
-    if(xdisp!=NULL){
-        if(xauth==NULL){    // Trying to get the xauthority
+    if(xdisp!=nullptr){
+        if(xauth==nullptr){    // Trying to get the xauthority
             sprintf(X_lock,"/tmp/.X%s-lock",strtok((char*)&xdisp[1],"."));
             syslog(LOG_DEBUG,"Scanning X-server PID from %s.",X_lock);
             xlock=open(X_lock,O_RDONLY);
@@ -387,9 +387,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
                             for(int j=0;j<i;j++)if(X_lock[j]=='\0')X_lock[j]=' ';
                             syslog(LOG_DEBUG,"Have cmdline %s.",X_lock);
                             // searching for "-auth"
-                            for(char *word=strtok(X_lock," ");word!=NULL;word=strtok(NULL," ")){
+                            for(char *word=strtok(X_lock," ");word!=nullptr;word=strtok(nullptr," ")){
                                 if(strcmp(word,"-auth")==0){
-                                    xauth=strtok(NULL," ");
+                                    xauth=strtok(nullptr," ");
                                     break;
                                 }
                             }
@@ -409,20 +409,20 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
     syslog(LOG_DEBUG,"Have now XDisplay: \"%s\" and XAuth: \"%s\".",xdisp,xauth);
     //==========================================================================
 //!!!! Another dirty hack needed since Ubuntu 12.10. They don't set complete environment variables
-    if(xdisp!=NULL)setenv("DISPLAY",xdisp,-1);
-    if(xauth!=NULL)setenv("XAUTHORITY",xauth,-1);
+    if(xdisp!=nullptr)setenv("DISPLAY",xdisp,-1);
+    if(xauth!=nullptr)setenv("XAUTHORITY",xauth,-1);
 //!!!! Another dirty hack needed since Ubuntu 12.10. They don't set complete environment variables
 
     // If an username is available we try to authenticate by fingerprint
     // Otherwise we try to identify the user
     pam_get_item(pamh,PAM_USER,(const void **)(const void*)&username);
-    if(username!=NULL){		    // PAM has a username already
+    if(username!=nullptr){		    // PAM has a username already
         if(strlen(username)==0){    // Uups, got an empty username
-            username=NULL;
+            username=nullptr;
         }
 	else{
 	    // pam_get_item limits the username to 8 chars, so we need to get the full username next
-	    pam_get_user(pamh,(const char**)&username,NULL);
+        pam_get_user(pamh,(const char**)&username,nullptr);
             syslog(LOG_DEBUG,"Have PAM username \"%s\".",username);
             // Try to compare this username with a saved username from a previous call ("try_first_identified" funtion)
             if(tryFirstIdent){
@@ -468,9 +468,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
     switch(child){
         case 0:             // This is the child
             //If service is "sudo" in GUI enviroment we need to run fingerprint-helper as the current user (see http://www.gtk.org/setuid.html)
-            if(xdisp!=NULL&&service!=NULL&&strcmp(service,"sudo")==0&&username!=NULL){
+            if(xdisp!=nullptr&&service!=nullptr&&strcmp(service,"sudo")==0&&username!=nullptr){
                 p_entry=getpwnam(username); // find the uid of the calling user
-                if(p_entry!=NULL){
+                if(p_entry!=nullptr){
                     syslog(LOG_DEBUG,"Running helper process with UID %d.",p_entry->pw_uid);
                     if(setreuid(p_entry->pw_uid,p_entry->pw_uid)!=0){
 		        syslog(LOG_ERR,"ERROR: Could not setreuid %d.",p_entry->pw_uid);
@@ -481,20 +481,20 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
             char pipestr_w[10],pipestr_r[10];// Convert pipe handles to string to be given in argv
             sprintf(pipestr_w,"%d",fifo[0]);
             sprintf(pipestr_r,"%d",fifo[1]);
-            if(xdisp!=NULL)
+            if(xdisp!=nullptr)
                 usleep(50000);// We want the helper window to be raised as the last one for being visible on top
             // we use "execl" for running the helper
             rc=execl(HELPER_COMMAND,HELPER_NAME,
                     pipestr_w,
                     pipestr_r,
-                    xdisp==NULL?"":xdisp,
+                     xdisp==nullptr?"":xdisp,
                     service,
                     debug?ARG_DEBUG1:"dUmMy1",
-                    username!=NULL?ARG_USER:"dUmMy2",
-                    username!=NULL?username:"dUmMy3",
+                     username!=nullptr?ARG_USER:"dUmMy2",
+                     username!=nullptr?username:"dUmMy3",
                     "dUmMy4",   // reserved
                     "dUmMy5",   // reserved
-                    NULL);
+                     nullptr);
             reopenSyslog(debug);
             syslog(LOG_ERR,"ERROR: Child returned %d (%s).",rc,strerror(errno));
             close(fifo[0]);close(fifo[1]);
@@ -515,8 +515,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
                 syslog(LOG_DEBUG,"Wrote random string to fifo.");
             }
 
-            if(username==NULL){        // user still unknown, prompt for username
-                if(pam_get_user(pamh,(const char **)&username,NULL)!=PAM_SUCCESS){
+            if(username==nullptr){        // user still unknown, prompt for username
+                if(pam_get_user(pamh,(const char **)&username,nullptr)!=PAM_SUCCESS){
                     reopenSyslog(debug);
                     syslog(LOG_ERR,"ERROR: Prompting for username.");
                     goto system_error;
@@ -572,7 +572,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
 	    double startprompt=get_time_ms(); // starttime for prompting
 #ifdef _OPENPAM
 	    syslog(LOG_DEBUG,"running OPENPAM.");
-            if(pam_get_authtok(pamh,PAM_AUTHTOK,(const char **)&password,NULL)!=PAM_SUCCESS){
+        if(pam_get_authtok(pamh,PAM_AUTHTOK,(const char **)&password,nullptr)!=PAM_SUCCESS){
 #else
 	    syslog(LOG_DEBUG,"running not OPENPAM.");
 	    if(pam_get_item(pamh,PAM_CONV,(const void **)&conv)!=PAM_SUCCESS){
@@ -590,12 +590,12 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
                 goto system_error;
             }
 #ifndef _OPENPAM
-            if(resp!=NULL){
+            if(resp!=nullptr){
 	        password=resp->resp;
 	        free(resp);
 	    }
 	    else{
-		password=NULL;
+		password=nullptr;
 	    }
 #endif
             reopenSyslog(debug);
@@ -615,7 +615,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,const c
                     kill(child,SIGUSR2); // Stop child immediately
                     waitpid(child,&rc,0);
                     close(fifo[0]);close(fifo[1]);
-	            if(password!=NULL){
+	            if(password!=nullptr){
 	                if(strlen(password)>0){     // The user has typed something as password
 //!!!!!!!!!!!!!!!! USE THIS LOG OUTPUT ONLY FOR DEVELOPMENT !!!!!!!!!!!!!!!!!!!!
 //syslog(LOG_DEBUG,"Got password from keyboard \"%s\".",password);
@@ -716,7 +716,7 @@ auth_return:
 
     //!!!! Another dirty hack for lightdm (Ubuntu 11.10)
     // X-Server doesn't restart on logout, when XAUTHORITY and DISPLAY are set to a value :-(
-    if((service!=NULL&&strlen(service)>0)&&(strcmp(service,"lightdm")==0)){
+    if((service!=nullptr&&strlen(service)>0)&&(strcmp(service,"lightdm")==0)){
         unsetenv("XAUTHORITY");
         unsetenv("DISPLAY");
     }

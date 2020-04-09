@@ -57,15 +57,15 @@
 using namespace std;
 
 DeviceHandler::DeviceHandler(display_name_mode mode){
-    knownUSBDevices=NULL;
-    attachedUSBDevices=NULL;
-    discoveredFpDevices=NULL;
-    discoveredBsDevices=NULL;
-    fingerprintDevices=NULL;
-    currentDevice=NULL;
+    knownUSBDevices=nullptr;
+    attachedUSBDevices=nullptr;
+    discoveredFpDevices=nullptr;
+    discoveredBsDevices=nullptr;
+    fingerprintDevices=nullptr;
+    currentDevice=nullptr;
     currentDeviceIndex=0;
-    identifierDevices=NULL;
-    verifierDevices=NULL;
+    identifierDevices=nullptr;
+    verifierDevices=nullptr;
     displayNameMode=mode;
 
 // trying to load libbsapi from UPEK
@@ -92,7 +92,7 @@ FingerprintDevice* DeviceHandler::getFingerprintDevices(){
 }
 
 FingerprintDevice* DeviceHandler::getCurrentDevice(int *index){
-    if(index!=NULL)*index=currentDeviceIndex;
+    if(index!=nullptr)*index=currentDeviceIndex;
     return currentDevice;
 }
 
@@ -102,24 +102,24 @@ void DeviceHandler::setDisplayNameMode(display_name_mode mode){
 
 // moves devices that can identify to "identifierDevices" list and
 // those can not identify to "verifierDevices"
-// Sets fingerprintDevices to NULL
+// Sets fingerprintDevices to nullptr
 FingerprintDevice* DeviceHandler::getIdentifiers(){
-    if(fingerprintDevices==NULL){
+    if(fingerprintDevices==nullptr){
         syslog(LOG_ERR,"No fingerprint devices found!");
-        return NULL;
+        return nullptr;
     }
-    FingerprintDevice *current=NULL;
-    FingerprintDevice *last_i=NULL;
-    FingerprintDevice *last_v=NULL;
-    FingerprintDevice *next=NULL;
-    identifierDevices=NULL;
-    verifierDevices=NULL;
-    for(current=fingerprintDevices;current!=NULL;current=next){
+    FingerprintDevice *current=nullptr;
+    FingerprintDevice *last_i=nullptr;
+    FingerprintDevice *last_v=nullptr;
+    FingerprintDevice *next=nullptr;
+    identifierDevices=nullptr;
+    verifierDevices=nullptr;
+    for(current=fingerprintDevices;current!=nullptr;current=next){
         next=current->next;
         syslog(LOG_INFO,"Discovered device: %s.",current->getDisplayName(DISPLAY_DRIVER_NAME)->data());
         if(!current->canIdentify()){
             syslog(LOG_INFO,"Device can not identify.");
-            if(verifierDevices==NULL){
+            if(verifierDevices==nullptr){
                 verifierDevices=current;
             }
             else{
@@ -129,7 +129,7 @@ FingerprintDevice* DeviceHandler::getIdentifiers(){
         }
         else{
             syslog(LOG_INFO,"Device can identify.");
-            if(identifierDevices==NULL){
+            if(identifierDevices==nullptr){
                 identifierDevices=current;
             }
             else{
@@ -137,14 +137,14 @@ FingerprintDevice* DeviceHandler::getIdentifiers(){
             }
             last_i=current;
         }
-        current->next=NULL;
+        current->next=nullptr;
     }
-    fingerprintDevices=NULL;
+    fingerprintDevices=nullptr;
     return identifierDevices;
 }
 
 FingerprintDevice* DeviceHandler::getVerifiers(){
-    if(fingerprintDevices==NULL){   //No devices or "getIdentifiers" was called already
+    if(fingerprintDevices==nullptr){   //No devices or "getIdentifiers" was called already
         return verifierDevices;
     }
     getIdentifiers();   //Separate them first
@@ -154,41 +154,41 @@ FingerprintDevice* DeviceHandler::getVerifiers(){
 // public methods --------------------------------------------------------------
 void DeviceHandler::rescan(){
     //free old device lists
-    for(FingerprintDevice* fp=fingerprintDevices;fp!=NULL;){
+    for(FingerprintDevice* fp=fingerprintDevices;fp!=nullptr;){
         FingerprintDevice* fp_p=fp;
         fp=fp->next;
         delete fp_p;
     }
-    fingerprintDevices=NULL;
+    fingerprintDevices=nullptr;
 
-    for(FingerprintDevice* fp=identifierDevices;fp!=NULL;){
+    for(FingerprintDevice* fp=identifierDevices;fp!=nullptr;){
         FingerprintDevice* fp_p=fp;
         fp=fp->next;
         delete fp_p;
     }
-    identifierDevices=NULL;
+    identifierDevices=nullptr;
 
-    for(FingerprintDevice* fp=verifierDevices;fp!=NULL;){
+    for(FingerprintDevice* fp=verifierDevices;fp!=nullptr;){
         FingerprintDevice* fp_p=fp;
         fp=fp->next;
         delete fp_p;
     }
-    verifierDevices=NULL;
+    verifierDevices=nullptr;
 
-    for(USBDevice* usb=attachedUSBDevices;usb!=NULL;){
+    for(USBDevice* usb=attachedUSBDevices;usb!=nullptr;){
         USBDevice* usb_p=usb;
         usb=usb->next;
         delete usb_p;
     }
-    attachedUSBDevices=NULL;
+    attachedUSBDevices=nullptr;
 
     if(findAttachedUSBDevices()>0){
-        if(discoveredFpDevices!=NULL)
+        if(discoveredFpDevices!=nullptr)
             fp_dscv_devs_free(discoveredFpDevices);
 
 // discover devices handled by proprietary driver libraries
     // discover devices handled by "libbsapi" from UPEK
-        if(discoveredBsDevices!=NULL)
+        if(discoveredBsDevices!=nullptr)
             (*bsapiFreeFunction)(discoveredBsDevices);
 
         if(bsapiHandle){
@@ -212,8 +212,8 @@ void DeviceHandler::rescan(){
     // discover "generic" devices handled by libfprint
     // this is the fallback for devices not handled by proprietary libraries
         discoveredFpDevices=fp_discover_devs();
-        if(discoveredFpDevices!=NULL){
-            for(int i=0;discoveredFpDevices[i]!=NULL;i++){
+        if(discoveredFpDevices!=nullptr){
+            for(int i=0;discoveredFpDevices[i]!=nullptr;i++){
                 addDevice(new GenericDevice(discoveredFpDevices[i],knownUSBDevices));
             }
         }
@@ -235,7 +235,7 @@ USBDevice* DeviceHandler::findKnownDevice(int vendor, int device){
     usb->vendorID=vendor;
     usb->deviceID=device;
 
-    while(walk!=NULL){
+    while(walk!=nullptr){
         if(walk->vendorID==vendor){
             usb->vendorName=walk->vendorName;
             if(walk->deviceID==device){
@@ -252,22 +252,22 @@ void DeviceHandler::setCurrentDevice(int index){
     if(index<0)return;
     int i;
     currentDevice=fingerprintDevices;
-    for(i=0;i<index&&currentDevice!=NULL;i++)
+    for(i=0;i<index&&currentDevice!=nullptr;i++)
         currentDevice=currentDevice->next;
-    if(currentDevice!=NULL)
+    if(currentDevice!=nullptr)
         syslog(LOG_DEBUG,"Current device set to %d -- %s.",i,currentDevice->getDisplayName(DISPLAY_DRIVER_NAME)->data());
     currentDeviceIndex=i;
 }
 
 // private helpers -------------------------------------------------------------
 void DeviceHandler::addDevice(FingerprintDevice* fpDevice){
-    fpDevice->next=NULL;
-    if(fingerprintDevices==NULL){
+    fpDevice->next=nullptr;
+    if(fingerprintDevices==nullptr){
         fingerprintDevices=fpDevice;
     }
     else{
         FingerprintDevice* fpDev=fingerprintDevices;
-        while(fpDev!=NULL){
+        while(fpDev!=nullptr){
             // don't add devices found by a driver that were found by another driver before
             if(fpDev->vendorId==fpDevice->vendorId && fpDev->productId==fpDevice->productId){
                 string driver1=string(fpDev->getDisplayName(DISPLAY_DRIVER_NAME)->data());
@@ -279,7 +279,7 @@ void DeviceHandler::addDevice(FingerprintDevice* fpDevice){
                     return;
                 }
             }
-            if(fpDev->next==NULL){
+            if(fpDev->next==nullptr){
                 fpDev->next=fpDevice;   // append fpDevice
                 break;
             }
@@ -291,20 +291,20 @@ void DeviceHandler::addDevice(FingerprintDevice* fpDevice){
 }
 
 int DeviceHandler::findAttachedUSBDevices(){
-    libusb_device **devs=NULL;
+    libusb_device **devs=nullptr;
     libusb_device *dev;
     struct libusb_context *ctx;
     struct libusb_device_descriptor desc;
-    USBDevice* lastDevice=NULL;
+    USBDevice* lastDevice=nullptr;
 
     libusb_init(&ctx);
     libusb_get_device_list(ctx,&devs);
-    if(devs==NULL){
+    if(devs==nullptr){
         syslog(LOG_ERR,"failed to get usb device list");
         return false;
     }
 
-    for(int i=0;devs[i]!=NULL;i++){
+    for(int i=0;devs[i]!=nullptr;i++){
         dev=devs[i];
         if(libusb_get_device_descriptor(dev,&desc)<0){
             syslog(LOG_ERR,"failed to get usb device descriptor");
@@ -314,7 +314,7 @@ int DeviceHandler::findAttachedUSBDevices(){
         string v=string(usb->vendorName);
         string p=string(usb->deviceName);
         syslog(LOG_DEBUG,"Found USB device: %s/%s.",v.data(),p.data());
-        if(lastDevice==NULL){
+        if(lastDevice==nullptr){
             attachedUSBDevices=usb;
         }
         else{
@@ -331,7 +331,7 @@ int DeviceHandler::findAttachedUSBDevices(){
 int DeviceHandler::getKnownUSBDevices(){
     string vendor;
     string device;
-    USBDevice* lastDevice=NULL;
+    USBDevice* lastDevice=nullptr;
     QString endOfDeviceId=END_OF_DEVICE_IDS;
 
     QFile idFile(":/new/prefix1/res/usb.ids");
@@ -347,7 +347,7 @@ int DeviceHandler::getKnownUSBDevices(){
             if(line.startsWith("\t")){  //device
                 device=(line.toStdString()).substr(1);
                 USBDevice* usb=new USBDevice(vendor,device);
-                if(lastDevice==NULL){
+                if(lastDevice==nullptr){
                     knownUSBDevices=usb;
                 }
                 else{
@@ -366,7 +366,7 @@ int DeviceHandler::getKnownUSBDevices(){
 
 // terminate all devices
 int DeviceHandler::release(){
-    if(currentDevice!=NULL){
+    if(currentDevice!=nullptr){
         syslog(LOG_DEBUG,"stopping device.");
         currentDevice->stop();
     }
@@ -417,7 +417,7 @@ const char* getUpekLibname(){
 //bsapi version 4.0 cannot handle 147e:2020
 //bsapi version 4.3 cannot handle 147e:1000
 //we need to load the libbsapi version that can handle the device found here
-    libusb_device **devs=NULL;
+    libusb_device **devs=nullptr;
     libusb_device *dev;
     struct libusb_context *ctx;
     struct libusb_device_descriptor desc;
@@ -425,12 +425,12 @@ const char* getUpekLibname(){
 
     libusb_init(&ctx);
     libusb_get_device_list(ctx,&devs);
-    if(devs==NULL){
+    if(devs==nullptr){
         syslog(LOG_ERR,"failed to get usb device list");
-        return NULL;
+        return nullptr;
     }
 
-    for(int i=0;devs[i]!=NULL;i++){
+    for(int i=0;devs[i]!=nullptr;i++){
         dev=devs[i];
         if(libusb_get_device_descriptor(dev,&desc)<0){
             syslog(LOG_ERR,"failed to get usb device descriptor");
@@ -457,32 +457,32 @@ void DeviceHandler::upekLoader(){
     if(bsapiHandle){
         syslog(LOG_INFO,"Proprietary lib \"%s\" loaded.",libname);
         *(void **)(&bsapiInitFunction)=dlsym(bsapiHandle,BSAPI_INIT);
-        if((error=dlerror())==NULL){
+        if((error=dlerror())==nullptr){
             *(void **)(&bsapiTerminateFunction)=dlsym(bsapiHandle,BSAPI_TERMINATE);
-            if((error=dlerror())==NULL){
+            if((error=dlerror())==nullptr){
                 *(void **)(&bsapiFreeFunction)=dlsym(bsapiHandle,BSAPI_FREE);
-                if((error=dlerror())==NULL){
+                if((error=dlerror())==nullptr){
                     *(void **)(&bsapiDiscoverFunction)=dlsym(bsapiHandle,BSAPI_DISCOVER);
-                    if((error=dlerror())==NULL){
+                    if((error=dlerror())==nullptr){
                     }
                     else{
                         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_DISCOVER,error);
-                        bsapiHandle=NULL;
+                        bsapiHandle=nullptr;
                     }
                 }
                 else{
                     syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_FREE,error);
-                    bsapiHandle=NULL;
+                    bsapiHandle=nullptr;
                 }
             }
             else{
                 syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_TERMINATE,error);
-                bsapiHandle=NULL;
+                bsapiHandle=nullptr;
             }
         }
         else{
             syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_INIT,error);
-            bsapiHandle=NULL;
+            bsapiHandle=nullptr;
         }
     }
     else{

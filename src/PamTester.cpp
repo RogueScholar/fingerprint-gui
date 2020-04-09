@@ -30,7 +30,7 @@
 
 volatile bool stopTester=false;
 static volatile bool returnPressed=false;
-static pam_response* pamResponse=NULL; 
+static pam_response* pamResponse=nullptr;
 QApplication *app;
 
 TestFifoReader::TestFifoReader(QLabel *la,QLabel *bar){

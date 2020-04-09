@@ -43,7 +43,7 @@ USBDevice::USBDevice(string vendor, string device){
         deviceName="unknown";
     else
         deviceName=nc;
-    next=NULL;
+    next=nullptr;
 }
 
 // public getters and setters --------------------------------------------------

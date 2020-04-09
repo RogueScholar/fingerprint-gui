@@ -35,42 +35,42 @@ using namespace std;
 
 UpekDevice::UpekDevice(void *libHandle,struct abs_device_list_item *bs,USBDevice *knownUSBDevices):FingerprintDevice(){
     char *error;
-    bsData=NULL;
+    bsData=nullptr;
     conn=0;
     absFlag=0;
     bsapiHandle=libHandle;
 
     //load library symbols
     *(void **)(&bsapiOpenFunction)=dlsym(bsapiHandle,BSAPI_OPEN);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_OPEN,error);
     }
     *(void **)(&bsapiCloseFunction)=dlsym(bsapiHandle,BSAPI_CLOSE);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_CLOSE,error);
     }
     *(void **)(&bsapiErrorFunction)=dlsym(bsapiHandle,BSAPI_ERROR);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_ERROR,error);
     }
     *(void **)(&bsapiCancelFunction)=dlsym(bsapiHandle,BSAPI_CANCEL);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_CANCEL,error);
     }
     *(void **)(&bsapiEnrollFunction)=dlsym(bsapiHandle,BSAPI_ENROLL);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_ENROLL,error);
     }
     *(void **)(&bsapiVerifyFunction)=dlsym(bsapiHandle,BSAPI_VERIFY);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_VERIFY,error);
     }
     *(void **)(&bsapiPropertyFunction)=dlsym(bsapiHandle,BSAPI_PROPERTY);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_PROPERTY,error);
     }
     *(void **)(&bsapiSetledFunction)=dlsym(bsapiHandle,BSAPI_SETLED);
-    if((error=dlerror())!=NULL){
+    if((error=dlerror())!=nullptr){
         syslog(LOG_ERR,"Could not find symbol \"%s\" (%s).",BSAPI_SETLED,error);
     }
 
@@ -82,11 +82,11 @@ UpekDevice::UpekDevice(void *libHandle,struct abs_device_list_item *bs,USBDevice
     string s=string(strdup(bs->DsnSubString));
     // for BSAPI version 3.6
     if(!(s.find("VID_",0)==string::npos || s.find("_PID_",0)==string::npos)){
-        vendorId=strtol(s.substr(s.find("VID_",0)+4,4).data(),NULL,16);
-        productId=strtol(s.substr(s.find("_PID_",0)+5,4).data(),NULL,16);
+        vendorId=strtol(s.substr(s.find("VID_",0)+4,4).data(),nullptr,16);
+        productId=strtol(s.substr(s.find("_PID_",0)+5,4).data(),nullptr,16);
         syslog(LOG_INFO,"initializing libbsapi device (vend/prod) 0x%x/0x%x",vendorId,productId);
-        if(knownUSBDevices!=NULL){
-            for(USBDevice *u=knownUSBDevices;u!=NULL;u=u->next){
+        if(knownUSBDevices!=nullptr){
+            for(USBDevice *u=knownUSBDevices;u!=nullptr;u=u->next){
                 if(u->vendorID==vendorId&&u->deviceID==productId){
                     displayName.append(string(u->vendorName));
                     displayName.append(" ");
@@ -102,11 +102,11 @@ UpekDevice::UpekDevice(void *libHandle,struct abs_device_list_item *bs,USBDevice
     }
     // for BSAPI version 4.0
     if(s.find("device=#",0)!=string::npos){     // Found for 147e:1000 devices
-        vendorId=strtol(s.substr(s.find("device=#",0)+10,4).data(),NULL,16);
-        productId=strtol(s.substr(s.find("device=#",0)+15,4).data(),NULL,16);
+        vendorId=strtol(s.substr(s.find("device=#",0)+10,4).data(),nullptr,16);
+        productId=strtol(s.substr(s.find("device=#",0)+15,4).data(),nullptr,16);
         syslog(LOG_INFO,"initializing libbsapi device (vend/prod) 0x%x/0x%x",vendorId,productId);
-        if(knownUSBDevices!=NULL){
-            for(USBDevice *u=knownUSBDevices;u!=NULL;u=u->next){
+        if(knownUSBDevices!=nullptr){
+            for(USBDevice *u=knownUSBDevices;u!=nullptr;u=u->next){
                 if(u->vendorID==vendorId&&u->deviceID==productId){
                     displayName.append(string(u->vendorName));
                     displayName.append(" ");
@@ -123,11 +123,11 @@ UpekDevice::UpekDevice(void *libHandle,struct abs_device_list_item *bs,USBDevice
     
     
     if(s.find("device=",0)!=string::npos){     // Found for 147e:2016 devices
-        vendorId=strtol(s.substr(s.find("device=",0)+7,4).data(),NULL,16);
-        productId=strtol(s.substr(s.find("device=",0)+12,4).data(),NULL,16);
+        vendorId=strtol(s.substr(s.find("device=",0)+7,4).data(),nullptr,16);
+        productId=strtol(s.substr(s.find("device=",0)+12,4).data(),nullptr,16);
         syslog(LOG_INFO,"initializing libbsapi device (vend/prod) 0x%x/0x%x",vendorId,productId);
-        if(knownUSBDevices!=NULL){
-            for(USBDevice *u=knownUSBDevices;u!=NULL;u=u->next){
+        if(knownUSBDevices!=nullptr){
+            for(USBDevice *u=knownUSBDevices;u!=nullptr;u=u->next){
                 if(u->vendorID==vendorId&&u->deviceID==productId){
                     displayName.append(string(u->vendorName));
                     displayName.append(" ");
@@ -163,7 +163,7 @@ bool UpekDevice::canIdentify(){
 void UpekDevice::setIdentifyData(FingerprintData *iData){
     int i;
     FingerprintData *d;
-    for(d=iData,numIdentify=0;d!=NULL;numIdentify++){
+    for(d=iData,numIdentify=0;d!=nullptr;numIdentify++){
         d=d->next;
     }
     if(numIdentify==0){
@@ -171,15 +171,15 @@ void UpekDevice::setIdentifyData(FingerprintData *iData){
         return;
     }
     identifyData=new ABS_BIR*[numIdentify+1];
-    for(d=iData,i=0;d!=NULL;i++){
+    for(d=iData,i=0;d!=nullptr;i++){
         identifyData[i]=(ABS_BIR*)d->getData();
         d=d->next;
     }
-    identifyData[numIdentify]=NULL;
+    identifyData[numIdentify]=nullptr;
 }
 
 int UpekDevice::getData(void **d,struct fp_pic_data **pic){
-    if ( NULL != pic ) *pic=&fpPic;
+    if ( nullptr != pic ) *pic=&fpPic;
     *d=(void*)bsData;
     return bsData->Header.Length;
 }
@@ -463,7 +463,7 @@ void BSAPI callback(const ABS_OPERATION* p_operation,ABS_DWORD msg,void* /*data*
 
 static ABS_OPERATION operation={ 
     0,          //operation identifier, used for mode (acquire, identify or verify)
-    NULL,       //data to call back, not used
+    nullptr,       //data to call back, not used
     callback,  
     OPERATION_TIMEOUT,      //timeout
     ABS_OPERATION_FLAG_LL_CALLBACK
@@ -571,7 +571,7 @@ bool UpekDevice::acquire(){
 bool UpekDevice::identify(){
     long match=-1L;
 
-    if(identifyData==NULL||numIdentify==0){
+    if(identifyData==nullptr||numIdentify==0){
         syslog(LOG_ERR,"No data to identify."); 
         return false;
     }

@@ -55,7 +55,7 @@ FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d,bool debug){
     }
     device=d;
     numPrints=0;
-    allFingerprints=NULL;
+    allFingerprints=nullptr;
     QStringList entryList=dataDir.entryList();
     for(QStringListIterator it(entryList);it.hasNext();){
         QString user(it.next());
@@ -72,7 +72,7 @@ FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d,bool debug){
 FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d, string user,bool debug){
     device=d;
     numPrints=0;
-    allFingerprints=NULL;
+    allFingerprints=nullptr;
 
     discoverFingerprints(user,d,debug);
 }
@@ -85,15 +85,15 @@ FingerprintData *FingerprintDiscoverer::getIdentifyData(){
 // private helpers -------------------------------------------------------------
 void FingerprintDiscoverer::addFingerprintData(FingerprintData *fpd){
     syslog(LOG_DEBUG,"Adding %s -- %s.",fpd->getUserName()->data(),fpd->getFingerName());
-    if(allFingerprints==NULL){
+    if(allFingerprints==nullptr){
         allFingerprints=fpd;
-        fpd->next=NULL;
+        fpd->next=nullptr;
         return;
     }
-    for(FingerprintData *fp=allFingerprints;fp!=NULL;fp=fp->next){
-        if(fp->next==NULL){
+    for(FingerprintData *fp=allFingerprints;fp!=nullptr;fp=fp->next){
+        if(fp->next==nullptr){
             fp->next=fpd;
-            fpd->next=NULL;
+            fpd->next=nullptr;
             return;
         }
     }
@@ -139,7 +139,7 @@ void FingerprintDiscoverer::discoverFingerprints(string user,FingerprintDevice *
                 char *birData=new char[dataSize];
                 birFile.read((char*)birData,dataSize);
                 birFile.close();
-                FingerprintData *fpd=NULL;
+                FingerprintData *fpd=nullptr;
                 fpd=new FingerprintData(user,f,birData,dataSize);
                 if(fpd)
                     addFingerprintData(fpd);
@@ -159,8 +159,8 @@ void FingerprintDiscoverer::discoverFingerprints(string user,FingerprintDevice *
                         ARG_USER,user.data(),
 		        ARG_DRIVER,device->getDisplayName(DISPLAY_DRIVER_NAME)->data(),
 		        ARG_FILE,filename.data(),
-                        debug?ARG_DEBUG1:NULL,
-                        NULL);
+                        debug?ARG_DEBUG1:nullptr,
+                        nullptr);
             	    syslog(LOG_ERR,"ERROR: Could not execute %s %d (%s).",READ_COMMAND,rc,strerror(errno));
             	    _exit(EXIT_FAILURE);
                 case -1:            // Fork error
@@ -190,7 +190,7 @@ void FingerprintDiscoverer::discoverFingerprints(string user,FingerprintDevice *
                 char *birData=new char[dataSize];
                 birFile.read((char*)birData,dataSize);
                 birFile.close();
-                FingerprintData *fpd=NULL;
+                FingerprintData *fpd=nullptr;
                 fpd=new FingerprintData(user,f,birData,dataSize);
                 if(fpd)
                     addFingerprintData(fpd);
