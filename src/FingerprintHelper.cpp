@@ -281,7 +281,7 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
             else{
                 syslog(LOG_INFO,"Have X-display %s. Starting GUI login.",display);
                 QApplication app(argc,argv);
-                        loadTranslations(app);
+                        loadTranslations(&app);
                 PamGUI gui(devices,identifyData);
                 if(!devices->isRunning()){  //something went wrong
                     syslog(LOG_ERR,"ERROR: Device not running!");

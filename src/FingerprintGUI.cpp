@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
         }
     }
     syslog(LOG_INFO,"Started.");
-        loadTranslations(app);
+        loadTranslations(&app);
     MainWindowImpl mainWindow;
     mainWindow.deviceHandler->rescan();
 
