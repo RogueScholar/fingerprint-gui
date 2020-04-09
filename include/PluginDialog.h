@@ -32,9 +32,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <QtWidgets>
-#include <QFrame>
-#include <QLabel>
-#include <QDialog>
 #include "ui_FingerprintPlugin.h"
 #include "Globals.h"
 
