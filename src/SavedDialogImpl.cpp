@@ -30,27 +30,27 @@ SavedDialogImpl::SavedDialogImpl(int mode, QWidget * parent, struct fp_pic_data 
     : QDialog(parent, f){
     setupUi(this);
 
-    QString s="Fingerprint was ";
-    QString t="Fingerprint ";
+    QString s; // ="Fingerprint was ";
+    QString t;
     switch(mode){
         case MODE_SAVED:
-            s.append("saved to disk.");
-            t.append("OK");
+            s = tr("Fingerprint saved to disk.");
+            t = tr("Fingerprint OK");
             yesButton->setDefault(true);
             break;
         case MODE_NOT_SAVED:
-            s.append("not saved. Click \"No\" to retry.");
-            t.append("fail!");
+            s = tr("Fingerprint not saved. Click \"No\" to retry.");
+            t = tr("Fingerprint fail!");
             noButton->setDefault(true);
             break;
         case MODE_VERIFIED:
-            s.append("verified.");
-            t.append("OK");
+            s = tr("Fingerprint verified.");
+            t = tr("Fingerprint OK");
             yesButton->setDefault(true);
             break;
         case MODE_NOT_VERIFIED:
-            s.append("NOT verified. Click \"No\" to retry.");
-            t.append("fail!");
+            s = tr("Fingerprint NOT verified. Click \"No\" to retry.");
+            t = tr("Fingerprint fail!");
             noButton->setDefault(true);
             break;
     }
@@ -94,3 +94,4 @@ void SavedDialogImpl::noChoice(){
     close();
 }
 
+#include "moc_SavedDialogImpl.cpp"

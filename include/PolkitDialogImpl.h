@@ -27,6 +27,9 @@
 #define	POLKITDIALOGIMPL_H
 
 #include <QtGui>
+#include <QWidget>
+#include <QDialog>
+#include <QSharedPointer>
 #include <polkit-qt5-1/PolkitQt1/Authority>
 #include <polkit-qt5-1/PolkitQt1/Details>
 #include "ui_PolkitDialog.h"
@@ -66,7 +69,7 @@ public:
             const QString &iconName,
             const PolkitQt1::Details &details,
             const PolkitQt1::Identity::List &identities,
-            QWidget * parent = 0, Qt::WindowFlags f = 0);
+            QWidget * parent = nullptr, Qt::WindowFlags f = nullptr);
     virtual ~PolkitDialogImpl();
     QString password() const;
     void authenticationFailure();

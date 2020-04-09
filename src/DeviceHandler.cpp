@@ -23,19 +23,19 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* 
+/*
  * DeviceHandler maintains a list of all available USB devies and a list of all
  * attached and supported fingerprint reader devices.
  *
  * In the first step a list of all known vendor-id and device-id is derived from
  * the file usb.ids, that is located in the programm ressources and was found
- * on http://www.linux-usb.org/usb.ids. This is only to be able to show a list of 
+ * on http://www.linux-usb.org/usb.ids. This is only to be able to show a list of
  * all attached usb devices at GUI startup/rescan.
  *
- * In the second step the list of attached usb devices is created and can be 
+ * In the second step the list of attached usb devices is created and can be
  * obtained by getAttachedUsbDevices().
  *
- * In the third step a list of attached and supported fingerprint readers is 
+ * In the third step a list of attached and supported fingerprint readers is
  * created. On adding a device the signal "deviceAdded" is emitted.
  *
  * Calling getIdentifiers returns a list of fingerprint devices that can identify.
@@ -46,8 +46,8 @@
 #include <iostream>
 #include <fstream>
 #include <dlfcn.h>
-#include <qstring.h>
-#include <qcombobox.h>
+#include <QString>
+#include <QComboBox>
 #include "../include/UsbDevice.h"
 #include "../include/FingerprintDevice.h"
 #include "drivers/GenericDevice.h"
@@ -181,7 +181,7 @@ void DeviceHandler::rescan(){
         delete usb_p;
     }
     attachedUSBDevices=NULL;
-    
+
     if(findAttachedUSBDevices()>0){
         if(discoveredFpDevices!=NULL)
             fp_dscv_devs_free(discoveredFpDevices);
@@ -337,7 +337,7 @@ int DeviceHandler::getKnownUSBDevices(){
     QFile idFile(":/new/prefix1/res/usb.ids");
     if (!idFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
-    
+
     QTextStream in(&idFile);
     while (!in.atEnd()) {
         QString line = in.readLine();
@@ -491,3 +491,5 @@ void DeviceHandler::upekLoader(){
 }
 
 /* insert libloaders for other proprietary driver libraries here */
+
+#include "moc_DeviceHandler.cpp"

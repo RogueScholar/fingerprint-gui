@@ -132,3 +132,5 @@ void PluginDialog::stopPlugin(){
         qApp->exit(EXIT_SUCCESS);
     }
 }
+
+#include "moc_PluginDialog.cpp"

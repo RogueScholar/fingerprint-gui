@@ -38,3 +38,5 @@ MessageDialogImpl::MessageDialogImpl(QWidget * parent, Qt::WindowFlags f)
 void MessageDialogImpl::ok(){
     accept();
 }
+
+#include "moc_MessageDialogImpl.cpp"

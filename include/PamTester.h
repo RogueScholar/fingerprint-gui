@@ -32,6 +32,9 @@
 #include <string>
 #include <iostream>
 #include <QtWidgets>
+#include <QLabel>
+#include <QLineEdit>
+#include <QApplication>
 #include <security/pam_appl.h>
 #include <security/pam_misc.h>
 #include "Globals.h"

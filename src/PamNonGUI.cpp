@@ -158,3 +158,5 @@ void PamNonGUI::timerTick(){
             repeatDelay--;  //still wait
     }
 }
+
+#include "moc_PamNonGUI.cpp"

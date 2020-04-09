@@ -27,6 +27,8 @@
 #define _MAINWINDOWIMPL_H
 
 #include <string>
+#include <QMessageBox>
+#include <QFileDialog>
 #include "ui_FingerprintGUI.h"
 #include "DeviceHandler.h"
 #include "Fingerprint.h"

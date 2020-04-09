@@ -29,9 +29,7 @@ ExistDialogImpl::ExistDialogImpl(string finger, QWidget * parent, Qt::WindowFlag
     : QDialog(parent, f){
     setupUi(this);
 
-    QString s("A fingerprint for ");
-    s.append(finger.data());
-    s.append(" exists already.");
+    QString s = QString(tr("A fingerprint for %1 exists already.")).arg(finger.data());
     syslog(LOG_INFO,"A fingerprint for %s exists already.",finger.data());
     fingerLabel->setText(s);
     connect(acquireButton,SIGNAL(clicked()),this,SLOT(acquireChoice()));
@@ -58,3 +56,5 @@ void ExistDialogImpl::acquireChoice(){
     emit choice(EXIST_ACQUIRE);
     close();
 }
+
+#include "moc_ExistDialogImpl.cpp"

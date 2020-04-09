@@ -1,7 +1,8 @@
 [Desktop Entry]
+Version=1.1
 Name=PolicyKit Authentication Agent with Fingerprint Authentication
 Comment=PolicyKit Authentication Agent with Fingerprint Authentication
-Exec=LIBEXECDIR/fingerprint-polkit-agent -d
+Exec=@LIBEXECDIR@/fingerprint-polkit-agent -d
 Terminal=false
 Type=Application
 Categories=

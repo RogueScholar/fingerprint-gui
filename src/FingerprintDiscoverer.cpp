@@ -203,4 +203,4 @@ void FingerprintDiscoverer::discoverFingerprints(string user,FingerprintDevice *
     }
 }
 
-
+#include "moc_FingerprintDiscoverer.cpp"

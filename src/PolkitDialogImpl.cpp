@@ -155,14 +155,14 @@ void PolkitDialogImpl::setRequest(const QString &request,bool requiresAdmin){
     if(request.startsWith(QLatin1String("password:"),Qt::CaseInsensitive)){
         if(requiresAdmin){
             if(!identity.isValid()){
-                passwordLabel->setText("Password for root:");
+                passwordLabel->setText(tr("Password for root:"));
             }
             else{
-                passwordLabel->setText("Password for "+identity.toString().remove("unix-user:"));
+                passwordLabel->setText(tr("Password for %1").arg(identity.toString().remove("unix-user:")));
             }
         }
         else{
-            passwordLabel->setText("Password:");
+            passwordLabel->setText(tr("Password:"));
         }
     }
     else{
@@ -175,7 +175,7 @@ void PolkitDialogImpl::createUserCombobox(const PolkitQt1::Identity::List &ident
     if(identities.count()&&(userCombobox->count()-1)!=identities.count()){
         userCombobox->clear();
         // Adds a Dummy user
-        userCombobox->addItem("Select User", qVariantFromValue<QString> (QString()));
+        userCombobox->addItem(tr("Select User"), qVariantFromValue<QString> (QString()));
         qobject_cast<QStandardItemModel *>(userCombobox->model())->item(userCombobox->count()-1)->setEnabled(false);
 
         // For each user
@@ -234,7 +234,7 @@ QString PolkitDialogImpl::password() const{
 }
 
 void PolkitDialogImpl::authenticationFailure(){
-    errorLabel->setText("Authentication failure, please try again.");
+    errorLabel->setText(tr("Authentication failure, please try again."));
     errorLabel->show();
     passwordEdit->clear();
     passwordEdit->setFocus();
@@ -242,19 +242,19 @@ void PolkitDialogImpl::authenticationFailure(){
 
 void PolkitDialogImpl::setOptions(){
     contentLabel->setText(
-    "An application is attempting to perform an action that requires privileges. \
-    Authentication is required to perform this action.");
+    tr("An application is attempting to perform an action that requires privileges. \
+    Authentication is required to perform this action."));
     SET_TEXT_COLOR;
 }
 
 void PolkitDialogImpl::showDetails(){
     if(detailsDialog->isHidden()){
-        detailsButton->setText("&Details <<");
+        detailsButton->setText(tr("&Details <<"));
         detailsDialog->show();
     }
     else{
         detailsDialog->hide();
-        detailsButton->setText("&Details >>");
+        detailsButton->setText(tr("&Details >>"));
     }
 }
 
@@ -275,7 +275,7 @@ PolkitDetailsImpl::PolkitDetailsImpl(const PolkitQt1::Details &details,
     foreach(const QString &key,details.keys()){
         int row=gridLayout->rowCount()+1;
         QLabel *keyLabel=new QLabel(this);
-        keyLabel->setText(key+"is the name of a detail about the current action provided by polkit.");
+        keyLabel->setText(tr("%1 is the name of a detail about the current action provided by polkit.").arg(key));
         gridLayout->addWidget(keyLabel,row,0);
         QLabel *valueLabel=new QLabel(this);
         valueLabel->setText(details.lookup(key));
@@ -291,9 +291,9 @@ PolkitDetailsImpl::PolkitDetailsImpl(const PolkitQt1::Details &details,
         }
 
         QString vendor=actionDescription->vendorName();
-        QString vendorUrl = "<a href=\""+actionDescription->vendorUrl()+"\">"+vendor+"</a>";
+        QString vendorUrl = QString("<a href=\"%1\">%2</a>").arg(actionDescription->vendorUrl()).arg(vendor);
         if(!vendor.isEmpty()){
-            vendorUrlLabel->setToolTip("Click to open "+actionDescription->vendorUrl());
+            vendorUrlLabel->setToolTip(tr("Click to open %1").arg(actionDescription->vendorUrl()));
             vendorUrlLabel->setText(vendorUrl);
         } 
         else{
@@ -308,3 +308,5 @@ PolkitDetailsImpl::PolkitDetailsImpl(const PolkitQt1::Details &details,
         }
     }
 }
+
+#include "moc_PolkitDialogImpl.cpp"

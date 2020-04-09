@@ -31,6 +31,7 @@
 #include "ui_FingerprintGUI.h"
 #include "MainWindowImpl.h"
 #include "DeviceHandler.h"
+#include "i18nHelper.h"
 
 using namespace std;
 
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]){
         }
     }
     syslog(LOG_INFO,"Started.");
-    
+        loadTranslations(app);
     MainWindowImpl mainWindow;
     mainWindow.deviceHandler->rescan();
 

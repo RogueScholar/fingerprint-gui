@@ -115,12 +115,12 @@ int callback(int,const struct pam_message **,struct pam_response **resp,void *){
 }
 
 PamTester::PamTester(QLabel *label1,QLabel *label2,const char *svc,bool identify){
-    if(svc==NULL)return; //uups
+    if(svc==nullptr)return; //uups
     struct passwd *pws=getpwuid(geteuid());
     service=svc;
-    pamconv=(pam_conv){callback,NULL};
-    pamh=NULL;
-    user=NULL;
+    pamconv=(pam_conv){callback,nullptr};
+    pamh=nullptr;
+    user=nullptr;
     app=qApp;
     if(!identify){   // This service doesn't require to identify the user
         user=pws->pw_name;
@@ -173,3 +173,5 @@ void PamTester::haveResult(){
     syslog(LOG_DEBUG,"Caught line input.");
     returnPressed=true;
 }
+
+#include "moc_PamTester.cpp"
