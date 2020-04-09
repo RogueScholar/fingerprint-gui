@@ -27,6 +27,9 @@
 #define	POLKITDIALOGIMPL_H
 
 #include <QtGui>
+#include <QWidget>
+#include <QDialog>
+#include <QSharedPointer>
 #include <polkit-qt5-1/PolkitQt1/Authority>
 #include <polkit-qt5-1/PolkitQt1/Details>
 #include "ui_PolkitDialog.h"

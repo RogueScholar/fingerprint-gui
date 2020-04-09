@@ -53,7 +53,7 @@ MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
 
     string title=string("Fingerprint GUI ");
     title.append(VERSION);
-    setWindowTitle(QApplication::translate("MainWindow",title.data()));
+    setWindowTitle(QApplication::translate("MainWindow",title.data(), nullptr));
     deviceHandler=new DeviceHandler(DISPLAY_VENDOR_NAME);
     connect(deviceHandler, SIGNAL(deviceAdded(string)), this, SLOT(newDevice(string)));
     connect(rescanButton, SIGNAL(clicked()),deviceHandler, SLOT(rescan()));
@@ -424,7 +424,7 @@ void MainWindowImpl::existDialogChosen(existDialogChoice choice){
     switch(choice){
         case EXIST_VERIFY:
             currentFingerprint->modeVerify();
-        case EXIST_ACQUIRE:
+            [[fallthrough]]; case EXIST_ACQUIRE:
             movie->setPaused(false);
             swipeFinger();
             break;

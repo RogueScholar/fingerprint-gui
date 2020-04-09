@@ -45,7 +45,7 @@ IdentifierGUI::IdentifierGUI(bool decorated,FingerprintDevice *dev,FingerprintDa
         setWindowFlags(Qt::Dialog);
         string title=string("Fingerprint Identifier ");
         title.append(VERSION);
-        setWindowTitle(QApplication::translate("MainWindow",title.data()));
+        setWindowTitle(QApplication::translate("MainWindow",title.data(), nullptr));
 	SET_TEXT_COLOR
     }
         
