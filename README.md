@@ -23,7 +23,8 @@ the command:
 
 ```bash
 sudo apt install -y qtbase5-dev libqt5core5a qt5ct qt5-qmake qtchooser \
-qttranslations5-l10n qtbase5-dev-tools qttools5-dev-tools
+qttranslations5-l10n qtbase5-dev-tools qttools5-dev-tools libqt5x11extras5-dev \
+  qttools5-dev
 ```
 
 ### Install dependencies
