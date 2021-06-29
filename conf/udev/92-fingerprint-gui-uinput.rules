@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+# SPDX-FileCopyrightText: 🄯 2019-2021 Peter J. Mello <admin@petermello.net>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+# ----------------------------------------------------------------------------
+# Udev rules for Fingerprint-GUI (uinput)
+
+# Set permissions for uinput
+KERNEL=="uinput", MODE="0660", GROUP="plugdev"

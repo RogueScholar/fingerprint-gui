@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+# SPDX-FileCopyrightText: 🄯 2019-2021 Peter J. Mello <admin@petermello.net>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+# ----------------------------------------------------------------------------
+# Udev rules for Fingerprint-GUI (libbsapi)
+
+# Set permissions and enable power saving (where applicable)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="2015", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchChip/Eikon Touch 300"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="2016", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchStrip"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="2015", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchChip"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="2016", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchChip/TouchStrip"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="2020", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchChip Coprocessor"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="100[02]", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchChip/TouchStrip"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="1001", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchStrip TCS5B/Eikon Trueme"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="1003", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek Biometric TouchStrip"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="3000", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek/AuthenTec TouchChip TCS1C EIM/Cypress"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="3001", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek/AuthenTec TouchChip TCS1C EIM/STM32"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="147e", ATTRS{idProduct}=="500[23]", \
+  ATTRS{dev}=="*", TEST=="power/control", ATTR{power/control}="auto", \
+  SYMLINK+="input/touchchip-%k", MODE="0660", GROUP="plugdev", \
+  ENV{FINGERPRINT_GUI_DRIVER}="Upek/DigitalPersona, Inc. Biometric TouchStrip"
