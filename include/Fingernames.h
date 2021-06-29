@@ -30,7 +30,7 @@
 
 #include "Globals.h"
 
-static const char* fingers[]= {
+static const char *fingers[] = {
     QT_TRANSLATE_NOOP("Fingernames", "Left Little"),
     QT_TRANSLATE_NOOP("Fingernames", "Left Ring"),
     QT_TRANSLATE_NOOP("Fingernames", "Left Middle"),
@@ -40,7 +40,6 @@ static const char* fingers[]= {
     QT_TRANSLATE_NOOP("Fingernames", "Right Index"),
     QT_TRANSLATE_NOOP("Fingernames", "Right Middle"),
     QT_TRANSLATE_NOOP("Fingernames", "Right Ring"),
-    QT_TRANSLATE_NOOP("Fingernames", "Right Little")
-};
+    QT_TRANSLATE_NOOP("Fingernames", "Right Little")};
 
 #endif /* _FINGERCODES_H */

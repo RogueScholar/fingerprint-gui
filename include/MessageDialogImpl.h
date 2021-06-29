@@ -26,25 +26,24 @@
 #ifndef _MESSAGEDIALOGIMPL_H
 #define _MESSAGEDIALOGIMPL_H
 
-#include <string>
+#include "ui_Message.h"
 #include <QtGui>
 #include <qstring.h>
 #include <qwidget.h>
-#include "ui_Message.h"
+#include <string>
 
 #include "Globals.h"
 
 using namespace std;
 
-class MessageDialogImpl : public QDialog, public Ui::MessageDialog
-{
-    Q_OBJECT
+class MessageDialogImpl : public QDialog, public Ui::MessageDialog {
+  Q_OBJECT
 
 public:
-    MessageDialogImpl(QWidget* parent=0,Qt::WindowFlags f=0);
+  MessageDialogImpl(QWidget *parent = 0, Qt::WindowFlags f = 0);
 
 private slots:
-    void ok();
+  void ok();
 };
 
 #endif /* _MESSAGEDIALOGIMPL_H */

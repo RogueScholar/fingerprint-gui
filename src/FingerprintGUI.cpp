@@ -23,42 +23,42 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <string>
-#include <iostream>
-#include <fstream>
 #include <QtGui>
+#include <fstream>
+#include <iostream>
+#include <string>
 
-#include "ui_FingerprintGUI.h"
-#include "MainWindowImpl.h"
 #include "DeviceHandler.h"
+#include "MainWindowImpl.h"
 #include "i18nHelper.h"
+#include "ui_FingerprintGUI.h"
 
 using namespace std;
 
-bool debugTest=false;
-string syslogIdent=string(GUI_NAME);
+bool debugTest = false;
+string syslogIdent = string(GUI_NAME);
 
 int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+  QApplication app(argc, argv);
 
-    openlog(syslogIdent.data(),LOG_NDELAY|LOG_PID,LOG_AUTH);
-    setlogmask(LOG_UPTO(LOG_ERR));
-    for(int i=0; i<argc; i++) {
-        if((strcmp(argv[i],ARG_DEBUG1)==0)
-                | (strcmp(argv[i],ARG_DEBUG2)==0)
-                | (strcmp(argv[i],ARG_DEBUG3)==0)) {
-            setlogmask(-1);
-            debugTest=true;
-        }
+  openlog(syslogIdent.data(), LOG_NDELAY | LOG_PID, LOG_AUTH);
+  setlogmask(LOG_UPTO(LOG_ERR));
+  for (int i = 0; i < argc; i++) {
+    if ((strcmp(argv[i], ARG_DEBUG1) == 0) |
+        (strcmp(argv[i], ARG_DEBUG2) == 0) |
+        (strcmp(argv[i], ARG_DEBUG3) == 0)) {
+      setlogmask(-1);
+      debugTest = true;
     }
-    syslog(LOG_INFO,"Started.");
-    loadTranslations(app);
-    MainWindowImpl mainWindow;
-    mainWindow.deviceHandler->rescan();
+  }
+  syslog(LOG_INFO, "Started.");
+  loadTranslations(app);
+  MainWindowImpl mainWindow;
+  mainWindow.deviceHandler->rescan();
 
-    mainWindow.show();
-    int rc=app.exec();
+  mainWindow.show();
+  int rc = app.exec();
 
-    mainWindow.deviceHandler->release();
-    return rc;
+  mainWindow.deviceHandler->release();
+  return rc;
 }

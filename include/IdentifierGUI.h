@@ -1,8 +1,8 @@
 /*
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: IdentifierGUI.cpp, IdentifierGUI.h
- * Purpose: Main object for fingerprintIdentifier module for running in gui environments
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * Purpose: Main object for fingerprintIdentifier module for running in gui
+ * environments SPDX-License-Identifier: GPL-3.0-or-later
  *
  * @author  Wolfgang Ullrich
  * Copyright (C) 2008-2016 Wolfgang Ullrich
@@ -24,39 +24,41 @@
  */
 
 #ifndef _IDENTIFIERGUI_H
-#define	_IDENTIFIERGUI_H
+#define _IDENTIFIERGUI_H
 
-#include <QtGui>
-#include <QObject>
-#include <QEventLoop>
-#include <QDesktopWidget>
+#include "DeviceHandler.h"
+#include "FingerprintData.h"
+#include "FingerprintDevice.h"
+#include "FingerprintDiscoverer.h"
 #include "Globals.h"
 #include "ui_FingerprintIdentifier.h"
-#include "FingerprintDevice.h"
-#include "FingerprintData.h"
-#include "FingerprintDiscoverer.h"
-#include "DeviceHandler.h"
+#include <QDesktopWidget>
+#include <QEventLoop>
+#include <QObject>
+#include <QtGui>
 
 class IdentifierGUI : public QMainWindow, public Ui::IdentifierWindow {
-    Q_OBJECT
+  Q_OBJECT
 
 private:
-    QMovie *movie;
-    QTimer *timer;
-    int repeatDelay;
-    FingerprintDevice *device;
-    FingerprintData *identifyData;
-    QPixmap fpPix;
+  QMovie *movie;
+  QTimer *timer;
+  int repeatDelay;
+  FingerprintDevice *device;
+  FingerprintData *identifyData;
+  QPixmap fpPix;
 
 public:
-    IdentifierGUI(bool decorated,FingerprintDevice *device,FingerprintData *identifyData,QWidget *parent=0,Qt::WindowFlags f=0);
+  IdentifierGUI(bool decorated, FingerprintDevice *device,
+                FingerprintData *identifyData, QWidget *parent = 0,
+                Qt::WindowFlags f = 0);
 
 public slots:
-    void matchResult(int match,struct fp_pic_data *pic);
-    void newVerifyResult(int result,struct fp_pic_data *pic);
-    void timerTick();
-    void keyPressEvent(QKeyEvent *e);
-    void closeEvent(QCloseEvent *e);
+  void matchResult(int match, struct fp_pic_data *pic);
+  void newVerifyResult(int result, struct fp_pic_data *pic);
+  void timerTick();
+  void keyPressEvent(QKeyEvent *e);
+  void closeEvent(QCloseEvent *e);
 };
 
-#endif	/* _IDENTIFIERGUI_H */
+#endif /* _IDENTIFIERGUI_H */

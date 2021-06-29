@@ -26,12 +26,12 @@
 #ifndef _DEVICEHANDLER_H
 #define _DEVICEHANDLER_H
 
-#include <string>
-#include <QtWidgets>
-#include <QApplication>
-#include <QObject>
 #include "FingerprintDevice.h"
 #include "UsbDevice.h"
+#include <QApplication>
+#include <QObject>
+#include <QtWidgets>
+#include <string>
 
 #include "Globals.h"
 
@@ -52,69 +52,74 @@
 using namespace std;
 
 typedef struct {
-    int vendorId;
-    int deviceId;
-    string displayName;
+  int vendorId;
+  int deviceId;
+  string displayName;
 } supportedFingerprintDevice;
 
-typedef enum {
-    DISPLAY_VENDOR_NAME,
-    DISPLAY_DRIVER_NAME
-} display_name_mode;
+typedef enum { DISPLAY_VENDOR_NAME, DISPLAY_DRIVER_NAME } display_name_mode;
 
 class DeviceHandler : public QObject {
-    Q_OBJECT
+  Q_OBJECT
 
-    USBDevice* knownUSBDevices;     //linked list of all known USB devices according to "usb.ids"
-    USBDevice* attachedUSBDevices;  //linked list of all attached USB devices
-    struct fp_dscv_dev** discoveredFpDevices;   //Fingerprint devices discovered by libfprint
-    ABS_DEVICE_LIST* discoveredBsDevices;       //Fingerprint devices discovered by libbsapi
-    FingerprintDevice* fingerprintDevices;      //linked list of all attached and supported fingerprint devices
-    FingerprintDevice* identifierDevices;       //linked list of fingerprint devices that can identify
-    FingerprintDevice* verifierDevices;         //linked list of fingerprint devices that can not identify
-    FingerprintDevice* currentDevice;           //pointer to current FingerprintDevice (as chosen by ComboBox)
-    int currentDeviceIndex;                     //currrent FingerprintDevice (index in ComboBox)
-    display_name_mode displayNameMode;
+  USBDevice *knownUSBDevices; // linked list of all known USB devices according
+                              // to "usb.ids"
+  USBDevice *attachedUSBDevices; // linked list of all attached USB devices
+  struct fp_dscv_dev *
+      *discoveredFpDevices; // Fingerprint devices discovered by libfprint
+  ABS_DEVICE_LIST
+      *discoveredBsDevices; // Fingerprint devices discovered by libbsapi
+  FingerprintDevice *fingerprintDevices; // linked list of all attached and
+                                         // supported fingerprint devices
+  FingerprintDevice *
+      identifierDevices; // linked list of fingerprint devices that can identify
+  FingerprintDevice *verifierDevices; // linked list of fingerprint devices that
+                                      // can not identify
+  FingerprintDevice *currentDevice; // pointer to current FingerprintDevice (as
+                                    // chosen by ComboBox)
+  int currentDeviceIndex; // currrent FingerprintDevice (index in ComboBox)
+  display_name_mode displayNameMode;
 
-// functions to access the proprietary "libbsapi" from UPEK
-    void *bsapiHandle;                              // handle to loaded library
-    ABS_STATUS BSAPI (*bsapiInitFunction)();        // initialize the library
-    ABS_STATUS BSAPI (*bsapiTerminateFunction)();   // terminate the library
-    void BSAPI (*bsapiFreeFunction)(                // free allocated memory in libbsapi
-        ABS_DEVICE_LIST*);
-    ABS_STATUS BSAPI (*bsapiDiscoverFunction)(      // discover devices handled by libbsapi
-        const ABS_CHAR*,ABS_DEVICE_LIST**);
+  // functions to access the proprietary "libbsapi" from UPEK
+  void *bsapiHandle;                            // handle to loaded library
+  ABS_STATUS BSAPI (*bsapiInitFunction)();      // initialize the library
+  ABS_STATUS BSAPI (*bsapiTerminateFunction)(); // terminate the library
+  void BSAPI (*bsapiFreeFunction)( // free allocated memory in libbsapi
+      ABS_DEVICE_LIST *);
+  ABS_STATUS
+      BSAPI (*bsapiDiscoverFunction)( // discover devices handled by libbsapi
+          const ABS_CHAR *, ABS_DEVICE_LIST **);
 
-    /* insert functions for other proprietary driver libraries here */
+  /* insert functions for other proprietary driver libraries here */
 
 public:
-    DeviceHandler(display_name_mode mode);
-    ~DeviceHandler();
-    USBDevice* getAttachedUsbDevices();
-    FingerprintDevice* getCurrentDevice(int *index);
-    FingerprintDevice* getFingerprintDevices();
-    void setDisplayNameMode(display_name_mode mode);
-    FingerprintDevice* getIdentifiers();
-    FingerprintDevice* getVerifiers();
-    int initialize();   // initialize all devices
-    int release();      // terminate all devices
+  DeviceHandler(display_name_mode mode);
+  ~DeviceHandler();
+  USBDevice *getAttachedUsbDevices();
+  FingerprintDevice *getCurrentDevice(int *index);
+  FingerprintDevice *getFingerprintDevices();
+  void setDisplayNameMode(display_name_mode mode);
+  FingerprintDevice *getIdentifiers();
+  FingerprintDevice *getVerifiers();
+  int initialize(); // initialize all devices
+  int release();    // terminate all devices
 
 public slots:
-    void rescan();
-    void setCurrentDevice(int index);
+  void rescan();
+  void setCurrentDevice(int index);
 signals:
-    void deviceAdded(const string displayName);
-    void rescanFinished();
+  void deviceAdded(const string displayName);
+  void rescanFinished();
 
 private:
-    int getKnownUSBDevices();
-    int findAttachedUSBDevices();
-    USBDevice* findKnownDevice(int vendor, int product);
-    void addDevice(FingerprintDevice* fpDevice);
-// Libloaders for proprietary driver libraries
-    // loader for "libbsapi" from UPEK
-    void upekLoader();
-    /* insert libloaders for other proprietary driver libraries here */
+  int getKnownUSBDevices();
+  int findAttachedUSBDevices();
+  USBDevice *findKnownDevice(int vendor, int product);
+  void addDevice(FingerprintDevice *fpDevice);
+  // Libloaders for proprietary driver libraries
+  // loader for "libbsapi" from UPEK
+  void upekLoader();
+  /* insert libloaders for other proprietary driver libraries here */
 };
 
-#endif	/* _DEVICEHANDLER_H */
+#endif /* _DEVICEHANDLER_H */

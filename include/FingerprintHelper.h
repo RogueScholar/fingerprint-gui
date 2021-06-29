@@ -24,7 +24,7 @@
  */
 
 #ifndef _FINGERPRINTHELPER_H
-#define	_FINGERPRINTHELPER_H
+#define _FINGERPRINTHELPER_H
 
 #include <stdio.h>
 #include <string>
@@ -33,5 +33,4 @@ using namespace std;
 
 void pluginMessage(const char *msg);
 
-#endif	/* _FINGERPRINTHELPER_H */
-
+#endif /* _FINGERPRINTHELPER_H */

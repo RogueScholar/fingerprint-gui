@@ -2,8 +2,8 @@
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: FingerprintDiscoverer.cpp, FingerprintDiscoverer.h
  * Purpose: Try to load all stored fingerprints of all users on local machine
- *          Doesn't load fingerprint data from homedirs where it has no permission to read
- *          So only running it as root can indentify all users.
+ *          Doesn't load fingerprint data from homedirs where it has no
+ * permission to read So only running it as root can indentify all users.
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * @author  Wolfgang Ullrich
@@ -26,32 +26,31 @@
  */
 
 #ifndef _FINGERPRINTDISCOVERER_H
-#define	_FINGERPRINTDISCOVERER_H
+#define _FINGERPRINTDISCOVERER_H
 
-#include <string>
-#include "FingerprintDevice.h"
 #include "FingerprintData.h"
+#include "FingerprintDevice.h"
+#include <string>
 
 #include "Globals.h"
 
 using namespace std;
 
 class FingerprintDiscoverer : public QObject {
-    Q_OBJECT
+  Q_OBJECT
 private:
-    FingerprintDevice *device;
-    FingerprintData *allFingerprints;   //linked list of discovered fingerprints
-    int numPrints;
+  FingerprintDevice *device;
+  FingerprintData *allFingerprints; // linked list of discovered fingerprints
+  int numPrints;
 
 private:
-    void discoverFingerprints(string user,FingerprintDevice *device,bool debug);
-    void addFingerprintData(FingerprintData *fpd);
+  void discoverFingerprints(string user, FingerprintDevice *device, bool debug);
+  void addFingerprintData(FingerprintData *fpd);
 
 public:
-    FingerprintDiscoverer(FingerprintDevice *devices,bool debug);
-    FingerprintDiscoverer(FingerprintDevice *devices, string user,bool debug);
-    FingerprintData *getIdentifyData();
+  FingerprintDiscoverer(FingerprintDevice *devices, bool debug);
+  FingerprintDiscoverer(FingerprintDevice *devices, string user, bool debug);
+  FingerprintData *getIdentifyData();
 };
 
-#endif	/* _FINGERPRINTDISCOVERER_H */
-
+#endif /* _FINGERPRINTDISCOVERER_H */

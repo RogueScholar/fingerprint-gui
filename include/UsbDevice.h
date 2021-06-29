@@ -26,28 +26,27 @@
 #ifndef _USBDEVICE_H
 #define _USBDEVICE_H
 
-#include <QtGui>
 #include <QObject>
+#include <QtGui>
 #include <libusb-1.0/libusb.h>
 #include <string>
 
 using namespace std;
 
-//USB device
+// USB device
 class USBDevice {
 public:
-    int vendorID;
-    string vendorName;
-    int deviceID;
-    string deviceName;
-    struct usb_device *device;
-    USBDevice* next;
+  int vendorID;
+  string vendorName;
+  int deviceID;
+  string deviceName;
+  struct usb_device *device;
+  USBDevice *next;
 
-    USBDevice(string vendor, string device);
+  USBDevice(string vendor, string device);
 
 public:
-    QString getDeviceDescriptor();
+  QString getDeviceDescriptor();
 };
 
 #endif /* _USBDEVICE_H */
-

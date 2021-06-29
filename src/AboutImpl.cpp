@@ -23,48 +23,50 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include "../include/AboutImpl.h"
 
-AboutImpl::AboutImpl(QWidget *parent,Qt::WindowFlags f)
-    : QDialog(parent,f) {
-    setupUi(this);
+AboutImpl::AboutImpl(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
+  setupUi(this);
 
-    string s="Version: ";
-    s.append(VERSION);
-    versionLabel->setText(QApplication::translate("AboutDialog", s.data(),nullptr));
-    copyrightLabel->setText(QApplication::translate("AboutDialog", COPYRIGHT,nullptr));
-    homeButton->setText(QApplication::translate("AboutDialog",HOMEPAGE,nullptr));
-    bitcoinButton->setText(QApplication::translate("AboutDialog",BITCOINADDRESS,nullptr));
-    connect(donateButton,SIGNAL(clicked()),this,SLOT(donate()));
-    connect(licenseButton,SIGNAL(clicked()),this,SLOT(license()));
-    connect(homeButton,SIGNAL(clicked()),this,SLOT(homepage()));
-    connect(bitcoinButton,SIGNAL(clicked()),this,SLOT(bitcoin()));
+  string s = "Version: ";
+  s.append(VERSION);
+  versionLabel->setText(
+      QApplication::translate("AboutDialog", s.data(), nullptr));
+  copyrightLabel->setText(
+      QApplication::translate("AboutDialog", COPYRIGHT, nullptr));
+  homeButton->setText(
+      QApplication::translate("AboutDialog", HOMEPAGE, nullptr));
+  bitcoinButton->setText(
+      QApplication::translate("AboutDialog", BITCOINADDRESS, nullptr));
+  connect(donateButton, SIGNAL(clicked()), this, SLOT(donate()));
+  connect(licenseButton, SIGNAL(clicked()), this, SLOT(license()));
+  connect(homeButton, SIGNAL(clicked()), this, SLOT(homepage()));
+  connect(bitcoinButton, SIGNAL(clicked()), this, SLOT(bitcoin()));
 }
 
 // slots
 void AboutImpl::bitcoin() {
-    QClipboard *cb = QApplication::clipboard();
-// set a text to the Clipboard
-    cb->setText(BITCOINADDRESS);
+  QClipboard *cb = QApplication::clipboard();
+  // set a text to the Clipboard
+  cb->setText(BITCOINADDRESS);
 }
 
 void AboutImpl::donate() {
-    QString s;
-    s.append(HOMEPAGE);
-    s.append(DONATE);
-    QDesktopServices srv;
-    srv.openUrl(QUrl(s));
+  QString s;
+  s.append(HOMEPAGE);
+  s.append(DONATE);
+  QDesktopServices srv;
+  srv.openUrl(QUrl(s));
 }
 
 void AboutImpl::license() {
-    QDesktopServices srv;
-    srv.openUrl(QUrl(LICENSE));
+  QDesktopServices srv;
+  srv.openUrl(QUrl(LICENSE));
 }
 
 void AboutImpl::homepage() {
-    QDesktopServices srv;
-    srv.openUrl(QUrl(HOMEPAGE));
+  QDesktopServices srv;
+  srv.openUrl(QUrl(HOMEPAGE));
 }
 
 #include "moc_AboutImpl.cpp"

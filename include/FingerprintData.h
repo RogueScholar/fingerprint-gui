@@ -24,35 +24,35 @@
  */
 
 #ifndef _FINGERPRINTDATA_H
-#define	_FINGERPRINTDATA_H
+#define _FINGERPRINTDATA_H
 #define QT_I18N 1
 
-#include <string>
 #include <QObject>
+#include <string>
 
 #include "Fingercodes.h"
 #include "Globals.h"
 
 using namespace std;
 
-//FingerprintData holds all required infos of a stored fingerprint
-class FingerprintData : public QObject
-{
-    Q_OBJECT
+// FingerprintData holds all required infos of a stored fingerprint
+class FingerprintData : public QObject {
+  Q_OBJECT
 
-    string user;
-    int finger;
-    void * birData;
-    int birSize;
-public:
-    FingerprintData *next;
+  string user;
+  int finger;
+  void *birData;
+  int birSize;
 
 public:
-    string *getUserName();
-    const char *getFingerName();
-    FingerprintData(string userName,int finger,void *birData,int birSize);
-    void *getData();
-    int getSize();
+  FingerprintData *next;
+
+public:
+  string *getUserName();
+  const char *getFingerName();
+  FingerprintData(string userName, int finger, void *birData, int birSize);
+  void *getData();
+  int getSize();
 };
 
-#endif	/* _FINGERPRINTDATA_H */
+#endif /* _FINGERPRINTDATA_H */

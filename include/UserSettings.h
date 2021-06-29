@@ -24,36 +24,36 @@
  */
 
 #ifndef _USERSETTINGS_H
-#define	_USERSETTINGS_H
+#define _USERSETTINGS_H
 
 #include <QString>
 #include <QtCrypto>
 
 class UserSettings {
 public:
-    bool providePassword;
-    QString uuid;
-    QString pathToPassword;
-    QString xIv;
-    QString xKey;
-    QString xPass;
+  bool providePassword;
+  QString uuid;
+  QString pathToPassword;
+  QString xIv;
+  QString xKey;
+  QString xPass;
 
-    UserSettings(char *userName,bool debug);
-    UserSettings(char *extDir,char *uuid,char *userName,char *machineName);
-    virtual ~UserSettings();
-    bool writeConfig(char*,bool debug);
-    bool getPassword(char **password);
-    const char* getPathToMedia();
+  UserSettings(char *userName, bool debug);
+  UserSettings(char *extDir, char *uuid, char *userName, char *machineName);
+  virtual ~UserSettings();
+  bool writeConfig(char *, bool debug);
+  bool getPassword(char **password);
+  const char *getPathToMedia();
+
 private:
-    QString pathToConfig;
-    QString password;
-    bool umountRequired;
-    QString passwordDir;
-    QString user;
+  QString pathToConfig;
+  QString password;
+  bool umountRequired;
+  QString passwordDir;
+  QString user;
 
-    // mount device by uuid, return mountpoint or NULL
-    QString mountUuid(QString uuid);
+  // mount device by uuid, return mountpoint or NULL
+  QString mountUuid(QString uuid);
 };
 
-#endif	/* _USERSETTINGS_H */
-
+#endif /* _USERSETTINGS_H */

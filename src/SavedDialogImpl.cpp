@@ -26,72 +26,72 @@
 #include "SavedDialogImpl.h"
 #include "GlobalsImg.h"
 
-SavedDialogImpl::SavedDialogImpl(int mode, QWidget * parent, struct fp_pic_data *pic, Qt::WindowFlags f)
+SavedDialogImpl::SavedDialogImpl(int mode, QWidget *parent,
+                                 struct fp_pic_data *pic, Qt::WindowFlags f)
     : QDialog(parent, f) {
-    setupUi(this);
+  setupUi(this);
 
-    QString s; // ="Fingerprint was ";
-    QString t;
-    switch(mode) {
-    case MODE_SAVED:
-        s = tr("Fingerprint saved to disk.");
-        t = tr("Fingerprint OK");
-        yesButton->setDefault(true);
-        break;
-    case MODE_NOT_SAVED:
-        s = tr("Fingerprint not saved. Click \"No\" to retry.");
-        t = tr("Fingerprint fail!");
-        noButton->setDefault(true);
-        break;
-    case MODE_VERIFIED:
-        s = tr("Fingerprint verified.");
-        t = tr("Fingerprint OK");
-        yesButton->setDefault(true);
-        break;
-    case MODE_NOT_VERIFIED:
-        s = tr("Fingerprint NOT verified. Click \"No\" to retry.");
-        t = tr("Fingerprint fail!");
-        noButton->setDefault(true);
-        break;
-    }
+  QString s; // ="Fingerprint was ";
+  QString t;
+  switch (mode) {
+  case MODE_SAVED:
+    s = tr("Fingerprint saved to disk.");
+    t = tr("Fingerprint OK");
+    yesButton->setDefault(true);
+    break;
+  case MODE_NOT_SAVED:
+    s = tr("Fingerprint not saved. Click \"No\" to retry.");
+    t = tr("Fingerprint fail!");
+    noButton->setDefault(true);
+    break;
+  case MODE_VERIFIED:
+    s = tr("Fingerprint verified.");
+    t = tr("Fingerprint OK");
+    yesButton->setDefault(true);
+    break;
+  case MODE_NOT_VERIFIED:
+    s = tr("Fingerprint NOT verified. Click \"No\" to retry.");
+    t = tr("Fingerprint fail!");
+    noButton->setDefault(true);
+    break;
+  }
 
-    if ( nullptr != pic->data ) {
-        int height = pic->height, width = pic->width;
-        QSize max = fp_img->maximumSize();
-        if ( height > max.height() ) {
-            width /= height / max.height();
-            height = max.height();
-        }
-        if ( width > max.width() ) {
-            height /= width / max.width();
-            width = max.width();
-        }
-        createQPixmapFromFpImg ( &fpPix, pic, width, height );
-        fp_img->setPixmap ( fpPix );
+  if (nullptr != pic->data) {
+    int height = pic->height, width = pic->width;
+    QSize max = fp_img->maximumSize();
+    if (height > max.height()) {
+      width /= height / max.height();
+      height = max.height();
     }
-    else {
-        fp_img->hide();
-        adjustSize();
+    if (width > max.width()) {
+      height /= width / max.width();
+      width = max.width();
     }
+    createQPixmapFromFpImg(&fpPix, pic, width, height);
+    fp_img->setPixmap(fpPix);
+  } else {
+    fp_img->hide();
+    adjustSize();
+  }
 
-    syslog(LOG_DEBUG,"%s",s.toStdString().data());
-    setWindowTitle(t);
-    modeLabel->setText(s);
-    connect(yesButton,SIGNAL(clicked()),this,SLOT(yesChoice()));
-    connect(noButton,SIGNAL(clicked()),this,SLOT(noChoice()));
+  syslog(LOG_DEBUG, "%s", s.toStdString().data());
+  setWindowTitle(t);
+  modeLabel->setText(s);
+  connect(yesButton, SIGNAL(clicked()), this, SLOT(yesChoice()));
+  connect(noButton, SIGNAL(clicked()), this, SLOT(noChoice()));
 }
 
 // slots -----------------------------------------------------------------------
 void SavedDialogImpl::yesChoice() {
-    syslog(LOG_DEBUG,"YES.");
-    emit choice(SAVED_YES);
-    close();
+  syslog(LOG_DEBUG, "YES.");
+  emit choice(SAVED_YES);
+  close();
 }
 
 void SavedDialogImpl::noChoice() {
-    syslog(LOG_DEBUG,"NO.");
-    emit choice(SAVED_NO);
-    close();
+  syslog(LOG_DEBUG, "NO.");
+  emit choice(SAVED_NO);
+  close();
 }
 
 #include "moc_SavedDialogImpl.cpp"

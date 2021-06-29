@@ -30,17 +30,16 @@
 
 // This translates my own fingercodes like represented in "fingers[]"
 // to the enum fp_finger
-static const fp_finger fingerCode[10]= {
-    /*Left Little*/     LEFT_LITTLE,
-    /*Left Ring*/       LEFT_RING,
-    /*Left Middle*/     LEFT_MIDDLE,
-    /*Left Index*/      LEFT_INDEX,
-    /*Left Thumb*/      LEFT_THUMB,
-    /*Right Thumb*/     RIGHT_THUMB,
-    /*Right Index*/     RIGHT_INDEX,
-    /*Right Middle*/    RIGHT_MIDDLE,
-    /*Right Ring*/      RIGHT_RING,
-    /*Right Little*/    RIGHT_LITTLE
-};
+static const fp_finger fingerCode[10] = {
+    /*Left Little*/ LEFT_LITTLE,
+    /*Left Ring*/ LEFT_RING,
+    /*Left Middle*/ LEFT_MIDDLE,
+    /*Left Index*/ LEFT_INDEX,
+    /*Left Thumb*/ LEFT_THUMB,
+    /*Right Thumb*/ RIGHT_THUMB,
+    /*Right Index*/ RIGHT_INDEX,
+    /*Right Middle*/ RIGHT_MIDDLE,
+    /*Right Ring*/ RIGHT_RING,
+    /*Right Little*/ RIGHT_LITTLE};
 
 #endif /* _FINGERCODES_H */

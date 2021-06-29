@@ -26,31 +26,23 @@
 #include "FingerprintData.h"
 #include "Fingernames.h"
 
-
-FingerprintData::FingerprintData(string userName,int fi,void *bir,int size) {
-    birData=bir;
-    birSize=size;
-    user=userName;
-    next=nullptr;
-    finger=fi;
+FingerprintData::FingerprintData(string userName, int fi, void *bir, int size) {
+  birData = bir;
+  birSize = size;
+  user = userName;
+  next = nullptr;
+  finger = fi;
 }
 
-//public getters and setters ---------------------------------------------------
+// public getters and setters
+// ---------------------------------------------------
 
-void *FingerprintData::getData() {
-    return birData;
-}
+void *FingerprintData::getData() { return birData; }
 
-int FingerprintData::getSize() {
-    return birSize;
-}
+int FingerprintData::getSize() { return birSize; }
 
-const char *FingerprintData::getFingerName() {
-    return fingers[finger];
-}
+const char *FingerprintData::getFingerName() { return fingers[finger]; }
 
-string *FingerprintData::getUserName() {
-    return &user;
-}
+string *FingerprintData::getUserName() { return &user; }
 
 #include "moc_FingerprintData.cpp"
