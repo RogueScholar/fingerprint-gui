@@ -1,0 +1,10 @@
+usr/bin/*
+usr/lib/fingerprint-gui/fingerprint-helper
+usr/lib/fingerprint-gui/fingerprint-plugin
+usr/lib/fingerprint-gui/fingerprint-rw
+usr/lib/fingerprint-gui/fingerprint-rw-write
+usr/lib/fingerprint-gui/fingerprint-rw-read
+usr/share/*
+lib/security/*
+var/lib/*
+debian/pam-configs/* usr/share/pam-configs/

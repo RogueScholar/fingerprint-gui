@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    remove|upgrade|deconfigure)
+    ;;
+
+    failed-upgrade)
+    ;;
+
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+if [ "$1" = remove ]; then
+	pam-auth-update --package --remove fingerprint-gui
+fi
+
+#DEBHELPER#
+
+exit 0

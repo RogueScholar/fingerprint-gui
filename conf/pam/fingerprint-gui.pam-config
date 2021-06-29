@@ -1,0 +1,12 @@
+Name: Fingerprint-GUI — biometric user auth over DBus from USB f'print reader
+Default: yes
+Priority: 512
+Conflicts: bioapi_chbird fprint fprintd fprintd.i386 fprintd.amd64
+ pam-biometric
+Auth-Type: Primary
+Auth:
+    [success=end new_authtok_reqd=done default=ignore]  pam_fingerprint-gui.so \
+                                    decorated try_first_identified # --debug
+Auth-Initial:
+    [success=2 new_authtok_reqd=done default=ignore]  pam_fingerprint-gui.so \
+                                    decorated try_first_identified # --debug

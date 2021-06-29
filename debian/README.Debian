@@ -1,0 +1,8 @@
+fingerprint-gui for Debian
+--------------------------
+
+Directory upek/ has been removed from the original tarball as it contained
+the BSAPI SDK by UPEK, Inc., whose EULA does not allow a redistribution in
+this form.
+
+ -- David Jurenka <debian.box@imx.jurenka.cz>  Sat, 10 Jul 2010 23:24:23 +0200
