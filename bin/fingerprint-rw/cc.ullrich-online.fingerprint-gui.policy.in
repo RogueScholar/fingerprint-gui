@@ -13,7 +13,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_self_keep</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">LIBEXECDIR/fingerprint-rw-write</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">@LIBEXECDIR@/fingerprint-rw-write</annotate>
   </action>
   <action id="cc.ullrich-online.fingerprint-gui.read">
     <description>Read fingerprint data</description>
@@ -22,6 +22,6 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">LIBEXECDIR/fingerprint-rw-read</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">@LIBEXECDIR@/fingerprint-rw-read</annotate>
   </action>
 </policyconfig>
