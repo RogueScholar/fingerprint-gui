@@ -145,8 +145,8 @@
     is called via two symlinks (<application>fingerprint-rw-read</application> and <application>fingerprint-rw-write</application>)
     and should not be called from the command
     line. Since version 1.07 files and directories in “<filename>/var/lib/fingerprint-gui/</filename>” are owned by
-    root.root. Subdirectories have mode 655. Files have mode 600. For security reasons 
-    "fingerprint-rw" requests additional user authentication via polkit when creating 
+    root.root. Subdirectories have mode 655. Files have mode 600. For security reasons
+    "fingerprint-rw" requests additional user authentication via polkit when creating
     subdirectories and writing files.</para>
   </sect1>
 
@@ -407,7 +407,7 @@
 
     <para>
     If you have fingerprint data created by a version 1.06 or below they have
-    invalid ownership and permissions for version 1.07 or above. In this case you can 
+    invalid ownership and permissions for version 1.07 or above. In this case you can
     execute “<command>sudo make user-data</command>” to setup correct ownership and permissions
     of the existing files and directories for version 1.07.
     </para>
