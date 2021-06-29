@@ -1,6 +1,37 @@
 #!/usr/bin/make -f
+# -*- mode: makefile-gmake; coding: utf-8; -*-
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/qmake.mk
+ifeq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
+	DH_INTERNAL_OPTIONS = --verbose
+	DH_VERBOSE          = 1
+endif
 
-DEB_QMAKE_ARGS := PREFIX=/usr
+ifneq (,$(shell command -v bash 2>/dev/null))
+	BASH_PATH ::= $(shell command -v bash 2>/dev/null)
+	SHELL     ::= $(shell realpath -Leq $(BASH_PATH))
+endif
+
+DEB_BUILD_MAINT_OPTIONS = future=+lfs hardening=+all
+DPKG_EXPORT_BUILDFLAGS  = 1
+DPKG_EXPORT_BUILDTOOLS  = 1
+
+DISTRO_VENDOR ::= $(shell dpkg-vendor --query Vendor)
+UBUNTUVER     ::= $(shell lsb_release -rs | cut -c-5)
+
+ifeq (Ubuntu,$(DISTRO_VENDOR))
+ifneq ($(UBUNTUVER),$(shell printf "$(UBUNTUVER)\n19.04\n" | sort -g | head -1))
+	DEB_BUILD_MAINT_OPTIONS += reproducible=+fixfilepath
+endif
+ifneq ($(UBUNTUVER),$(shell printf "$(UBUNTUVER)\n21.04\n" | sort -g | head -1))
+	DEB_BUILD_MAINT_OPTIONS += optimize=+lto
+endif
+endif
+
+include /usr/share/dpkg/default.mk
+include /usr/share/dpkg/buildtools.mk
+
+export DEB_BUILD_MAINT_OPTIONS DEB_QMAKE_ARGS DH_VERBOSE
+
+
+%:
+	dh $@ -v -Scmake

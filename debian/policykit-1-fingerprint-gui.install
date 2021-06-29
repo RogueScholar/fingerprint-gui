@@ -1,3 +1,2 @@
-usr/lib/fingerprint-gui/fingerprint-polkit*
-etc/xdg/autostart/*
-
+etc/xdg/autostart
+usr/lib/fingerprint-gui/fingerprint-polkit*  usr/libexec/fingerprint-gui

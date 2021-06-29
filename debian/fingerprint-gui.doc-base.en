@@ -1,8 +1,8 @@
 Document: fingerprint-gui-en
-Title: Fingerprint GUI User's Manual
+Title: Fingerprint-GUI User's Manual (English)
 Author: Wolfgang Ullrich
 Section: System/Hardware
 
 Format: HTML
-Index: /usr/share/doc/fingerprint-gui/Manual_en.html
-Files: /usr/share/doc/fingerprint-gui/Manual_en.html
+Index: /usr/share/doc/fingerprint-gui/html/Manual_en.html
+Files: /usr/share/doc/fingerprint-gui/html/Manual_en.html

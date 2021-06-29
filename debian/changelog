@@ -1,4 +1,10 @@
-fingerprint-gui (1.09-1~ppa-disco1) disco; urgency=medium
+fingerprint-gui (1.09-2) hirsute; urgency=medium
+
+  * No-changes rebuild for Ubuntu 21.04 "The Hirsute Hippo" and Qt 5.15.2
+
+ -- Peter J. Mello <admin@petermello.net>  Tue, 29 Jun 2021 07:48:32 -0700
+
+fingerprint-gui (1.09-1) disco; urgency=medium
 
   * LED on UPEK devices are switched off when fingerprint scan was canceled
     (password invoked)
@@ -7,7 +13,7 @@ fingerprint-gui (1.09-1~ppa-disco1) disco; urgency=medium
 
  -- Peter J. Mello <admin@petermello.net>  Sat, 25 May 2019 09:03:58 -0700
 
-fingerprint-gui (1.08-1~xenial1) xenial; urgency=medium
+fingerprint-gui (1.08-1) xenial; urgency=medium
 
   * Fixed login not working for Linux Mint 17.2 (Cinnamon and MATE)
   * Fixed fingerprint-polkit-agent not starting in MATE desktop
@@ -15,9 +21,9 @@ fingerprint-gui (1.08-1~xenial1) xenial; urgency=medium
   * Loading fingerprint data via pkexec is only used when not running with
     root privileges (decrease loading time)
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 15 Jun 2016 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Wed, 15 Jun 2016 00:00:00 +0100
 
-fingerprint-gui (1.07-1~vivid1) vivid; urgency=medium
+fingerprint-gui (1.07-1) vivid; urgency=medium
 
   * Fixed fingerprint export doesn't handle spaces in custom filenames well
   * Security fix: Directory "/var/lib/fingerprint-gui" and all its
@@ -31,9 +37,9 @@ fingerprint-gui (1.07-1~vivid1) vivid; urgency=medium
     via polkit when the user's fingerprint data is modified.
   * libpolkit-qt-1.0 is no longer supported
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sun, 5 Jul 2015 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Sun, 5 Jul 2015 00:00:00 +0100
 
-fingerprint-gui (1.06-1~trusty1) trusty; urgency=medium
+fingerprint-gui (1.06-1) trusty; urgency=medium
 
   * Fix for cinnamon-screensaver on Mint 16 and Mint 17 provided by Pavel
     Sochelnikov
@@ -44,9 +50,9 @@ fingerprint-gui (1.06-1~trusty1) trusty; urgency=medium
   * New program icon provided by Anna Petrova
   * GUI improvements provided by Pavel Sochelnikov
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 24 Sep 2014 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Wed, 24 Sep 2014 00:00:00 +0100
 
-fingerprint-gui (1.05-1~raring1) raring; urgency=medium
+fingerprint-gui (1.05-2) raring; urgency=medium
 
   * Loader for UPEK devices is aware of the vendorId/productId:
     productId < 0x2000 loads bsapi version 4.0
@@ -55,9 +61,9 @@ fingerprint-gui (1.05-1~raring1) raring; urgency=medium
   * New usb.ids file (Version: 2013.05.08)
   * Tested on Ubuntu 13.04
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 8 May 2013 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Wed, 8 May 2013 00:00:00 +0100
 
-fingerprint-gui (1.05-1~raring1) raring; urgency=medium
+fingerprint-gui (1.05-1) raring; urgency=medium
 
   * Loader for UPEK devices is aware of the vendorId/productId:
     productId < 0x2000 loads bsapi version 4.0
@@ -80,9 +86,9 @@ fingerprint-gui (1.05-1~raring1) raring; urgency=medium
   * New usb.ids file (Version: 2013.05.08)
   * Tested on Ubuntu 13.04
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 8 May 2013 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Wed, 8 May 2013 00:00:00 +0100
 
-fingerprint-gui (1.04-1~oneiric1) oneiric; urgency=medium
+fingerprint-gui (1.04-1) oneiric; urgency=medium
 
   * Fixed calling "sudo" in a GUI environment: fingerprint-helper is now
     started with the privileges of the calling user; this avoids Gtk error
@@ -92,9 +98,9 @@ fingerprint-gui (1.04-1~oneiric1) oneiric; urgency=medium
     workaround needed for lightdm versions below 1.1.4 (Ubuntu <=11.10)
   * Fixed segfault in DeviceHandler.cpp with newer glibc
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sun, 11 Mar 2012 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Sun, 11 Mar 2012 00:00:00 +0100
 
-fingerprint-gui (1.03-1~oneiric1) oneiric; urgency=medium
+fingerprint-gui (1.03-1) oneiric; urgency=medium
 
   * Fixed fingerprint-polkit-agent not starting on Lubuntu 11.10
   * Fixed no fingerprint login on secure tty (Ubuntu 11.10)
@@ -102,15 +108,15 @@ fingerprint-gui (1.03-1~oneiric1) oneiric; urgency=medium
   * Fixed error message not printing when user's home directory is encrypted
     and fingerprint login was without password
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Wed, 7 Dec 2011 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Wed, 7 Dec 2011 00:00:00 +0100
 
-fingerprint-gui (1.02-1~oneiric1) oneiric; urgency=medium
+fingerprint-gui (1.02-1) oneiric; urgency=medium
 
   * Fixed segfault in fingerprint-polkit-agent
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sun, 23 Oct 2011 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Sun, 23 Oct 2011 00:00:00 +0100
 
-fingerprint-gui (1.01-1~oneiric1) oneiric; urgency=medium
+fingerprint-gui (1.01-1) oneiric; urgency=medium
 
   * Workaround for lightdm bug #862559: Display ":0" hard coded for service
     lightdm in pam_fingerprint-gui.so
@@ -119,4 +125,4 @@ fingerprint-gui (1.01-1~oneiric1) oneiric; urgency=medium
   * Fixed password dialog disabled in polkit agent when more than one
     administrator user is available
 
- -- Wolfgang Ullrich <contact@ullrich-online.cc>  Sat, 15 Oct 2011 00:00:00 +0100
+ -- Wolfgang Ullrich <w.ullrich@n-view.net>  Sat, 15 Oct 2011 00:00:00 +0100

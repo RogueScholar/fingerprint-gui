@@ -1,0 +1,2 @@
+# Upstream release tarballs are not cryptographically signed
+debian-watch-may-check-gpg-signature

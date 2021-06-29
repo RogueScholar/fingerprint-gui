@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 🄯 2019-2021 Peter J. Mello <admin@petermello.net>
+#
+# SPDX-License-Identifier: CC0-1.0
 ---
 enabled: true
 exclude: []

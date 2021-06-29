@@ -1,51 +1,52 @@
 Source: fingerprint-gui
-Section: contrib/misc
-Priority: extra
+Section: misc
+Priority: optional
 Maintainer: Peter J. Mello <admin@petermello.net>
-Build-Depends: debhelper-compat (= 11), cdbs (>= 0.4.93),
- libfprint-dev (>= 0.1.0), libqt4-dev, libqca2-dev, libfakekey-dev,
- libusb-1.0-0-dev, libpam-dev, libbsapi-dev (>= 4.0), libpolkit-qt-1-dev
-Standards-Version: 4.3.0
-Homepage: http://www.ullrich-online.cc/fingerprint/
+Build-Depends: debhelper-compat (= 12), lsb-release, pkg-kde-tools, qtbase5-dev,
+ libfakekey-dev, libfprint-2-dev | libfprint-dev (<< 1:1.90.1+tod1~),
+ libfprint-2-tod-dev | libfprint-dev (<< 1:1.90.1+tod1~), libpam0g-dev,
+ libpolkit-qt5-1-dev, libqca-qt5-2-dev, libusb-1.0-0-dev
+Standards-Version: 4.5.1
+Homepage: https://github.com/RogueScholar/fingerprint-gui
+Vcs-Git: https://github.com/RogueScholar/fingerprint-gui.git
+Vcs-Browser: https://github.com/RogueScholar/fingerprint-gui
+Rules-Requires-Root: no
 
 Package: fingerprint-gui
-Architecture: i386 amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqca2-plugins
+Architecture: amd64 i386
+Depends: libqca2-plugins, ${shlibs:Depends}, ${misc:Depends}
 Recommends: policykit-1-fingerprint-gui
-Suggests: libbsapi (>= 4.0)
-Description: application for fingerprint-based authentication
+Description: application for graphical fingerprint-based authentication
  Fingerprint GUI is an application providing fingerprint-based authentication
- on Linux desktops. It features a simple GUI for fingerprint management and
- a PAM module.
+ on Linux desktops. It features a simple graphical interface that guides users
+ through fingerprint management and authentication via a PAM module.
  .
  Fingerprint GUI is based on the libfprint library. Additionally, if the
  non-free libbsapi library is installed as well, it will automatically support
  all UPEK fingerprint readers.
 
 Package: policykit-1-fingerprint-gui
-Architecture: i386 amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, policykit-1,
- fingerprint-gui (= ${binary:Version})
+Architecture: amd64 i386
+Depends: fingerprint-gui (= ${binary:Version}), policykit-1, ${shlibs:Depends},
+ ${misc:Depends}
 Provides: policykit-1-gnome, polkit-kde-1
-#Conflicts: policykit-1-gnome, polkit-kde-1
-#Replaces: policykit-1-gnome, polkit-kde-1
 Description: Fingerprint GUI dialogs for PolicyKit
  PolicyKit-1-Fingerprint-GUI provides a D-Bus session bus service that is used
  to bring up authentication dialogs for obtaining privileges using Fingerprint
  GUI.
 
 Package: fingerprint-gui-dev
-Section: contrib/devel
 Architecture: all
+Section: devel
 Depends: ${misc:Depends}
 Recommends: fingerprint-gui (= ${binary:Version})
-Description: development documentation for fingerprint-gui
+Description: development documentation for Fingerprint-GUI
  Fingerprint GUI is an application providing fingerprint-based authentication
- on Linux desktops. It features a simple GUI for fingerprint management and
- a PAM module.
+ on Linux desktops. It features a simple graphical interface that guides users
+ through fingerprint management and authentication via a PAM module.
  .
  Fingerprint GUI is based on the libfprint library. Additionally, if the
  non-free libbsapi library is installed as well, it will automatically support
  all UPEK fingerprint readers.
  .
- This package contains the development documentation for fingerprint-gui.
+ This package contains the development documentation for Fingerprint-GUI.

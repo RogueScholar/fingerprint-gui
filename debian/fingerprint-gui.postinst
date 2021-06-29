@@ -1,30 +1,26 @@
 #!/bin/sh
-
 set -e
 
-case "$1" in
-    configure)
+case "${1}" in
+  configure)
     ;;
-
-    abort-upgrade|abort-remove|abort-deconfigure)
+  abort-upgrade | abort-remove | abort-deconfigure)
     ;;
-
-    *)
-        echo "postinst called with unknown argument \`$1'" >&2
-        exit 1
+  *)
+    echo "postinst called with unknown argument \`${1}'" >&2
+    exit 1
     ;;
 esac
 
 pam-auth-update --package
 
-find /var/lib/fingerprint-gui -exec chown root:root {} +
-find /var/lib/fingerprint-gui -type d -exec chmod 755 {} +
-find /var/lib/fingerprint-gui -type f -exec chmod 600 {} +
+find /var/lib/fingerprint-gui -print -execdir chown root:root '{}' \+
+find /var/lib/fingerprint-gui -type d -execdir chmod 0755 '{}' \+
+find /var/lib/fingerprint-gui -type f -execdir chmod 0600 '{}' \+
 
-#TODO: trigger event for uinput to pick up the new udev rule
-#if command -v udevadm >/dev/null; then
-#	udevadm trigger --subsystem-match=misc --sysname-match=uinput
-#fi
+if command -v udevadm >/dev/null 2>&1; then
+  udevadm control --reload-rules
+fi
 
 #DEBHELPER#
 

@@ -7,7 +7,6 @@
 # All but four Visual Studio Code files are installation-specific
 .vscode/*
 *.code-workspace
-!.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
