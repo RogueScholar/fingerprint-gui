@@ -46,7 +46,7 @@ static string syslogIdent=string(IDENTIFIER_NAME);
     closelog(); \
     return rc;
 
-void printHelp(){
+void printHelp() {
     cerr << "Usage: " << syslogIdent.data() << " [debug] [decorated]" << endl;
     cerr << "\tdebug    \t-- send debug output to syslog" << endl;
     cerr << "\tdecorated\t-- show dialog decoration" << endl;
@@ -65,19 +65,19 @@ int main(int argc, char** argv) {
 
     openlog(syslogIdent.data(),LOG_NDELAY|LOG_PID,LOG_AUTH);
     setlogmask(LOG_UPTO(LOG_ERR));
-    for(int i=0;i<argc;i++){
+    for(int i=0; i<argc; i++) {
         if((strcmp(argv[i],ARG_DEBUG1)==0)
                 | (strcmp(argv[i],ARG_DEBUG2)==0)
-                | (strcmp(argv[i],ARG_DEBUG3)==0)){
+                | (strcmp(argv[i],ARG_DEBUG3)==0)) {
             setlogmask(-1);
-	    debug=true;
+            debug=true;
             continue;
         }
-        if(strcmp(argv[i],ARG_DECORATED)==0){
+        if(strcmp(argv[i],ARG_DECORATED)==0) {
             decorated=true;
             continue;
         }
-        if(i>0){
+        if(i>0) {
             printHelp();
             return -1;
         }
@@ -89,20 +89,20 @@ int main(int argc, char** argv) {
     DeviceHandler deviceHandler(DISPLAY_DRIVER_NAME);
     deviceHandler.rescan();
     devices=deviceHandler.getIdentifiers();
-    
-    if(devices==nullptr){
+
+    if(devices==nullptr) {
         string message="Found no devices that can identify. Aborting.";
         syslog(LOG_ERR,"%s",message.data());
         cerr<<message.data()<<endl;
         IDENTIFIER_RETURN
     }
-    if(devices->next!=nullptr){
+    if(devices->next!=nullptr) {
         syslog(LOG_WARNING,"Found more then one devices. Using %s.",devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
     }
     //collect fingerprints from all users for this device
     FingerprintDiscoverer discoverer(devices,debug);
     FingerprintData *identifyData=discoverer.getIdentifyData();
-    if(identifyData==nullptr){  // We have no fingerprints at all
+    if(identifyData==nullptr) { // We have no fingerprints at all
         string message="No fingerprintData! Aborting.";
         syslog(LOG_ERR,"%s",message.data());
         cerr<<message.data()<<endl;
@@ -113,9 +113,9 @@ int main(int argc, char** argv) {
 
     IdentifierGUI mainWindow(decorated,devices,identifyData);
     rc=app.exec();
-    if(rc>=0){
+    if(rc>=0) {
         FingerprintData *fingerprintData=identifyData;
-        for(int i=0;i<rc;i++)fingerprintData=fingerprintData->next;
+        for(int i=0; i<rc; i++)fingerprintData=fingerprintData->next;
         syslog(LOG_DEBUG,"Have index %d (user: %s).",rc,fingerprintData->getUserName()->data());
         cout << fingerprintData->getUserName()->data();    // send username to stdout
     }

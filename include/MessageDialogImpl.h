@@ -38,7 +38,7 @@ using namespace std;
 
 class MessageDialogImpl : public QDialog, public Ui::MessageDialog
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     MessageDialogImpl(QWidget* parent=0,Qt::WindowFlags f=0);

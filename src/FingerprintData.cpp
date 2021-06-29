@@ -27,7 +27,7 @@
 #include "Fingernames.h"
 
 
-FingerprintData::FingerprintData(string userName,int fi,void *bir,int size){
+FingerprintData::FingerprintData(string userName,int fi,void *bir,int size) {
     birData=bir;
     birSize=size;
     user=userName;
@@ -37,19 +37,19 @@ FingerprintData::FingerprintData(string userName,int fi,void *bir,int size){
 
 //public getters and setters ---------------------------------------------------
 
-void *FingerprintData::getData(){
+void *FingerprintData::getData() {
     return birData;
 }
 
-int FingerprintData::getSize(){
+int FingerprintData::getSize() {
     return birSize;
 }
 
-const char *FingerprintData::getFingerName(){
+const char *FingerprintData::getFingerName() {
     return fingers[finger];
 }
 
-string *FingerprintData::getUserName(){
+string *FingerprintData::getUserName() {
     return &user;
 }
 

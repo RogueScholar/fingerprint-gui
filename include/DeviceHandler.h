@@ -13,12 +13,12 @@
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -55,12 +55,12 @@ typedef struct {
     int vendorId;
     int deviceId;
     string displayName;
-}supportedFingerprintDevice;
+} supportedFingerprintDevice;
 
 typedef enum {
     DISPLAY_VENDOR_NAME,
     DISPLAY_DRIVER_NAME
-}display_name_mode;
+} display_name_mode;
 
 class DeviceHandler : public QObject {
     Q_OBJECT
@@ -85,7 +85,7 @@ class DeviceHandler : public QObject {
     ABS_STATUS BSAPI (*bsapiDiscoverFunction)(      // discover devices handled by libbsapi
         const ABS_CHAR*,ABS_DEVICE_LIST**);
 
-/* insert functions for other proprietary driver libraries here */
+    /* insert functions for other proprietary driver libraries here */
 
 public:
     DeviceHandler(display_name_mode mode);
@@ -114,7 +114,7 @@ private:
 // Libloaders for proprietary driver libraries
     // loader for "libbsapi" from UPEK
     void upekLoader();
-/* insert libloaders for other proprietary driver libraries here */
+    /* insert libloaders for other proprietary driver libraries here */
 };
 
 #endif	/* _DEVICEHANDLER_H */

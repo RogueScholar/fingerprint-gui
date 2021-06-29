@@ -37,7 +37,7 @@
 #define WHITE   "[1;37m"
 
 // Helper for sending messages to PAM prompt -----------------------------------
-void PamNonGUI::pamMessage(const char *target,const char *style,const char *msg){
+void PamNonGUI::pamMessage(const char *target,const char *style,const char *msg) {
     if(prompt)
         printf("%s%s%s\n",style,msg,NORMAL);
     if(target==nullptr)
@@ -51,7 +51,7 @@ void PamNonGUI::pamMessage(const char *target,const char *style,const char *msg)
 
 // NonGUI object ---------------------------------------------------------------
 PamNonGUI::PamNonGUI(bool writeToPrompt,FingerprintDevice *dev,const char *user,const char *fing,QObject* parent)
-: QObject(parent) {
+    : QObject(parent) {
     result=-2;
     repeatDelay=0;
     device=dev;
@@ -81,17 +81,17 @@ PamNonGUI::PamNonGUI(bool writeToPrompt,FingerprintDevice *dev,const char *user,
     START_TIMER
 }
 
-PamNonGUI::~PamNonGUI(){
+PamNonGUI::~PamNonGUI() {
     device->stop();
 }
 
 // slots -----------------------------------------------------------------------
-void PamNonGUI::matchResult(int match,struct fp_pic_data __attribute__ ((unused)) *pic){
+void PamNonGUI::matchResult(int match,struct fp_pic_data __attribute__ ((unused)) *pic) {
     device->stop();
-    if(match>=0){
+    if(match>=0) {
         syslog(LOG_DEBUG,"showMessage: OK");
         pamMessage(MSG_BOLD,GREEN,"OK");
-	timer->stop();
+        timer->stop();
         //exit with index (match) as exit code
         qApp->processEvents();
         device->wait(5000);
@@ -104,58 +104,58 @@ void PamNonGUI::matchResult(int match,struct fp_pic_data __attribute__ ((unused)
     repeatDelay=3;   //let 'em see the result before exiting
 }
 
-void PamNonGUI::newVerifyResult(int result,struct fp_pic_data __attribute__ ((unused)) *pic){
-    switch(result){
-        case RESULT_VERIFY_NO_MATCH:
-            syslog(LOG_DEBUG,"showMessage: No match!");
-            pamMessage(MSG_NORMAL,RED,"No match!");
-            break;
-        case RESULT_VERIFY_RETRY_TOO_SHORT:
-            syslog(LOG_DEBUG,"showMessage: Swipe too short...");
-            pamMessage(MSG_NORMAL,RED,"Swipe too short...");
-            break;
-        case RESULT_VERIFY_RETRY_CENTER:
-            syslog(LOG_DEBUG,"showMessage: Please center...");
-            pamMessage(MSG_NORMAL,RED,"Please center...");
-            break;
-        case RESULT_VERIFY_RETRY:
-        case RESULT_VERIFY_RETRY_REMOVE:
-            syslog(LOG_DEBUG,"showMessage: Try again...");
-            pamMessage(MSG_NORMAL,RED,"Try again...");
-            break;
+void PamNonGUI::newVerifyResult(int result,struct fp_pic_data __attribute__ ((unused)) *pic) {
+    switch(result) {
+    case RESULT_VERIFY_NO_MATCH:
+        syslog(LOG_DEBUG,"showMessage: No match!");
+        pamMessage(MSG_NORMAL,RED,"No match!");
+        break;
+    case RESULT_VERIFY_RETRY_TOO_SHORT:
+        syslog(LOG_DEBUG,"showMessage: Swipe too short...");
+        pamMessage(MSG_NORMAL,RED,"Swipe too short...");
+        break;
+    case RESULT_VERIFY_RETRY_CENTER:
+        syslog(LOG_DEBUG,"showMessage: Please center...");
+        pamMessage(MSG_NORMAL,RED,"Please center...");
+        break;
+    case RESULT_VERIFY_RETRY:
+    case RESULT_VERIFY_RETRY_REMOVE:
+        syslog(LOG_DEBUG,"showMessage: Try again...");
+        pamMessage(MSG_NORMAL,RED,"Try again...");
+        break;
     }
 }
 
 // Helper thread for restart
-void PamNonGUI::timerTick(){
+void PamNonGUI::timerTick() {
     string s;
     pluginMessage(MSG_ALIVE);
-    switch(repeatDelay){
-        case 0:
-            if(!device->isRunning()){
-                syslog(LOG_ERR,"ERROR: Fingerprint device not running.");
-                qApp->exit(-1);
-                return;
-            }
-            //do nothing
-            break;
-        case 1:
-            syslog(LOG_INFO,"Waiting for device to stop...");
-            device->wait(5000);
-            syslog(LOG_INFO,"Stopped, restarting");
-            //restart fingerprint scanner
-            s=string("Swipe your ");
-            if(finger==nullptr)
-                s.append("finger");
-            else
-                s.append(finger);
-            s.append(" or type your password:");
-            pamMessage(nullptr,MAGENTA,s.data());
-            device->start();
-            repeatDelay--;
-            break;
-        default:
-            repeatDelay--;  //still wait
+    switch(repeatDelay) {
+    case 0:
+        if(!device->isRunning()) {
+            syslog(LOG_ERR,"ERROR: Fingerprint device not running.");
+            qApp->exit(-1);
+            return;
+        }
+        //do nothing
+        break;
+    case 1:
+        syslog(LOG_INFO,"Waiting for device to stop...");
+        device->wait(5000);
+        syslog(LOG_INFO,"Stopped, restarting");
+        //restart fingerprint scanner
+        s=string("Swipe your ");
+        if(finger==nullptr)
+            s.append("finger");
+        else
+            s.append(finger);
+        s.append(" or type your password:");
+        pamMessage(nullptr,MAGENTA,s.data());
+        device->start();
+        repeatDelay--;
+        break;
+    default:
+        repeatDelay--;  //still wait
     }
 }
 

@@ -54,9 +54,9 @@ class PolkitDetailsImpl : public QWidget, private Ui::PolkitDetails {
     Q_OBJECT
 public:
     PolkitDetailsImpl(const PolkitQt1::Details &details,
-                PolkitQt1::ActionDescription *actionDescription,
-                const QString &appname,
-                QWidget *parent);
+                      PolkitQt1::ActionDescription *actionDescription,
+                      const QString &appname,
+                      QWidget *parent);
 };
 
 //------------------------------------------------------------------------------
@@ -64,12 +64,12 @@ class PolkitDialogImpl : public QDialog, public Ui::PolkitDialog {
     Q_OBJECT
 public:
     PolkitDialogImpl(
-            const QString &actionId,
-            const QString &message,
-            const QString &iconName,
-            const PolkitQt1::Details &details,
-            const PolkitQt1::Identity::List &identities,
-            QWidget * parent = nullptr, Qt::WindowFlags f = nullptr);
+        const QString &actionId,
+        const QString &message,
+        const QString &iconName,
+        const PolkitQt1::Details &details,
+        const PolkitQt1::Identity::List &identities,
+        QWidget * parent = nullptr, Qt::WindowFlags f = nullptr);
     virtual ~PolkitDialogImpl();
     QString password() const;
     void authenticationFailure();

@@ -34,7 +34,7 @@
 using namespace std;
 
 //USB device
-class USBDevice{
+class USBDevice {
 public:
     int vendorID;
     string vendorName;

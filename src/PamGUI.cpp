@@ -36,25 +36,25 @@
 #include "GlobalsImg.h"
 
 PamGUI::PamGUI(FingerprintDevice *dev,const char *user,const char *finger)
-    : QFrame(){
+    : QFrame() {
     setupUi(this);
 
     identifyData=nullptr;
     startupGUI(dev);
-    if(finger!=nullptr){
+    if(finger!=nullptr) {
         QString s = tr("Swipe your %1.").arg(finger);
         label->setText(s);
         showMessage(MSG_LABEL,s);
     }
-    if(user!=nullptr){
+    if(user!=nullptr) {
         QString s = tr("Authenticating %1").arg(user);
         showMessage(MSG_NORMAL,s);
     }
-	fpPix = QPixmap();
+    fpPix = QPixmap();
 }
 
 PamGUI::PamGUI(FingerprintDevice *dev,FingerprintData *iData)
-    : QFrame(){
+    : QFrame() {
     setupUi(this);
 
     showMessage(MSG_NORMAL,tr("Ready..."));
@@ -62,7 +62,7 @@ PamGUI::PamGUI(FingerprintDevice *dev,FingerprintData *iData)
     startupGUI(dev);
 }
 
-PamGUI::~PamGUI(){
+PamGUI::~PamGUI() {
     device->stop();
 }
 
@@ -94,7 +94,7 @@ void PamGUI::CinnamonFix () {
         unsigned long  nItems, bytes_after;
         unsigned char *prop;
 
-        #define CINNAMONFIX_BUFSIZE 256
+#define CINNAMONFIX_BUFSIZE 256
         char procname [ CINNAMONFIX_BUFSIZE ]; // process name
         FILE *fprocname; // file pointer
         size_t size; // read size
@@ -152,7 +152,7 @@ void PamGUI::CinnamonFix () {
 }
 // }}} Fix cinnamon-screensaver
 
-void PamGUI::startupGUI(FingerprintDevice *dev){
+void PamGUI::startupGUI(FingerprintDevice *dev) {
     UNDECORATED_MODAL_WINDOW_CENTERED
     show();
     CinnamonFix();
@@ -167,22 +167,22 @@ void PamGUI::startupGUI(FingerprintDevice *dev){
     ANIMATION_MOVIE
 }
 
-void PamGUI::showMessage(const char *target,const QString msg){
-/*
-    QFont font;
-    if(target){
-        if(strcmp(target,MSG_BOLD)==0){
-            font.setPointSize(10);
-            font.setBold(true);
-            statusBar->setFont(font);
+void PamGUI::showMessage(const char *target,const QString msg) {
+    /*
+        QFont font;
+        if(target){
+            if(strcmp(target,MSG_BOLD)==0){
+                font.setPointSize(10);
+                font.setBold(true);
+                statusBar->setFont(font);
+            }
+            if(strcmp(target,MSG_NORMAL)==0){
+                font.setPointSize(9);
+                font.setBold(false);
+                statusBar->setFont(font);
+            }
         }
-        if(strcmp(target,MSG_NORMAL)==0){
-            font.setPointSize(9);
-            font.setBold(false);
-            statusBar->setFont(font);
-        }
-    }
-*/
+    */
     statusBar->setText(msg);    // Show message on statusBar
     syslog(LOG_DEBUG,"Message: %s",msg.toStdString().data()); // Message to syslog
 
@@ -198,7 +198,7 @@ void PamGUI::showMessage(const char *target,const QString msg){
 // We set the focus to the greeter window again so the user can invoke his password
 static bool focusIsSet=false;
 
-void PamGUI::setFocusToUnityGreeter(){
+void PamGUI::setFocusToUnityGreeter() {
     unsigned char *name;
     Window    wRoot;
     Window    wParent;
@@ -212,24 +212,24 @@ void PamGUI::setFocusToUnityGreeter(){
     if(focusIsSet)return;	//Do it only once
     focusIsSet=true;
     Display *display=XOpenDisplay(getenv("DISPLAY"));
-    if(display!=nullptr){
+    if(display!=nullptr) {
         Window window=DefaultRootWindow(display);
-    	Atom _atomPID=XInternAtom(display,"_NET_WM_PID",True);
-    	if(_atomPID!=None){
-    	    if(0!=XQueryTree(display,window,&wRoot,&wParent,&wChild,&nChildren)){
-    		for(unsigned i=0;i<nChildren;i++){
-		    if(Success==XGetWindowProperty(display,wChild[i],XInternAtom(display,"WM_NAME",False),0,1024,False,XA_STRING,&type,&format,&nItems,&bytesAfter,&name)){
-			if(name!=nullptr){
+        Atom _atomPID=XInternAtom(display,"_NET_WM_PID",True);
+        if(_atomPID!=None) {
+            if(0!=XQueryTree(display,window,&wRoot,&wParent,&wChild,&nChildren)) {
+                for(unsigned i=0; i<nChildren; i++) {
+                    if(Success==XGetWindowProperty(display,wChild[i],XInternAtom(display,"WM_NAME",False),0,1024,False,XA_STRING,&type,&format,&nItems,&bytesAfter,&name)) {
+                        if(name!=nullptr) {
 //			    syslog(LOG_DEBUG,"WINDOW: \"%ld\", NAME: %s.",wChild[i],name);
-			    if(strcmp((const char *)name,"unity-greeter")==0){
-				syslog(LOG_DEBUG,"Setting focus to window: %ld \"%s\", result: %d.",wChild[i],name,XSetInputFocus(display,wChild[i],RevertToNone,CurrentTime));
-			    }
-			    XFree(name);
-			}
-		    }
-		}
-    	    }
-	}
+                            if(strcmp((const char *)name,"unity-greeter")==0) {
+                                syslog(LOG_DEBUG,"Setting focus to window: %ld \"%s\", result: %d.",wChild[i],name,XSetInputFocus(display,wChild[i],RevertToNone,CurrentTime));
+                            }
+                            XFree(name);
+                        }
+                    }
+                }
+            }
+        }
     }
     show();
 }
@@ -237,7 +237,7 @@ void PamGUI::setFocusToUnityGreeter(){
 
 
 // slots -----------------------------------------------------------------------
-void PamGUI::matchResult(int match,struct fp_pic_data *pic){
+void PamGUI::matchResult(int match,struct fp_pic_data *pic) {
     device->stop();
     if ( !fpPix.isNull() ) {
         freeQPixmapFromFpImg ( &fpPix );
@@ -246,19 +246,19 @@ void PamGUI::matchResult(int match,struct fp_pic_data *pic){
     if ( !fpPix.isNull() ) {
         animationLabel->setPixmap ( fpPix );
     }
-    if(match>=0){
+    if(match>=0) {
         movie->setPaused(true);
         QString message;
-        if(identifyData!=nullptr){
+        if(identifyData!=nullptr) {
             FingerprintData *fingerprintData=identifyData;
-            for(int i=0;i<match;i++)fingerprintData=fingerprintData->next;
+            for(int i=0; i<match; i++)fingerprintData=fingerprintData->next;
             message = tr("Identified: %1 (%2)").arg(fingerprintData->getUserName()->data()).arg(fingerprintData->getFingerName());
         }
-        else{
+        else {
             message = tr("OK");
         }
         showMessage(MSG_BOLD,message);
-	timer->stop();
+        timer->stop();
         //exit with index (match) as exit code
         qApp->processEvents();
         device->wait(5000);
@@ -274,7 +274,7 @@ void PamGUI::matchResult(int match,struct fp_pic_data *pic){
     repeatDelay=3;   //let 'em see the result before restarting
 }
 
-void PamGUI::newVerifyResult(int result,struct fp_pic_data *pic){
+void PamGUI::newVerifyResult(int result,struct fp_pic_data *pic) {
     if ( !fpPix.isNull() ) {
         freeQPixmapFromFpImg ( &fpPix );
     }
@@ -282,52 +282,52 @@ void PamGUI::newVerifyResult(int result,struct fp_pic_data *pic){
     if ( !fpPix.isNull() ) {
         animationLabel->setPixmap ( fpPix );
     }
-    switch(result){
-        case RESULT_VERIFY_NO_MATCH:
-            showMessage(MSG_NORMAL,tr("No match!"));
-            break;
-        case RESULT_VERIFY_RETRY_TOO_SHORT:
-            showMessage(MSG_NORMAL,tr("Swipe too short..."));
-            break;
-        case RESULT_VERIFY_RETRY_CENTER:
-            showMessage(MSG_NORMAL,tr("Please center..."));
-            break;
-        case RESULT_VERIFY_RETRY:
-        case RESULT_VERIFY_RETRY_REMOVE:
-            showMessage(MSG_NORMAL,tr("Try again..."));
-            break;
-        default:
-            return;
+    switch(result) {
+    case RESULT_VERIFY_NO_MATCH:
+        showMessage(MSG_NORMAL,tr("No match!"));
+        break;
+    case RESULT_VERIFY_RETRY_TOO_SHORT:
+        showMessage(MSG_NORMAL,tr("Swipe too short..."));
+        break;
+    case RESULT_VERIFY_RETRY_CENTER:
+        showMessage(MSG_NORMAL,tr("Please center..."));
+        break;
+    case RESULT_VERIFY_RETRY:
+    case RESULT_VERIFY_RETRY_REMOVE:
+        showMessage(MSG_NORMAL,tr("Try again..."));
+        break;
+    default:
+        return;
     }
 }
 
 // Helper thread for restart
-void PamGUI::timerTick(){
+void PamGUI::timerTick() {
     setFocusToUnityGreeter();
     // send alive message to plugin
     pluginMessage(MSG_ALIVE);
     raise();
-    switch(repeatDelay){
-        case 0:
-            if(!device->isRunning()){
-                syslog(LOG_ERR,"ERROR: Fingerprint device not running.");
-                qApp->exit(-1);
-                return;
-            }
-            //do nothing
-            break;
-        case 1:
-            syslog(LOG_INFO,"Waiting for device to stop...");
-            device->wait(5000);
-            syslog(LOG_INFO,"Stopped, restarting");
-            //restart fingerprint scanner
-            device->start();
-            animationLabel->setMovie(movie);
-            showMessage(MSG_NORMAL,tr("Ready..."));
-            repeatDelay--;
-            break;
-        default:
-            repeatDelay--;  //still wait
+    switch(repeatDelay) {
+    case 0:
+        if(!device->isRunning()) {
+            syslog(LOG_ERR,"ERROR: Fingerprint device not running.");
+            qApp->exit(-1);
+            return;
+        }
+        //do nothing
+        break;
+    case 1:
+        syslog(LOG_INFO,"Waiting for device to stop...");
+        device->wait(5000);
+        syslog(LOG_INFO,"Stopped, restarting");
+        //restart fingerprint scanner
+        device->start();
+        animationLabel->setMovie(movie);
+        showMessage(MSG_NORMAL,tr("Ready..."));
+        repeatDelay--;
+        break;
+    default:
+        repeatDelay--;  //still wait
     }
 }
 

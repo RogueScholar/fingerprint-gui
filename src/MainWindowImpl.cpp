@@ -47,7 +47,7 @@
 #include "../include/Fingernames.h"
 
 MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
-    : QMainWindow(parent, f){
+    : QMainWindow(parent, f) {
     setupUi(this);
 
     string title=string("Fingerprint GUI ");
@@ -111,18 +111,18 @@ MainWindowImpl::MainWindowImpl(QWidget * parent, Qt::WindowFlags f)
 }
 
 // slots -----------------------------------------------------------------------
-void MainWindowImpl::showAbout(){
+void MainWindowImpl::showAbout() {
     AboutImpl *aDialog=new AboutImpl(this);
     aDialog->show();
 }
 
-void MainWindowImpl::showHelp(){
+void MainWindowImpl::showHelp() {
     QLocale locale;
     QString lang=locale.name().left(2);
     QString docfile;
     docfile=QString(DOCDIR)+QString(HELP_BASE)+lang+QString(HELP_EXT);
     QFile doc(docfile);
-    if(!doc.exists()){
+    if(!doc.exists()) {
         docfile=QString(DOCDIR)+QString(HELP_BASE)+QString("en")+QString(HELP_EXT);
     }
     QUrl url("file://"+docfile);
@@ -130,64 +130,64 @@ void MainWindowImpl::showHelp(){
     srv.openUrl(url);
 }
 
-void MainWindowImpl::showHomepage(){
+void MainWindowImpl::showHomepage() {
     QDesktopServices srv;
     srv.openUrl(QUrl(HOMEPAGE));
 }
 
-void MainWindowImpl::showForum(){
+void MainWindowImpl::showForum() {
     QDesktopServices srv;
     srv.openUrl(QUrl(FORUM_ONLINE));
 }
 
-bool MainWindowImpl::getUuid(QString dir){
+bool MainWindowImpl::getUuid(QString dir) {
     QMessageBox msgBox(this);
     msgBox.setIcon(QMessageBox::Critical);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     QFile mtab("/etc/mtab");
-    if(!mtab.open(QIODevice::ReadOnly)){
+    if(!mtab.open(QIODevice::ReadOnly)) {
         syslog(LOG_ERR,"Could not open \"/etc/mtab\".");
         return false;
     }
 //    while(!mtab.atEnd()){
     QTextStream mt(&mtab);
-    while(true){
+    while(true) {
         QString line=mt.readLine();
-	if(line.isNull())break;
-	if(line.isEmpty())continue;
+        if(line.isNull())break;
+        if(line.isEmpty())continue;
 //syslog(LOG_DEBUG,"LINE %s.",line.toStdString().data());
         QString mountPoint=line.section(' ',1,1);
 //syslog(LOG_DEBUG,"DIR: %s, MP: %s.",dir.toStdString().data(),mountPoint.toStdString().data());
-        if(mountPoint!="/"&&dir.startsWith(mountPoint)){
+        if(mountPoint!="/"&&dir.startsWith(mountPoint)) {
             QString dev=line.section(' ',0,0);
 //syslog(LOG_DEBUG,"DIR: %s, DEV: %s.",dir.toStdString().data(),dev.toStdString().data());
             QDirIterator uuidIt("/dev/disk/by-uuid/",QDirIterator::NoIteratorFlags);
             while(uuidIt.hasNext()) {
                 uuidIt.next();
                 QFileInfo info=uuidIt.fileInfo();
-                if(info.isSymLink()){
-                    if(info.symLinkTarget()==dev){
+                if(info.isSymLink()) {
+                    if(info.symLinkTarget()==dev) {
 //syslog(LOG_DEBUG,"UUID: %s, DEV: %s.",info.fileName().toStdString().data(),dev.toStdString().data());
                         passwdUUID=info.fileName();
                         while(!dev.isEmpty()&&dev.right(1).at(0).isDigit())dev.chop(1);//remove digits from device /dev/sdb123 becomes /dev/sdb
 //syslog(LOG_DEBUG,"UUID: %s, DEV: %s.",info.fileName().toStdString().data(),dev.toStdString().data());
                         QFile d("/sys/class/block/"+dev.section('/',-1)+"/removable");
 //syslog(LOG_DEBUG,"UUID: %s, D: %s.",info.fileName().toStdString().data(),d.fileName().toStdString().data());
-                        if(d.exists()&&d.open(QIODevice::ReadOnly)){
+                        if(d.exists()&&d.open(QIODevice::ReadOnly)) {
                             QString s=d.readAll();
 //syslog(LOG_DEBUG,"UUID: %s, S: %s.",info.fileName().toStdString().data(),s.toStdString().data());
-                            if(s.at(0)=='1'){
-				mtab.close();
+                            if(s.at(0)=='1') {
+                                mtab.close();
                                 return true;
-			    }
+                            }
                         }
                         const char* msg="The selected device is not removable!";
                         syslog(LOG_ERR,"%s",msg);
                         msgBox.setText(msg);
                         msgBox.exec();
                         passwdUUID.clear();
-			mtab.close();
+                        mtab.close();
                         return false;
                     }
                 }
@@ -203,7 +203,7 @@ bool MainWindowImpl::getUuid(QString dir){
     return false;
 }
 
-void MainWindowImpl::savePasswd(){
+void MainWindowImpl::savePasswd() {
     bool error=false;
     QMessageBox msgBox(this);
     msgBox.setIcon(QMessageBox::Critical);
@@ -213,31 +213,31 @@ void MainWindowImpl::savePasswd(){
     QString username(pws->pw_name);
     char host[1000];
 
-    if(gethostname(host,1000)){
+    if(gethostname(host,1000)) {
         error=true;
     }
     QString hostname(host);
-    if(!error&&hostname.isEmpty()){
+    if(!error&&hostname.isEmpty()) {
         error=true;
     }
-    if(error){
+    if(error) {
         const char* msg="Could not get hostname!";
         syslog(LOG_ERR,"%s",msg);
         msgBox.setText(msg);
     }
-    if(!error&&username.isEmpty()){
+    if(!error&&username.isEmpty()) {
         const char* msg="Could not get username!";
         syslog(LOG_ERR,"%s",msg);
         msgBox.setText(msg);
         error=true;
     }
-    if(!error&&passwdLine1->text()!=passwdLine2->text()){
+    if(!error&&passwdLine1->text()!=passwdLine2->text()) {
         const char* msg="Passwords don't match!";
         syslog(LOG_ERR,"%s",msg);
         msgBox.setText(msg);
         error=true;
     }
-    if(error){
+    if(error) {
         msgBox.exec();
         return;
     }
@@ -247,7 +247,7 @@ void MainWindowImpl::savePasswd(){
         (char*)passwdUUID.toStdString().data(),
         (char*)username.toStdString().data(),
         (char*)hostname.toStdString().data());
-    if(!userSettings.writeConfig((char*)passwdPasswd.toStdString().data(),debugTest)){
+    if(!userSettings.writeConfig((char*)passwdPasswd.toStdString().data(),debugTest)) {
         const char* msg="Could not save password!";
         syslog(LOG_ERR,"%s",msg);
         msgBox.setText(msg);
@@ -264,10 +264,10 @@ void MainWindowImpl::savePasswd(){
     okButton->setAutoDefault(true);
 }
 
-void MainWindowImpl::enableSaveButton(){
+void MainWindowImpl::enableSaveButton() {
     passwdReady=true;
     if(passwdUUID.isEmpty()|passwdPath.isEmpty()|passwdLine1->text().isEmpty()|passwdLine2->text().isEmpty()
-            |(passwdLine1->text().length()!=passwdLine2->text().length())){
+            |(passwdLine1->text().length()!=passwdLine2->text().length())) {
         passwdReady=false;
     }
     saveButton->setEnabled(passwdReady);
@@ -275,13 +275,13 @@ void MainWindowImpl::enableSaveButton(){
 }
 
 
-void MainWindowImpl::setPwdPath(QString selectedPath){
+void MainWindowImpl::setPwdPath(QString selectedPath) {
     QMessageBox msgBox(this);
     msgBox.setIcon(QMessageBox::Critical);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     QDir pwdDir(selectedPath);
-    if(!pwdDir.exists()){
+    if(!pwdDir.exists()) {
         const char* msg="Directory doesn't exist!";
         syslog(LOG_ERR,"%s (%s)",msg,pwdDir.absolutePath().toStdString().data());
         msgBox.setText(msg);
@@ -292,28 +292,28 @@ void MainWindowImpl::setPwdPath(QString selectedPath){
     passwdPath=pwdDir.absolutePath();
     pathEdit->setText(passwdPath);
     // find the UUID
-    if(getUuid(passwdPath)){
+    if(getUuid(passwdPath)) {
         syslog(LOG_DEBUG,"Selected Dir for Password Store: %s (UUID: %s)",
-                pwdDir.absolutePath().toStdString().data(),passwdUUID.toStdString().data());
+               pwdDir.absolutePath().toStdString().data(),passwdUUID.toStdString().data());
     }
     enableSaveButton();
 }
 
-void MainWindowImpl::setPwdPath1(){
+void MainWindowImpl::setPwdPath1() {
     QString dir=QFileDialog::getExistingDirectory(
-            this,
-            tr("Open Directory on removable Media"),
-            "/media",
-            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                    this,
+                    tr("Open Directory on removable Media"),
+                    "/media",
+                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     setPwdPath(dir);
 }
 
-void MainWindowImpl::setPwdPath2(){
+void MainWindowImpl::setPwdPath2() {
     setPwdPath(pathEdit->text());
 }
 
-void MainWindowImpl::closeApp(){
-    if(currentFingerprint!=nullptr){
+void MainWindowImpl::closeApp() {
+    if(currentFingerprint!=nullptr) {
         syslog(LOG_INFO,"Stopping device...");
         currentFingerprint->getDevice()->stop();
         currentFingerprint->getDevice()->wait(1000);
@@ -325,11 +325,11 @@ void MainWindowImpl::closeApp(){
     qApp->exit(EXIT_SUCCESS);
 }
 
-void MainWindowImpl::testPam(){
+void MainWindowImpl::testPam() {
     string service=string("");
     bool identify=false;
-    for(int i=0;services[i].button!=nullptr;i++){
-        if(services[i].button->isChecked()){
+    for(int i=0; services[i].button!=nullptr; i++) {
+        if(services[i].button->isChecked()) {
             service=string(services[i].name);
             identify=services[i].identify;
             break;
@@ -361,16 +361,17 @@ void MainWindowImpl::testPam(){
 }
 
 static bool message=false;
-void MainWindowImpl::noDeviceOpen(){
+void MainWindowImpl::noDeviceOpen() {
     //don't know why this is called more than once with further tries
-    if(message)return;else message=true;
+    if(message)return;
+    else message=true;
     tabWidget->setCurrentIndex(DEVICE_TAB);
     MessageDialogImpl md(this);
     md.exec();
     message=false;
 }
 
-void MainWindowImpl::acquireFinished(int result,struct fp_pic_data *pic){
+void MainWindowImpl::acquireFinished(int result,struct fp_pic_data *pic) {
     movie->setPaused(true);
     if ( !fpPix.isNull() ) {
         freeQPixmapFromFpImg ( &fpPix );
@@ -387,7 +388,7 @@ void MainWindowImpl::acquireFinished(int result,struct fp_pic_data *pic){
     connect(sDialog,SIGNAL(choice(savedDialogChoice)),this,SLOT(savedDialogChosen(savedDialogChoice)));
 }
 
-void MainWindowImpl::verifyFinished(int result,struct fp_pic_data * pic){
+void MainWindowImpl::verifyFinished(int result,struct fp_pic_data * pic) {
     movie->setPaused(true);
     if ( !fpPix.isNull() ) {
         freeQPixmapFromFpImg ( &fpPix );
@@ -404,36 +405,37 @@ void MainWindowImpl::verifyFinished(int result,struct fp_pic_data * pic){
     connect(sDialog,SIGNAL(choice(savedDialogChoice)),this,SLOT(savedDialogChosen(savedDialogChoice)));
 }
 
-void MainWindowImpl::savedDialogChosen(savedDialogChoice choice){
-    switch(choice){
-        case SAVED_YES:
-            tabWidget->setCurrentIndex(FINGER_TAB);
-            break;
-        case SAVED_NO:
-            bool v=currentFingerprint->isValid();
-            scanTabToBack();
-            if(!v)
-                scanTabToFront();
-            break;
+void MainWindowImpl::savedDialogChosen(savedDialogChoice choice) {
+    switch(choice) {
+    case SAVED_YES:
+        tabWidget->setCurrentIndex(FINGER_TAB);
+        break;
+    case SAVED_NO:
+        bool v=currentFingerprint->isValid();
+        scanTabToBack();
+        if(!v)
+            scanTabToFront();
+        break;
     }
     disconnect(this,SLOT(savedDialogChosen(savedDialogChoice)));
 }
 
-void MainWindowImpl::existDialogChosen(existDialogChoice choice){
-    switch(choice){
-        case EXIST_VERIFY:
-            currentFingerprint->modeVerify();
-            [[fallthrough]]; case EXIST_ACQUIRE:
-            movie->setPaused(false);
-            swipeFinger();
-            break;
-        case EXIST_CANCEL:
-            tabWidget->setCurrentIndex(FINGER_TAB);
+void MainWindowImpl::existDialogChosen(existDialogChoice choice) {
+    switch(choice) {
+    case EXIST_VERIFY:
+        currentFingerprint->modeVerify();
+        [[fallthrough]];
+    case EXIST_ACQUIRE:
+        movie->setPaused(false);
+        swipeFinger();
+        break;
+    case EXIST_CANCEL:
+        tabWidget->setCurrentIndex(FINGER_TAB);
     }
     disconnect(this,SLOT(existDialogChosen(existDialogChoice)));
 }
 
-int MainWindowImpl::saveToFile(){  //save fingerprints to tar-file (needs tar and zip in path)
+int MainWindowImpl::saveToFile() { //save fingerprints to tar-file (needs tar and zip in path)
     struct passwd *pws=getpwuid(geteuid());
 
     QString home=QDir::homePath();
@@ -449,12 +451,12 @@ int MainWindowImpl::saveToFile(){  //save fingerprints to tar-file (needs tar an
     return system(command.data());
 }
 
-void MainWindowImpl::nextTab(){
-    if(currentTab==PASSWORD_TAB){
-        if(haveFingerprints()){
+void MainWindowImpl::nextTab() {
+    if(currentTab==PASSWORD_TAB) {
+        if(haveFingerprints()) {
             closeApp();                                 //Finish button
         }
-        else{
+        else {
             tabWidget->setCurrentIndex(currentTab-1);   //Back button
             return;
         }
@@ -462,23 +464,23 @@ void MainWindowImpl::nextTab(){
     tabWidget->setCurrentIndex(currentTab+1);
 }
 
-void MainWindowImpl::tabChanged(){
+void MainWindowImpl::tabChanged() {
     tabChanged(tabWidget->currentIndex());
 }
 
-void MainWindowImpl::newDevice(string name){
+void MainWindowImpl::newDevice(string name) {
     deviceCombo->addItem(QString::fromStdString(name), 0);
 }
 
-void MainWindowImpl::showAttachedUSBDevices(){
+void MainWindowImpl::showAttachedUSBDevices() {
     usbDeviceListWidget->show();
     usbDeviceListWidget->clear();
-    if(deviceHandler->getAttachedUsbDevices()!=nullptr){
-        for(USBDevice *attachedUSB=deviceHandler->getAttachedUsbDevices();attachedUSB!=nullptr;attachedUSB=attachedUSB->next)
+    if(deviceHandler->getAttachedUsbDevices()!=nullptr) {
+        for(USBDevice *attachedUSB=deviceHandler->getAttachedUsbDevices(); attachedUSB!=nullptr; attachedUSB=attachedUSB->next)
             usbDeviceListWidget->addItem(attachedUSB->getDeviceDescriptor());
     }
     //are devices available??
-    if(deviceHandler->getFingerprintDevices()==nullptr){ //NO
+    if(deviceHandler->getFingerprintDevices()==nullptr) { //NO
         const char* msg="No Devices Found!";
         syslog(LOG_ERR,"%s",msg);
         deviceCombo->addItem(QString::fromStdString(msg));
@@ -487,7 +489,7 @@ void MainWindowImpl::showAttachedUSBDevices(){
         tabWidget->setTabEnabled(SCAN_TAB,false);
         tabWidget->setTabEnabled(SETTINGS_TAB,false);
     }
-    else{
+    else {
         okButton->setEnabled(true);
         tabWidget->setTabEnabled(FINGER_TAB,true);
         tabWidget->setTabEnabled(SCAN_TAB,true);
@@ -495,55 +497,75 @@ void MainWindowImpl::showAttachedUSBDevices(){
     }
 }
 
-void MainWindowImpl::setScanTabNeededStages(int stages){
-    switch(stages){
-        case 1:
-            fingerprintLabel2->setPixmap(QPixmap());
-            fingerprintLabel3->setPixmap(QPixmap());
-            fingerprintLabel4->setPixmap(QPixmap());
-            fingerprintLabel5->setPixmap(QPixmap());
-            break;
-        case 2:
-            fingerprintLabel3->setPixmap(QPixmap());
-            fingerprintLabel4->setPixmap(QPixmap());
-            fingerprintLabel5->setPixmap(QPixmap());
-            fingerprintLabel2->setPixmap(fpPixMap);
-            break;
-        case 3:
-            fingerprintLabel4->setPixmap(QPixmap());
-            fingerprintLabel5->setPixmap(QPixmap());
-            fingerprintLabel2->setPixmap(fpPixMap);
-            fingerprintLabel3->setPixmap(fpPixMap);
-            break;
-        case 4:
-            fingerprintLabel5->setPixmap(QPixmap());
-            fingerprintLabel2->setPixmap(fpPixMap);
-            fingerprintLabel3->setPixmap(fpPixMap);
-            fingerprintLabel4->setPixmap(fpPixMap);
-            break;
-        case 5:
-            fingerprintLabel2->setPixmap(fpPixMap);
-            fingerprintLabel3->setPixmap(fpPixMap);
-            fingerprintLabel4->setPixmap(fpPixMap);
-            fingerprintLabel5->setPixmap(fpPixMap);
+void MainWindowImpl::setScanTabNeededStages(int stages) {
+    switch(stages) {
+    case 1:
+        fingerprintLabel2->setPixmap(QPixmap());
+        fingerprintLabel3->setPixmap(QPixmap());
+        fingerprintLabel4->setPixmap(QPixmap());
+        fingerprintLabel5->setPixmap(QPixmap());
+        break;
+    case 2:
+        fingerprintLabel3->setPixmap(QPixmap());
+        fingerprintLabel4->setPixmap(QPixmap());
+        fingerprintLabel5->setPixmap(QPixmap());
+        fingerprintLabel2->setPixmap(fpPixMap);
+        break;
+    case 3:
+        fingerprintLabel4->setPixmap(QPixmap());
+        fingerprintLabel5->setPixmap(QPixmap());
+        fingerprintLabel2->setPixmap(fpPixMap);
+        fingerprintLabel3->setPixmap(fpPixMap);
+        break;
+    case 4:
+        fingerprintLabel5->setPixmap(QPixmap());
+        fingerprintLabel2->setPixmap(fpPixMap);
+        fingerprintLabel3->setPixmap(fpPixMap);
+        fingerprintLabel4->setPixmap(fpPixMap);
+        break;
+    case 5:
+        fingerprintLabel2->setPixmap(fpPixMap);
+        fingerprintLabel3->setPixmap(fpPixMap);
+        fingerprintLabel4->setPixmap(fpPixMap);
+        fingerprintLabel5->setPixmap(fpPixMap);
     }
     syslog(LOG_DEBUG,"Need %d stages.",stages);
 }
 
 // set the current finger
-void MainWindowImpl::lsChanged(){setLabel(0);}
-void MainWindowImpl::lrChanged(){setLabel(1);}
-void MainWindowImpl::lmChanged(){setLabel(2);}
-void MainWindowImpl::lpChanged(){setLabel(3);}
-void MainWindowImpl::ltChanged(){setLabel(4);}
-void MainWindowImpl::rsChanged(){setLabel(9);}
-void MainWindowImpl::rrChanged(){setLabel(8);}
-void MainWindowImpl::rmChanged(){setLabel(7);}
-void MainWindowImpl::rpChanged(){setLabel(6);}
-void MainWindowImpl::rtChanged(){setLabel(5);}
+void MainWindowImpl::lsChanged() {
+    setLabel(0);
+}
+void MainWindowImpl::lrChanged() {
+    setLabel(1);
+}
+void MainWindowImpl::lmChanged() {
+    setLabel(2);
+}
+void MainWindowImpl::lpChanged() {
+    setLabel(3);
+}
+void MainWindowImpl::ltChanged() {
+    setLabel(4);
+}
+void MainWindowImpl::rsChanged() {
+    setLabel(9);
+}
+void MainWindowImpl::rrChanged() {
+    setLabel(8);
+}
+void MainWindowImpl::rmChanged() {
+    setLabel(7);
+}
+void MainWindowImpl::rpChanged() {
+    setLabel(6);
+}
+void MainWindowImpl::rtChanged() {
+    setLabel(5);
+}
 
 //show vendor/device info in combobox
-void MainWindowImpl::displayModeVendor(){
+void MainWindowImpl::displayModeVendor() {
     int i;
     disconnect(deviceCombo,SIGNAL(currentIndexChanged(int)),deviceHandler,SLOT(setCurrentDevice(int)));
     deviceHandler->setDisplayNameMode(DISPLAY_VENDOR_NAME);
@@ -555,7 +577,7 @@ void MainWindowImpl::displayModeVendor(){
 }
 
 //show driver info in combobox
-void MainWindowImpl::displayModeDriver(){
+void MainWindowImpl::displayModeDriver() {
     int i;
     disconnect(deviceCombo,SIGNAL(currentIndexChanged(int)),deviceHandler,SLOT(setCurrentDevice(int)));
     deviceHandler->setDisplayNameMode(DISPLAY_VENDOR_NAME);
@@ -568,54 +590,54 @@ void MainWindowImpl::displayModeDriver(){
 }
 
 // private helpers -------------------------------------------------------------
-void MainWindowImpl::tabChanged(int newTab){
+void MainWindowImpl::tabChanged(int newTab) {
 
     if(newTab==currentTab)
         return;
-    switch (currentTab){
-        case DEVICE_TAB:
-            deviceTabToBack();
-            break;
-        case FINGER_TAB:
-            fingerTabToBack();
-            break;
-        case SCAN_TAB:
-            scanTabToBack();
-            break;
-        case SETTINGS_TAB:
-            settingsTabToBack();
-            break;
-        case PASSWORD_TAB:
-            passwordTabToBack();
-            break;
+    switch (currentTab) {
+    case DEVICE_TAB:
+        deviceTabToBack();
+        break;
+    case FINGER_TAB:
+        fingerTabToBack();
+        break;
+    case SCAN_TAB:
+        scanTabToBack();
+        break;
+    case SETTINGS_TAB:
+        settingsTabToBack();
+        break;
+    case PASSWORD_TAB:
+        passwordTabToBack();
+        break;
     }
-    switch (newTab){
-        case DEVICE_TAB:
-            deviceTabToFront();
-            break;
-        case FINGER_TAB:
-            fingerTabToFront();
-            break;
-        case SCAN_TAB:
-            scanTabToFront();
-            break;
-        case SETTINGS_TAB:
-            settingsTabToFront();
-            break;
-        case PASSWORD_TAB:
-            passwordTabToFront();
-            break;
+    switch (newTab) {
+    case DEVICE_TAB:
+        deviceTabToFront();
+        break;
+    case FINGER_TAB:
+        fingerTabToFront();
+        break;
+    case SCAN_TAB:
+        scanTabToFront();
+        break;
+    case SETTINGS_TAB:
+        settingsTabToFront();
+        break;
+    case PASSWORD_TAB:
+        passwordTabToFront();
+        break;
     }
     currentTab=newTab;
 }
 
-void MainWindowImpl::swipeFinger(){
-    if(!currentFingerprint->swipe()){
+void MainWindowImpl::swipeFinger() {
+    if(!currentFingerprint->swipe()) {
         closeApp(); //something went wrong
     }
 }
 
-bool MainWindowImpl::haveFingerprints(){
+bool MainWindowImpl::haveFingerprints() {
     struct passwd *pws=getpwuid(geteuid());
 
     QString userdir(DATA_DIR);
@@ -624,15 +646,15 @@ bool MainWindowImpl::haveFingerprints(){
     return(fpDir->exists());
 }
 
-void MainWindowImpl::deviceTabToBack(){
+void MainWindowImpl::deviceTabToBack() {
 }
 
-void MainWindowImpl::fingerTabToBack(){
+void MainWindowImpl::fingerTabToBack() {
 }
 
-void MainWindowImpl::scanTabToBack(){
+void MainWindowImpl::scanTabToBack() {
     movie->setPaused(true);
-    if(currentFingerprint!=nullptr){
+    if(currentFingerprint!=nullptr) {
         disconnect(currentFingerprint->getDevice(),SIGNAL(noDeviceOpen()),this,SLOT(noDeviceOpen()));
         disconnect(currentFingerprint->getDevice(),SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
         disconnect(currentFingerprint,SIGNAL(neededStages(int)),this,SLOT(setScanTabNeededStages(int)));
@@ -654,84 +676,84 @@ void MainWindowImpl::scanTabToBack(){
     deviceCombo->setEnabled(true);
 }
 
-void MainWindowImpl::settingsTabToBack(){
+void MainWindowImpl::settingsTabToBack() {
     stopTester=true;
 }
 
-void MainWindowImpl::passwordTabToBack(){
+void MainWindowImpl::passwordTabToBack() {
     okButton->setText(tr("&Next"));
     cancelButton->setEnabled(true);
 }
 
-void MainWindowImpl::deviceTabToFront(){
+void MainWindowImpl::deviceTabToFront() {
 }
 
-void MainWindowImpl::markFinger(int finger){
+void MainWindowImpl::markFinger(int finger) {
     QRadioButton *f=nullptr;
 
-    switch (finger){
-        case 0:
-            f=lsButton;
-            break;
-        case 1:
-            f=lrButton;
-            break;
-        case 2:
-            f=lmButton;
-            break;
-        case 3:
-            f=lpButton;
-            break;
-        case 4:
-            f=ltButton;
-            break;
-        case 5:
-            f=rtButton;
-            break;
-        case 6:
-            f=rpButton;
-            break;
-        case 7:
-            f=rmButton;
-            break;
-        case 8:
-            f=rrButton;
-            break;
-        case 9:
-            f=rsButton;
-            break;
+    switch (finger) {
+    case 0:
+        f=lsButton;
+        break;
+    case 1:
+        f=lrButton;
+        break;
+    case 2:
+        f=lmButton;
+        break;
+    case 3:
+        f=lpButton;
+        break;
+    case 4:
+        f=ltButton;
+        break;
+    case 5:
+        f=rtButton;
+        break;
+    case 6:
+        f=rpButton;
+        break;
+    case 7:
+        f=rmButton;
+        break;
+    case 8:
+        f=rrButton;
+        break;
+    case 9:
+        f=rsButton;
+        break;
     }
     if(f==nullptr)
         return;
     f->setStyleSheet(QString::fromUtf8(
-    "QRadioButton::indicator::unchecked \n"
-    "{image: url(:/new/prefix1/res/radiobutton_unchecked_gn.png);}\n"
-    "QRadioButton::indicator::checked \n"
-    "{image: url(:/new/prefix1/res/radiobutton_checked_gn.png);}\n"
-    "QRadioButton::indicator:unchecked:hover\n"
-    "{image: url(:/new/prefix1/res/radiobutton_unchecked_hover_gn.png);}\n"
-    "QRadioButton::indicator:checked:hover\n"
-    "{image: url(:/new/prefix1/res/radiobutton_checked_hover_gn.png);}\n"
-    "QRadioButton::indicator:unchecked:pressed\n"
-    "{image: url(:/new/prefix1/res/radiobutton_unchecked_pressed_gn.png);}\n"
-    "QRadioButton::indicator:checked:pressed\n"
-    "{image: url(:/new/prefix1/res/radiobutton_checked_pressed_gn.png);}"));
+                         "QRadioButton::indicator::unchecked \n"
+                         "{image: url(:/new/prefix1/res/radiobutton_unchecked_gn.png);}\n"
+                         "QRadioButton::indicator::checked \n"
+                         "{image: url(:/new/prefix1/res/radiobutton_checked_gn.png);}\n"
+                         "QRadioButton::indicator:unchecked:hover\n"
+                         "{image: url(:/new/prefix1/res/radiobutton_unchecked_hover_gn.png);}\n"
+                         "QRadioButton::indicator:checked:hover\n"
+                         "{image: url(:/new/prefix1/res/radiobutton_checked_hover_gn.png);}\n"
+                         "QRadioButton::indicator:unchecked:pressed\n"
+                         "{image: url(:/new/prefix1/res/radiobutton_unchecked_pressed_gn.png);}\n"
+                         "QRadioButton::indicator:checked:pressed\n"
+                         "{image: url(:/new/prefix1/res/radiobutton_checked_pressed_gn.png);}"));
 }
 
-void MainWindowImpl::fingerTabToFront(){
+void MainWindowImpl::fingerTabToFront() {
     stopTester=true;
     setLabel(currentFinger);
-    for(int i=0;i<10;i++){  // mark fingers with existing bir data
+    for(int i=0; i<10; i++) { // mark fingers with existing bir data
         Fingerprint *f=new Fingerprint(i,deviceHandler->getCurrentDevice(nullptr),textLabels,iconLabels);
-        if(f->isValid()){
+        if(f->isValid()) {
             markFinger(i);
         }
         f->deleteLater();
     }
 }
 
-void MainWindowImpl::scanTabToFront(){
-	setScanTabNeededStages(1);
+void MainWindowImpl::scanTabToFront() {
+    setScanTabNeededStages(1);
     stopTester=true;
     animationLabel->setMovie(movie);
     QString s = tr("Please Swipe Your %1").arg(tr(fingers[currentFinger]));
@@ -761,21 +783,21 @@ void MainWindowImpl::scanTabToFront(){
     connect(currentFingerprint,SIGNAL(acquireFinished(int,struct fp_pic_data*)),this,SLOT(acquireFinished(int,struct fp_pic_data*)));
     disconnect(currentFingerprint,SIGNAL(verifyFinished(int,struct fp_pic_data*)),this,SLOT(verifyFinished(int,struct fp_pic_data*)));
     connect(currentFingerprint,SIGNAL(verifyFinished(int,struct fp_pic_data*)),this,SLOT(verifyFinished(int,struct fp_pic_data*)));
-    if(currentFingerprint->isValid()){
+    if(currentFingerprint->isValid()) {
         eDialog=new ExistDialogImpl(tr(fingers[currentFinger]).toStdString(),this);
         eDialog->show();
         connect(eDialog,SIGNAL(choice(existDialogChoice)),this,SLOT(existDialogChosen(existDialogChoice)));
     }
-    else{
+    else {
         movie->setPaused(false);
         swipeFinger();
     }
 }
 
-void MainWindowImpl::settingsTabToFront(){
+void MainWindowImpl::settingsTabToFront() {
     struct passwd *pws=getpwuid(geteuid());
 
-    if(haveFingerprints()){
+    if(haveFingerprints()) {
         exportButton->setEnabled(true);
         string label1=string("Your fingerprints are saved to \"");
         label1.append(DATA_DIR);
@@ -786,7 +808,7 @@ void MainWindowImpl::settingsTabToFront(){
         fprintLabel2->show();
         noFingerprintsLabel->hide();
     }
-    else{
+    else {
         exportButton->setEnabled(false);
         cancelButton->setEnabled(true);
         fprintLabel1->hide();
@@ -796,22 +818,22 @@ void MainWindowImpl::settingsTabToFront(){
     }
 
     findPamServices();
-    if(!deviceHandler->getCurrentDevice(nullptr)->canIdentify()){
-	syslog(LOG_DEBUG,"The selected device doesn't support \"identification\".");
+    if(!deviceHandler->getCurrentDevice(nullptr)->canIdentify()) {
+        syslog(LOG_DEBUG,"The selected device doesn't support \"identification\".");
     }
 
 }
 
-void MainWindowImpl::passwordTabToFront(){
+void MainWindowImpl::passwordTabToFront() {
     struct passwd *pws=getpwuid(geteuid());
 
     stopTester=true;
-    if(haveFingerprints()){
+    if(haveFingerprints()) {
         okButton->setText("&Finish");
         okButton->setEnabled(false);
         saveButton->setEnabled(false);
     }
-    else{
+    else {
         okButton->setText("&Back");
     }
     QString username(pws->pw_name);    // preset pathEdit if media is connected
@@ -820,33 +842,47 @@ void MainWindowImpl::passwordTabToFront(){
 }
 
 
-void MainWindowImpl::findPamServices(){
-    services[0]=(pamService){string("gdm"),false,gdmButton,true};
-    services[1]=(pamService){string("kdm"),false,kdmButton,true};
-    services[2]=(pamService){string("sudo"),false,sudoButton,true};
-    services[3]=(pamService){string("su"),false,suButton,true};
-    services[4]=(pamService){string("gnome-screensaver"),false,gnomescreensaverButton,true};
-    services[5]=(pamService){string("lightdm"),false,lightdmButton,true};
-    services[6]=(pamService){string(""),false,nullptr,false};
+void MainWindowImpl::findPamServices() {
+    services[0]=(pamService) {
+        string("gdm"),false,gdmButton,true
+    };
+    services[1]=(pamService) {
+        string("kdm"),false,kdmButton,true
+    };
+    services[2]=(pamService) {
+        string("sudo"),false,sudoButton,true
+    };
+    services[3]=(pamService) {
+        string("su"),false,suButton,true
+    };
+    services[4]=(pamService) {
+        string("gnome-screensaver"),false,gnomescreensaverButton,true
+    };
+    services[5]=(pamService) {
+        string("lightdm"),false,lightdmButton,true
+    };
+    services[6]=(pamService) {
+        string(""),false,nullptr,false
+    };
     bool checked=false;
     bool haveServices=false;
 
-    for(int i=0;services[i].button!=nullptr;i++){
+    for(int i=0; services[i].button!=nullptr; i++) {
         QRadioButton *button=services[i].button;
-        if(services[i].implemented){
+        if(services[i].implemented) {
             string *srvc=&services[i].name;
             QFile file(QString("/etc/pam.d/")+QString(srvc->data()));
-            if(file.exists()){
+            if(file.exists()) {
                 if(!checked)button->setChecked(true);//set the first available service button to checked
                 button->setEnabled(true);
                 haveServices=true;
                 checked=true;
             }
-            else{
+            else {
                 button->setEnabled(false);
             }
         }
-        else{
+        else {
             button->setEnabled(false);
         }
     }
@@ -854,9 +890,9 @@ void MainWindowImpl::findPamServices(){
     else testButton->setEnabled(false);
 }
 
-void MainWindowImpl::setLabel(int finger){
+void MainWindowImpl::setLabel(int finger) {
     currentFinger=finger;
-        currentFingerLabel->setText(tr(fingers[currentFinger]));
+    currentFingerLabel->setText(tr(fingers[currentFinger]));
 }
 
 #include "moc_MainWindowImpl.cpp"

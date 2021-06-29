@@ -13,12 +13,12 @@
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -60,7 +60,7 @@ enum {
 
 //FingerprintDevice
 class FingerprintDevice : public QThread
- {
+{
     Q_OBJECT
 
 public:
@@ -72,8 +72,14 @@ public:
     FingerprintDevice* next;
 
 public:
-    FingerprintDevice(){fpPic.data=NULL;}
-    ~FingerprintDevice(){if(NULL!=fpPic.data){free(fpPic.data);}}
+    FingerprintDevice() {
+        fpPic.data=NULL;
+    }
+    ~FingerprintDevice() {
+        if(NULL!=fpPic.data) {
+            free(fpPic.data);
+        }
+    }
     virtual string* getDisplayName(int)=0;            //returns a display name for this device
     virtual bool canIdentify()=0;
     virtual void setData(void *data,int size)=0;      //loads data into driver
@@ -86,53 +92,53 @@ public:
 protected:
     virtual void run()=0;
     void img_to_pixmap(struct fp_img *img) {
-	size_t rgb_offset = 0;
-	size_t i;
-	size_t size;
-	unsigned char *imgdata;
-	if ( NULL != fpPic.data ) {
-		free ( fpPic.data );
-		fpPic.data = NULL;
-	}
-	if ( NULL != img ) {
-		imgdata = fp_img_get_data(img);
-		size = ( fpPic.width = fp_img_get_width ( img ) ) * ( fpPic.height = fp_img_get_height ( img ) );
-		if ( NULL != ( fpPic.data = (unsigned char *)malloc ( size * 3 ) ) ) {
-			for ( i = 0 ; i < size ; i ++ ) {
-				unsigned char pixel = imgdata[i];
-				fpPic.data[rgb_offset++] = pixel;
-				fpPic.data[rgb_offset++] = pixel;
-				fpPic.data[rgb_offset++] = pixel;
-			}
-		}
-	}
-	if ( NULL == fpPic.data ) {
-		fpPic.width = 0;
-		fpPic.height = 0;
-	}
-/*
-	if ( fpPic ) {
-		free ( fpPic->data );
-		free ( fpPic );
-		fpPic = NULL;
-	}
-	if ( NULL != img && NULL != ( fpPic = (struct fp_pic_data *)malloc ( sizeof ( struct fp_pic_data ) ) ) ) {
-		imgdata = fp_img_get_data(img);
-		size = ( fpPic->width = fp_img_get_width ( img ) ) * ( fpPic->height = fp_img_get_height ( img ) );
-		if ( NULL != ( fpPic->data = (unsigned char *)malloc ( size * 3 ) ) ) {
-			for ( i = 0 ; i < size ; i ++ ) {
-				unsigned char pixel = imgdata[i];
-				fpPic->data[rgb_offset++] = pixel;
-				fpPic->data[rgb_offset++] = pixel;
-				fpPic->data[rgb_offset++] = pixel;
-			}
-		}
-		else {
-			free ( fpPic );
-			fpPic = NULL;
-		}
-	}
-*/
+        size_t rgb_offset = 0;
+        size_t i;
+        size_t size;
+        unsigned char *imgdata;
+        if ( NULL != fpPic.data ) {
+            free ( fpPic.data );
+            fpPic.data = NULL;
+        }
+        if ( NULL != img ) {
+            imgdata = fp_img_get_data(img);
+            size = ( fpPic.width = fp_img_get_width ( img ) ) * ( fpPic.height = fp_img_get_height ( img ) );
+            if ( NULL != ( fpPic.data = (unsigned char *)malloc ( size * 3 ) ) ) {
+                for ( i = 0 ; i < size ; i ++ ) {
+                    unsigned char pixel = imgdata[i];
+                    fpPic.data[rgb_offset++] = pixel;
+                    fpPic.data[rgb_offset++] = pixel;
+                    fpPic.data[rgb_offset++] = pixel;
+                }
+            }
+        }
+        if ( NULL == fpPic.data ) {
+            fpPic.width = 0;
+            fpPic.height = 0;
+        }
+        /*
+        	if ( fpPic ) {
+        		free ( fpPic->data );
+        		free ( fpPic );
+        		fpPic = NULL;
+        	}
+        	if ( NULL != img && NULL != ( fpPic = (struct fp_pic_data *)malloc ( sizeof ( struct fp_pic_data ) ) ) ) {
+        		imgdata = fp_img_get_data(img);
+        		size = ( fpPic->width = fp_img_get_width ( img ) ) * ( fpPic->height = fp_img_get_height ( img ) );
+        		if ( NULL != ( fpPic->data = (unsigned char *)malloc ( size * 3 ) ) ) {
+        			for ( i = 0 ; i < size ; i ++ ) {
+        				unsigned char pixel = imgdata[i];
+        				fpPic->data[rgb_offset++] = pixel;
+        				fpPic->data[rgb_offset++] = pixel;
+        				fpPic->data[rgb_offset++] = pixel;
+        			}
+        		}
+        		else {
+        			free ( fpPic );
+        			fpPic = NULL;
+        		}
+        	}
+        */
     }
 
 public slots:

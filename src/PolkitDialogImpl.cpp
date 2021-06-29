@@ -38,13 +38,13 @@
 Q_DECLARE_METATYPE(PolkitQt1::Identity *);
 
 PolkitDialogImpl::PolkitDialogImpl(
-        const QString &actionId,
-        const QString &message,
-        const QString &/*iconName*/,
-        const PolkitQt1::Details &details,
-        const PolkitQt1::Identity::List &identities,
-        QWidget * parent,Qt::WindowFlags f)
-    : QDialog(parent,f){
+    const QString &actionId,
+    const QString &message,
+    const QString &/*iconName*/,
+    const PolkitQt1::Details &details,
+    const PolkitQt1::Identity::List &identities,
+    QWidget * parent,Qt::WindowFlags f)
+    : QDialog(parent,f) {
 
     qRegisterMetaType<PolkitQt1::Identity*>("PolkitQt1::Identity *");
     setupUi(this);
@@ -52,7 +52,7 @@ PolkitDialogImpl::PolkitDialogImpl(
     setModal(true);
     pluginDialog=nullptr;
 
-    if(message.isEmpty()){
+    if(message.isEmpty()) {
         syslog(LOG_WARNING,"Could not get action message for action.");
         headerLabel->hide();
     } else {
@@ -60,8 +60,8 @@ PolkitDialogImpl::PolkitDialogImpl(
         headerLabel->setText("<h3>"+message+"</h3>");
     }
     // find action description for actionId
-    foreach(PolkitQt1::ActionDescription desc,PolkitQt1::Authority::instance()->enumerateActionsSync()){
-        if(actionId==desc.actionId()){
+    foreach(PolkitQt1::ActionDescription desc,PolkitQt1::Authority::instance()->enumerateActionsSync()) {
+        if(actionId==desc.actionId()) {
             actionDescription=new PolkitQt1::ActionDescription(desc);
             syslog(LOG_DEBUG,"Found action description: %s.",actionDescription->description().toStdString().data());
             break;
@@ -74,29 +74,29 @@ PolkitDialogImpl::PolkitDialogImpl(
     connect(detailsButton,SIGNAL(released()),SLOT(resize()));
     userCombobox->hide();
     // If there is more than 1 identity we will show the combobox for user selection
-    if(identities.size()>1){
+    if(identities.size()>1) {
         connect(userCombobox,SIGNAL(currentIndexChanged(int)),SLOT(userComboboxIndexChanged(int)));
         createUserCombobox(identities);
     }
-    else{
+    else {
         userCombobox->addItem("", QVariant(identities[0].toString()));
         userCombobox->setCurrentIndex(0);
     }
     passwordEdit->setFocus();
 }
 
-PolkitDialogImpl::~PolkitDialogImpl(){
+PolkitDialogImpl::~PolkitDialogImpl() {
     syslog(LOG_DEBUG,"Deleting PolkitDialog.");
     // If a helper process is running kill him
     int rc;
     FILE *pidfile=fopen(HELPER_PID,"r");
-    if(pidfile){
+    if(pidfile) {
         char pidstr[100];
         int i=fread(pidstr,1,100,pidfile);
         if(i>0)
             pidstr[i]='\0';
         sscanf(pidstr,"%d",&i);
-        if(i!=getpid()){
+        if(i!=getpid()) {
             syslog(LOG_WARNING,"Killing fingerprint-helper (%d).",i);
             kill(i,SIGTERM);
             waitpid(i,&rc,0);
@@ -106,13 +106,13 @@ PolkitDialogImpl::~PolkitDialogImpl(){
 }
 
 // Preselect the current user if he is in admin group
-bool PolkitDialogImpl::preselectUser(){
+bool PolkitDialogImpl::preselectUser() {
     struct passwd *bPwd=getpwuid(getuid());
-    if(!bPwd){
+    if(!bPwd) {
         return false;
     }
     int i=userCombobox->findText(QString(bPwd->pw_name));
-    if(i>0){
+    if(i>0) {
         syslog(LOG_DEBUG,"User %s selected.",bPwd->pw_name);
         userCombobox->setCurrentIndex(i);
         return true;
@@ -120,21 +120,21 @@ bool PolkitDialogImpl::preselectUser(){
     return false;
 }
 
-void PolkitDialogImpl::resize(){
+void PolkitDialogImpl::resize() {
     adjustSize();
     passwordEdit->setFocus();
     passwordEdit->grabKeyboard();
 }
 
-void PolkitDialogImpl::accept(){
+void PolkitDialogImpl::accept() {
     syslog(LOG_DEBUG,"Accept.");
     // Do nothing, do not close the dialog. This is needed so that the dialog stays
     return;
 }
 
-void PolkitDialogImpl::setRequest(const QString &request,bool requiresAdmin){
+void PolkitDialogImpl::setRequest(const QString &request,bool requiresAdmin) {
     syslog(LOG_DEBUG,"Request: %s requires %s admin.",request.toStdString().data(),requiresAdmin?"":"no");
-    if(pluginDialog){
+    if(pluginDialog) {
         horizontalLayoutFingerprint->removeWidget(pluginDialog);
         delete(pluginDialog);
         pluginDialog=nullptr;
@@ -152,27 +152,27 @@ void PolkitDialogImpl::setRequest(const QString &request,bool requiresAdmin){
     syslog(LOG_DEBUG,"Plugin dialog created (hidden).");
 
     PolkitQt1::Identity identity=userSelected();
-    if(request.startsWith(QLatin1String("password:"),Qt::CaseInsensitive)){
-        if(requiresAdmin){
-            if(!identity.isValid()){
+    if(request.startsWith(QLatin1String("password:"),Qt::CaseInsensitive)) {
+        if(requiresAdmin) {
+            if(!identity.isValid()) {
                 passwordLabel->setText(tr("Password for root:"));
             }
-            else{
+            else {
                 passwordLabel->setText(tr("Password for %1").arg(identity.toString().remove("unix-user:")));
             }
         }
-        else{
+        else {
             passwordLabel->setText(tr("Password:"));
         }
     }
-    else{
+    else {
         passwordLabel->setText(request);
     }
     passwordEdit->setFocus();
 }
 
-void PolkitDialogImpl::createUserCombobox(const PolkitQt1::Identity::List &identities){
-    if(identities.count()&&(userCombobox->count()-1)!=identities.count()){
+void PolkitDialogImpl::createUserCombobox(const PolkitQt1::Identity::List &identities) {
+    if(identities.count()&&(userCombobox->count()-1)!=identities.count()) {
         userCombobox->clear();
         // Adds a Dummy user
         userCombobox->addItem(tr("Select User"), qVariantFromValue<QString> (QString()));
@@ -194,7 +194,7 @@ void PolkitDialogImpl::createUserCombobox(const PolkitQt1::Identity::List &ident
     }
 }
 
-PolkitQt1::Identity PolkitDialogImpl::userSelected(){
+PolkitQt1::Identity PolkitDialogImpl::userSelected() {
     if (userCombobox->currentIndex()==-1)
         return PolkitQt1::Identity();
 
@@ -204,9 +204,9 @@ PolkitQt1::Identity PolkitDialogImpl::userSelected(){
     return PolkitQt1::Identity::fromString(id);
 }
 
-void PolkitDialogImpl::userComboboxIndexChanged(int /*index*/){
+void PolkitDialogImpl::userComboboxIndexChanged(int /*index*/) {
     PolkitQt1::Identity identity=userSelected();
-    if(pluginDialog){
+    if(pluginDialog) {
         horizontalLayoutFingerprint->removeWidget(pluginDialog);
         delete(pluginDialog);
         pluginDialog=nullptr;
@@ -214,12 +214,12 @@ void PolkitDialogImpl::userComboboxIndexChanged(int /*index*/){
         resize();
     }
     // itemData is Null when "Select user" is selected
-    if(!identity.isValid()){
+    if(!identity.isValid()) {
         passwordEdit->setEnabled(false);
         passwordLabel->setEnabled(false);
         okButton->setEnabled(false);
     }
-    else{
+    else {
         passwordEdit->setEnabled(true);
         passwordLabel->setEnabled(true);
         okButton->setEnabled(true);
@@ -229,30 +229,30 @@ void PolkitDialogImpl::userComboboxIndexChanged(int /*index*/){
     }
 }
 
-QString PolkitDialogImpl::password() const{
+QString PolkitDialogImpl::password() const {
     return passwordEdit->text();
 }
 
-void PolkitDialogImpl::authenticationFailure(){
+void PolkitDialogImpl::authenticationFailure() {
     errorLabel->setText(tr("Authentication failure, please try again."));
     errorLabel->show();
     passwordEdit->clear();
     passwordEdit->setFocus();
 }
 
-void PolkitDialogImpl::setOptions(){
+void PolkitDialogImpl::setOptions() {
     contentLabel->setText(
-    tr("An application is attempting to perform an action that requires privileges. \
+        tr("An application is attempting to perform an action that requires privileges. \
     Authentication is required to perform this action."));
     SET_TEXT_COLOR;
 }
 
-void PolkitDialogImpl::showDetails(){
-    if(detailsDialog->isHidden()){
+void PolkitDialogImpl::showDetails() {
+    if(detailsDialog->isHidden()) {
         detailsButton->setText(tr("&Details <<"));
         detailsDialog->show();
     }
-    else{
+    else {
         detailsDialog->hide();
         detailsButton->setText(tr("&Details >>"));
     }
@@ -260,19 +260,19 @@ void PolkitDialogImpl::showDetails(){
 
 //------------------------------------------------------------------------------
 PolkitDetailsImpl::PolkitDetailsImpl(const PolkitQt1::Details &details,
-                         PolkitQt1::ActionDescription *actionDescription,
-                         const QString &appname,
-                         QWidget *parent) : QWidget(parent){
+                                     PolkitQt1::ActionDescription *actionDescription,
+                                     const QString &appname,
+                                     QWidget *parent) : QWidget(parent) {
     setupUi(this);
 
-    if(!appname.isEmpty()){
+    if(!appname.isEmpty()) {
         appTextLabel->setText(appname);
     }
-    else{
+    else {
         appLabel->hide();
         appTextLabel->hide();
     }
-    foreach(const QString &key,details.keys()){
+    foreach(const QString &key,details.keys()) {
         int row=gridLayout->rowCount()+1;
         QLabel *keyLabel=new QLabel(this);
         keyLabel->setText(tr("%1 is the name of a detail about the current action provided by polkit.").arg(key));
@@ -281,27 +281,27 @@ PolkitDetailsImpl::PolkitDetailsImpl(const PolkitQt1::Details &details,
         valueLabel->setText(details.lookup(key));
         gridLayout->addWidget(valueLabel,row,1);
     }
-    if(actionDescription){
-        if(!actionDescription->description().isEmpty()){
+    if(actionDescription) {
+        if(!actionDescription->description().isEmpty()) {
             actionTextLabel->setText(actionDescription->description());
         }
-        else{
+        else {
             actionLabel->hide();
             actionTextLabel->hide();
         }
 
         QString vendor=actionDescription->vendorName();
         QString vendorUrl = QString("<a href=\"%1\">%2</a>").arg(actionDescription->vendorUrl()).arg(vendor);
-        if(!vendor.isEmpty()){
+        if(!vendor.isEmpty()) {
             vendorUrlLabel->setToolTip(tr("Click to open %1").arg(actionDescription->vendorUrl()));
             vendorUrlLabel->setText(vendorUrl);
-        } 
-        else{
-            if(!actionDescription->vendorUrl().isEmpty()){
+        }
+        else {
+            if(!actionDescription->vendorUrl().isEmpty()) {
                 vendorUrlLabel->setToolTip("Click to open "+actionDescription->vendorUrl());
                 vendorUrlLabel->setText(vendorUrl);
             }
-            else{
+            else {
                 vendorLabel->hide();
                 vendorUrlLabel->hide();
             }

@@ -39,7 +39,7 @@
 using namespace std;
 
 class AboutImpl : public QDialog, public Ui::AboutDialog {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     AboutImpl(QWidget *parent=0,Qt::WindowFlags f=0);

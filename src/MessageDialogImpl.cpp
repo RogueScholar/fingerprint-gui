@@ -28,14 +28,14 @@
 #include "MessageDialogImpl.h"
 
 MessageDialogImpl::MessageDialogImpl(QWidget * parent, Qt::WindowFlags f)
-    : QDialog(parent, f){
+    : QDialog(parent, f) {
     setupUi(this);
     okButton->setDefault(true);
     connect(okButton,SIGNAL(clicked()),this,SLOT(ok()));
 }
 
 // slots -----------------------------------------------------------------------
-void MessageDialogImpl::ok(){
+void MessageDialogImpl::ok() {
     accept();
 }
 

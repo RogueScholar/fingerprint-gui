@@ -27,7 +27,7 @@
 #include "../include/AboutImpl.h"
 
 AboutImpl::AboutImpl(QWidget *parent,Qt::WindowFlags f)
-    : QDialog(parent,f){
+    : QDialog(parent,f) {
     setupUi(this);
 
     string s="Version: ";
@@ -43,13 +43,13 @@ AboutImpl::AboutImpl(QWidget *parent,Qt::WindowFlags f)
 }
 
 // slots
-void AboutImpl::bitcoin(){
+void AboutImpl::bitcoin() {
     QClipboard *cb = QApplication::clipboard();
 // set a text to the Clipboard
     cb->setText(BITCOINADDRESS);
 }
 
-void AboutImpl::donate(){
+void AboutImpl::donate() {
     QString s;
     s.append(HOMEPAGE);
     s.append(DONATE);
@@ -57,12 +57,12 @@ void AboutImpl::donate(){
     srv.openUrl(QUrl(s));
 }
 
-void AboutImpl::license(){
+void AboutImpl::license() {
     QDesktopServices srv;
     srv.openUrl(QUrl(LICENSE));
 }
 
-void AboutImpl::homepage(){
+void AboutImpl::homepage() {
     QDesktopServices srv;
     srv.openUrl(QUrl(HOMEPAGE));
 }

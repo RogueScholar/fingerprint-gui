@@ -41,12 +41,12 @@
 using namespace std;
 
 typedef enum {
-        DEVICE_TAB      = 0,    //Chose Device  
-        FINGER_TAB      = 1,    //Chose Finger
-        SCAN_TAB        = 2,    //Scan Finger
-        SETTINGS_TAB    = 3,    //Settings/Test
-        PASSWORD_TAB    = 4,    //Password export
-        NO_TAB          = 5,    //no more tabs
+    DEVICE_TAB      = 0,    //Chose Device
+    FINGER_TAB      = 1,    //Chose Finger
+    SCAN_TAB        = 2,    //Scan Finger
+    SETTINGS_TAB    = 3,    //Settings/Test
+    PASSWORD_TAB    = 4,    //Password export
+    NO_TAB          = 5,    //no more tabs
 } tabIndex;
 
 typedef struct {
@@ -58,7 +58,7 @@ typedef struct {
 
 class MainWindowImpl : public QMainWindow, public Ui::mainWindow
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     DeviceHandler *deviceHandler;
 private:

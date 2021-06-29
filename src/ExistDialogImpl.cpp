@@ -26,7 +26,7 @@
 #include "ExistDialogImpl.h"
 
 ExistDialogImpl::ExistDialogImpl(string finger, QWidget * parent, Qt::WindowFlags f)
-    : QDialog(parent, f){
+    : QDialog(parent, f) {
     setupUi(this);
 
     QString s = QString(tr("A fingerprint for %1 exists already.")).arg(finger.data());
@@ -39,19 +39,19 @@ ExistDialogImpl::ExistDialogImpl(string finger, QWidget * parent, Qt::WindowFlag
 }
 
 // slots -----------------------------------------------------------------------
-void ExistDialogImpl::cancelChoice(){
+void ExistDialogImpl::cancelChoice() {
     syslog(LOG_INFO,"Clicked \"Cancel\".");
     emit choice(EXIST_CANCEL);
     close();
 }
 
-void ExistDialogImpl::verifyChoice(){
+void ExistDialogImpl::verifyChoice() {
     syslog(LOG_INFO,"Clicked \"Verify\".");
     emit choice(EXIST_VERIFY);
     close();
 }
 
-void ExistDialogImpl::acquireChoice(){
+void ExistDialogImpl::acquireChoice() {
     syslog(LOG_INFO,"Clicked \"Acquire\".");
     emit choice(EXIST_ACQUIRE);
     close();

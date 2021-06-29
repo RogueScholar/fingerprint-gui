@@ -36,12 +36,12 @@
 
 using namespace std;
 
-typedef enum{
-    SAVED_YES      = 0,    //One more finger  
+typedef enum {
+    SAVED_YES      = 0,    //One more finger
     SAVED_NO       = 1,    //Go ahead
 } savedDialogChoice;
 
-typedef enum{
+typedef enum {
     MODE_SAVED,
     MODE_NOT_SAVED,
     MODE_VERIFIED,
@@ -50,7 +50,7 @@ typedef enum{
 
 class SavedDialogImpl : public QDialog, public Ui::SavedDialog
 {
-Q_OBJECT
+    Q_OBJECT
 
 private:
     QPixmap fpPix;

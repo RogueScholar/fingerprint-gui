@@ -29,7 +29,7 @@
 
 using namespace std;
 
-USBDevice::USBDevice(string vendor, string device){
+USBDevice::USBDevice(string vendor, string device) {
     char *nc;
     vendorID=(int)strtol(vendor.c_str(),&nc,16);
     while(*nc==' '&&*nc!='\0')nc++;
@@ -47,10 +47,10 @@ USBDevice::USBDevice(string vendor, string device){
 }
 
 // public getters and setters --------------------------------------------------
-QString USBDevice::getDeviceDescriptor(){
+QString USBDevice::getDeviceDescriptor() {
     return QString::fromStdString(vendorName+" (0x")+
-            QString::number(vendorID,16)+
-            QString::fromStdString(") "+deviceName+" (0x")+
-            QString::number(deviceID,16)+
-            QString::fromStdString(")");
+           QString::number(vendorID,16)+
+           QString::fromStdString(") "+deviceName+" (0x")+
+           QString::number(deviceID,16)+
+           QString::fromStdString(")");
 }

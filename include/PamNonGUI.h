@@ -46,9 +46,9 @@ class PamNonGUI : public QObject {
 
 public:
     volatile int result;    // Result code:
-                            // -2   -- still waiting for result
-                            // -1   -- no match / not idetified
-                            // >=0  -- index of identified fingerprint
+    // -2   -- still waiting for result
+    // -1   -- no match / not idetified
+    // >=0  -- index of identified fingerprint
 private:
     QTimer *timer;
     int repeatDelay;

@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
 {
     openlog(syslogIdent.data(),LOG_NDELAY|LOG_PID,LOG_AUTH);
     setlogmask(LOG_UPTO(LOG_ERR));
-    for(int i=0;i<argc;i++){
+    for(int i=0; i<argc; i++) {
         if((strcmp(argv[i],ARG_DEBUG1)==0)
                 | (strcmp(argv[i],ARG_DEBUG2)==0)
-                | (strcmp(argv[i],ARG_DEBUG3)==0)){
+                | (strcmp(argv[i],ARG_DEBUG3)==0)) {
             setlogmask(-1);
             syslog(LOG_INFO,"Got \"debug\" argument.");
         }
@@ -54,14 +54,14 @@ int main(int argc, char *argv[])
 
     QApplication agent(argc,argv);
     // Run forever
-        loadTranslations(agent);
+    loadTranslations(agent);
     agent.setQuitOnLastWindowClosed(false);
     PolkitListener listener;
     PolkitQt1::UnixSessionSubject session(getpid());
-    if(listener.registerListener(session,POLKIT_LISTENER_ID)){
+    if(listener.registerListener(session,POLKIT_LISTENER_ID)) {
         syslog(LOG_DEBUG,"Listener \"%s\" registered.",POLKIT_LISTENER_ID);
     }
-    else{
+    else {
         syslog(LOG_ERR,"Could not register listener \"%s\". Aborting.",POLKIT_LISTENER_ID);
         return EXIT_FAILURE;
     }

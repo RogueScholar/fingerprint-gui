@@ -37,23 +37,23 @@
 #include "../include/Globals.h"
 #include "../include/PolkitListener.h"
 
-PolkitListener::PolkitListener(QObject *parent) : Listener(parent),inProgress(false),selectedUser(nullptr){
+PolkitListener::PolkitListener(QObject *parent) : Listener(parent),inProgress(false),selectedUser(nullptr) {
 }
 
-PolkitListener::~PolkitListener(){
+PolkitListener::~PolkitListener() {
 }
 
 // initiateAuthentication message from polkit
 void PolkitListener::initiateAuthentication(
-        const QString &actionId,
-        const QString &message,
-        const QString &iconName,
-        const PolkitQt1::Details &details,
-        const QString &cookie,
-        const PolkitQt1::Identity::List &identities,
-        PolkitQt1::Agent::AsyncResult* result){
+    const QString &actionId,
+    const QString &message,
+    const QString &iconName,
+    const PolkitQt1::Details &details,
+    const QString &cookie,
+    const PolkitQt1::Identity::List &identities,
+    PolkitQt1::Agent::AsyncResult* result) {
     syslog(LOG_DEBUG,"Initiating authentication");
-    if(inProgress){
+    if(inProgress) {
         syslog(LOG_ERR,"Another client is already authenticating, please try again later.");
         result->setError("Another client is already authenticating, please try again later.");
         result->setCompleted();
@@ -63,10 +63,10 @@ void PolkitListener::initiateAuthentication(
     this->cookie=cookie;
     this->result=result;
     session.clear();
-    if(identities.length()==1){
+    if(identities.length()==1) {
         this->selectedUser=identities[0];
     }
-    else{
+    else {
         selectedUser=PolkitQt1::Identity();
     }
 
@@ -88,33 +88,33 @@ void PolkitListener::initiateAuthentication(
 
     numTries=0;
     wasCancelled=false;
-    if(!dialog->preselectUser()){
+    if(!dialog->preselectUser()) {
         tryAgain();
     }
 }
 
-void PolkitListener::finishObtainPrivilege(){
+void PolkitListener::finishObtainPrivilege() {
     // Number of tries increase only when some user is selected
-    if(selectedUser.isValid()){
+    if(selectedUser.isValid()) {
         numTries++;
     }
     syslog(LOG_DEBUG,"Finishing obtaining privileges (G:%u, C:%u, D:%u).",gainedAuthorization,wasCancelled,(dialog!=nullptr));
-    if(!gainedAuthorization&&!wasCancelled&&(dialog!=nullptr)){
+    if(!gainedAuthorization&&!wasCancelled&&(dialog!=nullptr)) {
         dialog->authenticationFailure();
-        if(numTries<3){
+        if(numTries<3) {
             session.data()->deleteLater();
             tryAgain();
             return;
         }
     }
-    if(!session.isNull()){
+    if(!session.isNull()) {
         session.data()->result()->setCompleted();
     }
-    else{
+    else {
         result->setCompleted();
     }
     session.data()->deleteLater();
-    if(dialog){
+    if(dialog) {
         delete(dialog);
         dialog=nullptr;
     }
@@ -122,17 +122,17 @@ void PolkitListener::finishObtainPrivilege(){
     syslog(LOG_DEBUG,"Finish obtain authorization: %u",gainedAuthorization);
 }
 
-void PolkitListener::tryAgain(){
+void PolkitListener::tryAgain() {
     syslog(LOG_DEBUG,"Trying again.");
     // We will create a new session only when some user is selected
-    if(selectedUser.isValid()){
+    if(selectedUser.isValid()) {
         session=QSharedPointer<Session>(new Session(selectedUser,cookie,result));
         connect(session.data(),SIGNAL(request(QString,bool)),this,SLOT(request(QString,bool)));
         connect(session.data(),SIGNAL(completed(bool)),this,SLOT(completed(bool)));
         connect(session.data(),SIGNAL(showError(QString)),this,SLOT(showError(QString)));
         session.data()->initiate();
     }
-    if(dialog){
+    if(dialog) {
         dialog->adjustSize();
     }
 }
@@ -150,31 +150,31 @@ void PolkitListener::cancelAuthentication()
     finishObtainPrivilege();
 }
 
-void PolkitListener::request(const QString &request,bool echo){
+void PolkitListener::request(const QString &request,bool echo) {
     syslog(LOG_DEBUG,"Request \"%s\", echo: %u.",request.toStdString().data(),echo);
-    if(dialog){
+    if(dialog) {
         dialog->setRequest(request,echo);
         connect(dialog->pluginDialog->fifoReader,SIGNAL(userAuthenticated()),SLOT(dialogAccepted()));
         connect(dialog->pluginDialog->fifoReader,SIGNAL(stopPlugin()),dialog,SLOT(resize()));
     }
 }
 
-void PolkitListener::completed(bool gainedAuthorization){
+void PolkitListener::completed(bool gainedAuthorization) {
     syslog(LOG_DEBUG,"Completed: %u.",gainedAuthorization);
     this->gainedAuthorization=gainedAuthorization;
     finishObtainPrivilege();
 }
 
-void PolkitListener::showError(const QString &text){
+void PolkitListener::showError(const QString &text) {
     syslog(LOG_DEBUG,"Error: \"%s\".",text.toStdString().data());
-    if(dialog){
+    if(dialog) {
         dialog->adjustSize();
     }
 }
 
-void PolkitListener::dialogAccepted(){
+void PolkitListener::dialogAccepted() {
     syslog(LOG_DEBUG,"dialogAccepted.");
-    if(!session.isNull()){
+    if(!session.isNull()) {
         session.data()->setResponse(dialog->password());
     }
 //!!!!!!!!!!!!!!!! USE THIS LOG OUTPUT ONLY FOR DEVELOPMENT !!!!!!!!!!!!!!!!!!!!
@@ -182,20 +182,20 @@ void PolkitListener::dialogAccepted(){
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
-void PolkitListener::dialogCanceled(){
+void PolkitListener::dialogCanceled() {
     syslog(LOG_DEBUG,"dialogCanceled.");
     wasCancelled=true;
-    if(!session.isNull()){
+    if(!session.isNull()) {
         session.data()->cancel();
     }
     finishObtainPrivilege();
 }
 
-void PolkitListener::userSelected(PolkitQt1::Identity identity){
+void PolkitListener::userSelected(PolkitQt1::Identity identity) {
     syslog(LOG_DEBUG,"userSelected: %s.",identity.toString().remove("unix-user:").toStdString().data());
     selectedUser=identity;
     // If some user is selected we must destroy existing session
-    if(!session.isNull()){
+    if(!session.isNull()) {
         session.data()->deleteLater();
     }
     tryAgain();

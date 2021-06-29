@@ -13,12 +13,12 @@
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -30,7 +30,7 @@
 
 // This translates my own fingercodes like represented in "fingers[]"
 // to the enum fp_finger
-static const fp_finger fingerCode[10]={
+static const fp_finger fingerCode[10]= {
     /*Left Little*/     LEFT_LITTLE,
     /*Left Ring*/       LEFT_RING,
     /*Left Middle*/     LEFT_MIDDLE,

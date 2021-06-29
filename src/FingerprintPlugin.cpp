@@ -34,16 +34,16 @@ using namespace std;
 
 static string syslogIdent=string(PLUGIN_NAME);
 
-int main(int argc,const char **argv){
+int main(int argc,const char **argv) {
     // Create a named pipe to receive messages from fingerprintHelper
     mkfifo(PLUGIN_FIFO,S_IRWXU|S_IRWXG|S_IRWXO);
     chmod(PLUGIN_FIFO,S_IRWXU|S_IRWXG|S_IRWXO);
     openlog(syslogIdent.data(),LOG_NDELAY|LOG_PID,LOG_AUTH);
     setlogmask(LOG_UPTO(LOG_ERR));
-    for(int i=0;i<argc;i++){
+    for(int i=0; i<argc; i++) {
         if((strcmp(argv[i],ARG_DEBUG1)==0)
                 | (strcmp(argv[i],ARG_DEBUG2)==0)
-                | (strcmp(argv[i],ARG_DEBUG3)==0)){
+                | (strcmp(argv[i],ARG_DEBUG3)==0)) {
             setlogmask(-1);
             syslog(LOG_INFO,"Got \"debug\" argument.");
         }

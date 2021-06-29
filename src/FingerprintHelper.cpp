@@ -56,12 +56,12 @@ static volatile bool exitNow=false;
 static const char *user=nullptr;
 
 // Send messages to FingerprintPlugin
-void pluginMessage(const char *msg){
+void pluginMessage(const char *msg) {
     int pluginFifo=open(PLUGIN_FIFO,O_WRONLY|O_NDELAY);   // In case we have a fingerprint-plugin running, stop it
-    if(pluginFifo<0){ // Maybe there is no fingerprint-plugin listening
+    if(pluginFifo<0) { // Maybe there is no fingerprint-plugin listening
 //        syslog(LOG_DEBUG,"%s not running.",PLUGIN_NAME);
     }
-    else{
+    else {
 //        syslog(LOG_DEBUG,"Opened fifo to %s: %d",PLUGIN_NAME,pluginFifo);
         string fifoMsg(msg); // Compose a message for fingerprint-plugin
         if(write(pluginFifo,fifoMsg.data(),strlen(fifoMsg.data())+1)<0)
@@ -74,7 +74,7 @@ void pluginMessage(const char *msg){
 }
 
 // Send <enter> to uinput
-bool uinputSendEnter(int uinput){
+bool uinputSendEnter(int uinput) {
     struct input_event event;
     memset(&event,0,sizeof(event));
     // PRESS
@@ -82,14 +82,14 @@ bool uinputSendEnter(int uinput){
     event.type=EV_KEY;
     event.code=KEY_ENTER;
     event.value=1;
-    if(write(uinput, &event, sizeof(event))<0){
+    if(write(uinput, &event, sizeof(event))<0) {
         syslog(LOG_ERR,"Write to uinput failed (%s).",strerror(errno));
         return false;
     }
     event.type=EV_SYN;
     event.code=SYN_REPORT;
     event.value=0;
-    if(write(uinput,&event,sizeof(event))<0){
+    if(write(uinput,&event,sizeof(event))<0) {
         syslog(LOG_ERR,"Write to uinput failed (%s).",strerror(errno));
         return false;
     }
@@ -98,21 +98,21 @@ bool uinputSendEnter(int uinput){
     event.type=EV_KEY;
     event.code=KEY_ENTER;
     event.value=0;
-    if(write(uinput, &event, sizeof(event))<0){
+    if(write(uinput, &event, sizeof(event))<0) {
         syslog(LOG_ERR,"Write to uinput failed (%s).",strerror(errno));
         return false;
     }
     event.type=EV_SYN;
     event.code=SYN_REPORT;
     event.value=0;
-    if(write(uinput,&event,sizeof(event))<0){
+    if(write(uinput,&event,sizeof(event))<0) {
         syslog(LOG_ERR,"Write to uinput failed (%s).",strerror(errno));
         return false;
     }
     return true;
 }
 
-int uinputOpen(){
+int uinputOpen() {
     int uinput=-1;
 
     uinput=open("/dev/input/uinput",O_WRONLY|O_NDELAY);
@@ -124,7 +124,7 @@ int uinputOpen(){
 }
 
 // Sends the <enter> key to PAM prompt so PAM prompt exits with an empty line
-bool exitPrompt(const char *display,const char *service){
+bool exitPrompt(const char *display,const char *service) {
     struct uinput_user_dev dev;
     int uinput=-1;
     int child,rc;
@@ -134,13 +134,13 @@ bool exitPrompt(const char *display,const char *service){
     if(strcmp(service,"polkit-1")==0)   // No prompt required
         return false;
 
-    if(display!=nullptr){  // We have a X display, using libfakekey
+    if(display!=nullptr) { // We have a X display, using libfakekey
         syslog(LOG_DEBUG,"Using libfakekey to exit PAM conversation.");
-        if((xdpy=XOpenDisplay(display))==nullptr){
+        if((xdpy=XOpenDisplay(display))==nullptr) {
             syslog(LOG_ERR,"ERROR: XOpenDisplay.");
             return false;
         }
-        if((fakekey=fakekey_init(xdpy))==nullptr){
+        if((fakekey=fakekey_init(xdpy))==nullptr) {
             syslog(LOG_ERR,"ERROR: Initializing FAKEKEY.");
             return false;
         }
@@ -149,26 +149,26 @@ bool exitPrompt(const char *display,const char *service){
         fakekey_release(fakekey);
         usleep(6000);   // Wait for X to process the key
     }
-    else{   // No X display, using uinput
+    else {  // No X display, using uinput
         syslog(LOG_DEBUG,"Using uinput to exit PAM conversation.");
         uinput=uinputOpen();
-        if(uinput<0){      //could not open uinput, trying to load uinput module
+        if(uinput<0) {     //could not open uinput, trying to load uinput module
             syslog(LOG_DEBUG,"Could not open uinput, trying to load uinput module.");
             child=fork();  // here we start "modprobe" as child process
-            switch(child){
-                case 0:             // This is the child
-                    rc=execl(MODPROBE_COMMAND,"modprobe","uinput",nullptr);
-                    syslog(LOG_ERR,"ERROR: Child returned %d (%s).",rc,strerror(errno));
-                    _exit(EXIT_FAILURE);
-                case -1:            // Fork error
-                    syslog(LOG_ERR,"ERROR FORKING CHILD PROCESS.");
-                    return false;
-                default:            // This is the parent, waiting for the child
-                    waitpid(child,&rc,0);
+            switch(child) {
+            case 0:             // This is the child
+                rc=execl(MODPROBE_COMMAND,"modprobe","uinput",nullptr);
+                syslog(LOG_ERR,"ERROR: Child returned %d (%s).",rc,strerror(errno));
+                _exit(EXIT_FAILURE);
+            case -1:            // Fork error
+                syslog(LOG_ERR,"ERROR FORKING CHILD PROCESS.");
+                return false;
+            default:            // This is the parent, waiting for the child
+                waitpid(child,&rc,0);
             }
             uinput=uinputOpen();    // we try again to open uinput
         }
-        if(uinput<0){
+        if(uinput<0) {
             syslog(LOG_ERR,"ERROR: Open uinput failed.");
             return false;
         }
@@ -179,13 +179,13 @@ bool exitPrompt(const char *display,const char *service){
         ioctl(uinput,UI_SET_EVBIT,EV_KEY);
         ioctl(uinput,UI_SET_EVBIT,EV_REP);
         ioctl(uinput,UI_SET_KEYBIT,KEY_ENTER);
-        for(int i=0;i<10;i++)
+        for(int i=0; i<10; i++)
             ioctl(uinput,UI_SET_KEYBIT,KEY_1+i);
-        if(write(uinput,&dev,sizeof(dev))<0){
+        if(write(uinput,&dev,sizeof(dev))<0) {
             syslog(LOG_ERR,"Write to uinput failed (%s).",strerror(errno));
             return false;
         }
-        if(ioctl(uinput,UI_DEV_CREATE)){
+        if(ioctl(uinput,UI_DEV_CREATE)) {
             syslog(LOG_ERR,"Ioctl uinput failed (%s).",strerror(errno));
             return false;
         }
@@ -198,27 +198,27 @@ bool exitPrompt(const char *display,const char *service){
 // Catch SIGUSR1 and SIGUSR2.
 // When SIGUSR1 is raised and we have _not_ sent a username to the parent, we can exit because the user has typed the password by keyboard.
 // When SIGUSR2 is raised we are requested to exit immediately
-static void handler_SIGUSR(int sig){
-    switch(sig){
-        case SIGUSR1:
-            syslog(LOG_DEBUG,"Got SIGUSR1, %s.",userSent?"continuing":"EXIT_SUCCESS");
-            if(!userSent){  // We did not send a username to parent
-                exitNow=true;   // enforces EXIT_SUCCESS immediately
-                qApp->exit(-1);
-            }
-            return;
-        case SIGUSR2:
-            syslog(LOG_DEBUG,"Got SIGUSR2, EXIT_SUCCESS.");
+static void handler_SIGUSR(int sig) {
+    switch(sig) {
+    case SIGUSR1:
+        syslog(LOG_DEBUG,"Got SIGUSR1, %s.",userSent?"continuing":"EXIT_SUCCESS");
+        if(!userSent) { // We did not send a username to parent
             exitNow=true;   // enforces EXIT_SUCCESS immediately
             qApp->exit(-1);
-            return;
+        }
+        return;
+    case SIGUSR2:
+        syslog(LOG_DEBUG,"Got SIGUSR2, EXIT_SUCCESS.");
+        exitNow=true;   // enforces EXIT_SUCCESS immediately
+        qApp->exit(-1);
+        return;
     }
     syslog(LOG_DEBUG,"Got signal %d (%s), ignoring.",sig,strsignal(sig));
 }
 
 // Request fingerprint while PAM propmts for username/password
 // Returns false on error, true on success
-bool requestFingerprint(int pipe_w,const char *display,char *service,char *username,int argc,char **argv,bool debug){
+bool requestFingerprint(int pipe_w,const char *display,char *service,char *username,int argc,char **argv,bool debug) {
     int lastResult;
     FingerprintData *identifyData=nullptr;
     FingerprintDevice *devices=nullptr;
@@ -230,47 +230,47 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     deviceHandler.rescan();
     devices=deviceHandler.getIdentifiers();
 
-    if(devices==nullptr){
+    if(devices==nullptr) {
         mode=MODE_VERIFY;
         syslog(LOG_WARNING,"WARNING: No devices can identify. Fallback to verifying only.");
         devices=deviceHandler.getVerifiers();
-        if(devices==nullptr){
+        if(devices==nullptr) {
             syslog(LOG_WARNING,"No useful devices found.");
             deviceHandler.release();
             return false;
         }
     }
-    if(devices->next!=nullptr){
+    if(devices->next!=nullptr) {
         syslog(LOG_WARNING,"Found more then one devices.");
     }
 
-    if(username==nullptr){             // user not known yet, maybe it's a login
-        if(mode==MODE_IDENTIFY){    // device can identify. So identifying the user is possible
+    if(username==nullptr) {            // user not known yet, maybe it's a login
+        if(mode==MODE_IDENTIFY) {   // device can identify. So identifying the user is possible
             // Find the first device with fingerprints available
-            for(;devices!=nullptr;devices=devices->next){
+            for(; devices!=nullptr; devices=devices->next) {
                 syslog(LOG_DEBUG,"Looking for fingerprints for device %s.",devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
                 FingerprintDiscoverer discoverer(devices,debug);
                 identifyData=discoverer.getIdentifyData();
-                if(identifyData!=nullptr){  // Data for this device available
+                if(identifyData!=nullptr) { // Data for this device available
                     break;
                 }
                 syslog(LOG_DEBUG,"Nothing found.");
             }
-            if(identifyData==nullptr){  // We have no fingerprints at all
+            if(identifyData==nullptr) { // We have no fingerprints at all
                 syslog(LOG_ERR,"No fingerprintData!");
                 deviceHandler.release();
                 return false;
             }
-            else{
+            else {
                 int i;
                 FingerprintData *f=identifyData;
-                for(i=0;f!=nullptr;f=f->next,i++);
+                for(i=0; f!=nullptr; f=f->next,i++);
                 syslog(LOG_DEBUG,"Have %d fingerprints for all users.",i);
             }
             devices->setMode(MODE_IDENTIFY);
             devices->setIdentifyData(identifyData);
 
-            if(display==nullptr){
+            if(display==nullptr) {
                 //  NonGUI fingerprint identification is not possible! here
                 //  If we would implement this, the first tty would open the fingerprint device
                 //  and GUI login would never be possible.
@@ -278,25 +278,25 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
                 deviceHandler.release();
                 return false;
             }
-            else{
+            else {
                 syslog(LOG_INFO,"Have X-display %s. Starting GUI login.",display);
                 QApplication app(argc,argv);
-                        loadTranslations(app);
+                loadTranslations(app);
                 PamGUI gui(devices,identifyData);
-                if(!devices->isRunning()){  //something went wrong
+                if(!devices->isRunning()) { //something went wrong
                     syslog(LOG_ERR,"ERROR: Device not running!");
                     deviceHandler.release();
                     return false;
                 }
                 lastResult=app.exec();
             }
-            if(lastResult>=0){
+            if(lastResult>=0) {
                 FingerprintData *f=identifyData;
-                for(int i=0;i<lastResult;i++)f=f->next;
+                for(int i=0; i<lastResult; i++)f=f->next;
                 user=f->getUserName()->data();
                 syslog(LOG_DEBUG,"Have index %d (user: %s).",lastResult,user);
                 userSent=true;
-                if(write(pipe_w,user,strlen(user)+1)<=0){ // Writing user to fifo
+                if(write(pipe_w,user,strlen(user)+1)<=0) { // Writing user to fifo
                     syslog(LOG_DEBUG,"ERROR: Writing user to pipe (%s).",strerror(errno));
                     return false;
                 }
@@ -308,7 +308,7 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
                 deviceHandler.release();
                 return true;
             }
-            else{           // Something went wrong
+            else {          // Something went wrong
                 syslog(LOG_ERR,"ERROR: GUI exited for unknown reason!");
                 deviceHandler.release();
                 return false;
@@ -323,36 +323,36 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
     // The user was known already (authentication only)
     syslog(LOG_INFO,"Authenticating USER: %s",username);
     // Find the first device with fingerprints for this user
-    for(;devices!=nullptr;devices=devices->next){
+    for(; devices!=nullptr; devices=devices->next) {
         syslog(LOG_DEBUG,"Looking for fingerprints for user %s with device %s.",username,devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
         FingerprintDiscoverer discoverer(devices,username,debug);
         identifyData=discoverer.getIdentifyData();
-        if(identifyData!=nullptr){  // Data for this user available
+        if(identifyData!=nullptr) { // Data for this user available
             break;
         }
         syslog(LOG_DEBUG,"Nothing found.");
     }
-    if(identifyData==nullptr){
+    if(identifyData==nullptr) {
         syslog(LOG_ERR,"No fingerprint data for this user.");
         deviceHandler.release();
         return false;
     }
-    else{
+    else {
         int i;
         FingerprintData *f=identifyData;
-        for(i=0;f!=nullptr;f=f->next,i++);
+        for(i=0; f!=nullptr; f=f->next,i++);
         syslog(LOG_DEBUG,"Have %d fingerprints for %s.",i,username);
     }
 
     const char *fingername=nullptr;
     devices->setMode(mode);
 
-    if(mode==MODE_VERIFY){
+    if(mode==MODE_VERIFY) {
         devices->setData(identifyData->getData(),identifyData->getSize());
         fingername=identifyData->getFingerName();
         syslog(LOG_DEBUG,"Verifying %s.",fingername);
     }
-    else{
+    else {
         devices->setIdentifyData(identifyData);
         syslog(LOG_DEBUG,"Identifying all discovered fingerprints from %s.",username);
     }
@@ -361,30 +361,30 @@ bool requestFingerprint(int pipe_w,const char *display,char *service,char *usern
             // special handling for "su" required since Ubuntu 10.10
             ||strcmp(service,"su")==0   // no widget allowed but libfakekey for prompt required
             ||strcmp(service,"polkit-1")==0 // no widget allowed and no prompt required
-        ){  // We can't use the GUI
+      ) { // We can't use the GUI
         syslog(LOG_WARNING,"WARNING: No X-display. Starting command line authentication.");
         QCoreApplication app(argc,argv);
         PamNonGUI nonGui(strcmp(service,"polkit-1"),devices,username,fingername);
-        if(!devices->isRunning()){  //something went wrong
+        if(!devices->isRunning()) { //something went wrong
             syslog(LOG_ERR,"ERROR: Device not running!");
             deviceHandler.release();
             return false;
         }
         lastResult=app.exec();
     }
-    else{
+    else {
         syslog(LOG_INFO,"Have X-display %s. Starting GUI authentication.",display);
         QApplication app(argc,argv);
-                loadTranslations(app);
+        loadTranslations(app);
         PamGUI gui(devices,username,fingername);
-        if(!devices->isRunning()){  //something went wrong
+        if(!devices->isRunning()) { //something went wrong
             syslog(LOG_ERR,"ERROR: Device not running!");
             deviceHandler.release();
             return false;
         }
         lastResult=app.exec();
     }
-    if(lastResult>=0){  // Fingerprint recognized
+    if(lastResult>=0) { // Fingerprint recognized
         deviceHandler.release();
         return true;
     }
@@ -418,27 +418,27 @@ int main(int argc,char** argv) {
     chmod(PLUGIN_FIFO,S_IRWXU|S_IRWXG|S_IRWXO);
     openlog(syslogIdent.data(),LOG_NDELAY|LOG_PID,LOG_AUTH);
     setlogmask(LOG_UPTO(LOG_ERR));
-    for(int i=0;i<argc;i++){
+    for(int i=0; i<argc; i++) {
         if((strcmp(argv[i],ARG_DEBUG1)==0)
                 | (strcmp(argv[i],ARG_DEBUG2)==0)
-                | (strcmp(argv[i],ARG_DEBUG3)==0)){
+                | (strcmp(argv[i],ARG_DEBUG3)==0)) {
             setlogmask(-1);
             syslog(LOG_INFO,"Got \"debug\" argument.");
-	    debug=true;
+            debug=true;
         }
-        if(strcmp(argv[i],ARG_USER)==0){
+        if(strcmp(argv[i],ARG_USER)==0) {
             username=argv[++i];
             syslog(LOG_DEBUG,"Have username %s.",username);
-	    user=username;
+            user=username;
         }
     }
     syslog(LOG_INFO,"Started.");
 
-    for(int i=0;i<argc;i++){
+    for(int i=0; i<argc; i++) {
         syslog(LOG_DEBUG,"Arg%d: %s.",i,argv[i]);
     }
 
-    if(argc<4){
+    if(argc<4) {
         syslog(LOG_ERR,"Wrong number of arguments.\nIt's not intended to start fingerprint-helper manually.\n");
         return(EXIT_FAILURE);
     }
@@ -455,7 +455,7 @@ int main(int argc,char** argv) {
 
     service=argv[4];
     memset(randomString,'\0',sizeof(randomString));
-    if(read(pipe_r,randomString,sizeof(randomString))<=0){
+    if(read(pipe_r,randomString,sizeof(randomString))<=0) {
         syslog(LOG_DEBUG,"ERROR: Read random string (%s).",strerror(errno));
         return(EXIT_FAILURE);
     }
@@ -464,24 +464,24 @@ int main(int argc,char** argv) {
 
     // If another helper process is running kill him
     FILE *pidfile=fopen(HELPER_PID,"r");
-    if(pidfile){
+    if(pidfile) {
         char pidstr[100];
         int i=fread(pidstr,1,100,pidfile);
         if(i>0)
             pidstr[i]='\0';
         sscanf(pidstr,"%d",&i);
-        if(i!=getpid()){
+        if(i!=getpid()) {
             syslog(LOG_WARNING,"Found another helper process %d, killing it.",i);
             kill(i,SIGUSR2);
             waitpid(i,&rc,0);
-	    unlink(HELPER_PID);
+            unlink(HELPER_PID);
             usleep(2000000);   // Wait for devices to stop
         }
         fclose(pidfile);
     }
     pidfile=fopen(HELPER_PID,"w");
-    if(pidfile){
-        if(fprintf(pidfile,"%d",getpid())>0){
+    if(pidfile) {
+        if(fprintf(pidfile,"%d",getpid())>0) {
             syslog(LOG_DEBUG,"Wrote pidfile %s.",HELPER_PID);
             fclose(pidfile);
             chmod(HELPER_PID,0666);
@@ -490,11 +490,11 @@ int main(int argc,char** argv) {
     else
         syslog(LOG_WARNING,"Could not write to pidfile.");
 
-    if(!requestFingerprint(pipe_w,display,service,username,argc,argv,debug)){
+    if(!requestFingerprint(pipe_w,display,service,username,argc,argv,debug)) {
         pluginMessage(MSG_STOP);
         unlink(HELPER_PID);
         unlink(PLUGIN_FIFO);
-        if(exitNow){    // We've got SIGUSR1 or SIGUSR2 before
+        if(exitNow) {   // We've got SIGUSR1 or SIGUSR2 before
             closelog();
             return(EXIT_SUCCESS);
         }
@@ -507,30 +507,30 @@ int main(int argc,char** argv) {
 
     bool havePassword=false;
 
-    if(geteuid()==0){	// running as root
+    if(geteuid()==0) {	// running as root
         char *savedPassword;
         // Create a "UserSettings" object
-	UserSettings userSettings((char*)user,debug);
-	if(userSettings.getPassword(&savedPassword)){
-	    syslog(LOG_INFO,"Have password from external media.");
+        UserSettings userSettings((char*)user,debug);
+        if(userSettings.getPassword(&savedPassword)) {
+            syslog(LOG_INFO,"Have password from external media.");
 //!!!!!!!!!!!!!!!! USE THIS LOG OUTPUT ONLY FOR DEVELOPMENT !!!!!!!!!!!!!!!!!!!!
 //syslog(LOG_INFO,"Have password %s from external media.",savedPassword);
 //!!!!!!!!!!!!!!!! USE THIS LOG OUTPUT ONLY FOR DEVELOPMENT !!!!!!!!!!!!!!!!!!!!
-    	    if(write(pipe_w,savedPassword,strlen(savedPassword)+1)<=0){ // Writing this password to fifo
-        	syslog(LOG_DEBUG,"ERROR: Writing password (%s) to pipe.",strerror(errno));
-        	free(savedPassword);
-        	pluginMessage(MSG_STOP);
-        	closelog();
-        	unlink(HELPER_PID);
-        	return(EXIT_FAILURE);
-    	    }
-	    havePassword=true;
-	}
+            if(write(pipe_w,savedPassword,strlen(savedPassword)+1)<=0) { // Writing this password to fifo
+                syslog(LOG_DEBUG,"ERROR: Writing password (%s) to pipe.",strerror(errno));
+                free(savedPassword);
+                pluginMessage(MSG_STOP);
+                closelog();
+                unlink(HELPER_PID);
+                return(EXIT_FAILURE);
+            }
+            havePassword=true;
+        }
     }
 
-    if(havePassword!=true){
-	syslog(LOG_INFO,"Have no password from external media.");   // Writing random string to fifo
-        if(write(pipe_w,randomString,sizeof(randomString))<=0){
+    if(havePassword!=true) {
+        syslog(LOG_INFO,"Have no password from external media.");   // Writing random string to fifo
+        if(write(pipe_w,randomString,sizeof(randomString))<=0) {
             syslog(LOG_DEBUG,"ERROR: Writing random number (%s) to pipe.",strerror(errno));
             pluginMessage(MSG_STOP);
             closelog();
