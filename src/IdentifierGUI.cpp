@@ -1,27 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: IdentifierGUI.cpp, IdentifierGUI.h
- * Purpose: Main object for fingerprintIdentifier module for running in gui
- * environments
+ * Purpose: Main object for fingerprintIdentifier module for running in GUI
+ *          environments
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "IdentifierGUI.h"
@@ -44,7 +32,7 @@ IdentifierGUI::IdentifierGUI(bool decorated, FingerprintDevice *dev,
     UNDECORATED_MODAL_WINDOW_CENTERED
   } else {
     setWindowFlags(Qt::Dialog);
-    //: title of the dialog (also the name of this module)
+    // Title of the dialog (also the name of this module)
     string title = string(QT_TR_NOOP("Fingerprint Identifier "));
     title.append(VERSION);
     setWindowTitle(
@@ -82,7 +70,7 @@ IdentifierGUI::IdentifierGUI(bool decorated, FingerprintDevice *dev,
   syslog(LOG_INFO, "Ready...");
 }
 
-// slots -----------------------------------------------------------------------
+// Slots
 void IdentifierGUI::matchResult(int match, struct fp_pic_data *pic) {
   syslog(LOG_DEBUG, "MatchResult %d.", match);
   device->stop();
@@ -113,25 +101,24 @@ void IdentifierGUI::matchResult(int match, struct fp_pic_data *pic) {
     syslog(LOG_DEBUG, "Identified: %s (%s).",
            fingerprintData->getUserName()->data(),
            fingerprintData->getFingerName());
-    //: %1 = user name %2 = finger name
+    // %1 = user name %2 = finger name
     QString message = tr("Identified: %1 (%2)")
                           .arg(fingerprintData->getUserName()->data())
                           .arg(fingerprintData->getFingerName());
     statusBar()->showMessage(message);
-    //        for(int i=SHOW_DELAY/1000;i>0;i--){ //let 'em see the result
-    //        before exiting
+    // for(int i=SHOW_DELAY/1000;i>0;i--){ //let 'em see the result before exit
     qApp->processEvents();
     usleep(SHOW_DELAY);
     //            usleep(1000);
     //        }
 
-    // exit with index (match) as exit code
+    // Exit with index (match) as exit code
     qApp->exit(match);
     return;
   }
   syslog(LOG_DEBUG, "showMessage: Not identified!");
   statusBar()->showMessage(tr("Not identified!"));
-  repeatDelay = 2; // let 'em see the result before exiting
+  repeatDelay = 2; // Let 'em see the result before exiting
 }
 
 void IdentifierGUI::newVerifyResult(int result, struct fp_pic_data *pic) {
@@ -164,10 +151,10 @@ void IdentifierGUI::newVerifyResult(int result, struct fp_pic_data *pic) {
     statusBar()->showMessage(tr("Try again..."));
     break;
   }
-  repeatDelay = 2; // let 'em see the result before continue
+  repeatDelay = 2; // Let 'em see the result before continuing
 }
 
-// we don't want to lose the keyboard, so we grab it with every timerTick
+// We don't want to lose the keyboard, so we grab it with every timerTick
 void IdentifierGUI::timerTick() {
   //    QFont font;
 
@@ -177,7 +164,7 @@ void IdentifierGUI::timerTick() {
     statusBar()->showMessage(tr("Ready..."));
     break;
   case 1:
-    // restart fingerprint scanner
+    // Restart the fingerprint scanner
     //            font.setPointSize(9);
     //            font.setBold(false);
     //            statusBar()->setFont(font);
@@ -190,7 +177,7 @@ void IdentifierGUI::timerTick() {
     repeatDelay--;
     break;
   default:
-    repeatDelay--; // still wait
+    repeatDelay--; // Still waiting
   }
 }
 
@@ -203,7 +190,7 @@ void IdentifierGUI::keyPressEvent(QKeyEvent *e) {
     //            font.setPointSize(10);
     //            font.setBold(true);
     //            statusBar()->setFont(font);
-    //: shown on status bar when ENTER key got pressed
+    // Shown on the status bar when ENTER key gets pressed
     statusBar()->showMessage(tr("ENTER pressed."));
     qApp->processEvents();
     syslog(LOG_DEBUG, "showMessage: ENTER pressed.");

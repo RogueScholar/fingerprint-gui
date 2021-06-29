@@ -1,29 +1,16 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: MainWindowImpl.cpp, MainWindowImpl.h
  * Purpose: The main application module
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
+ * @author Wolfgang Ullrich
  */
 
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-//#include <qt4/QtCore/qlocale.h>
 #include "../include/MainWindowImpl.h"
 #include "../include/AboutImpl.h"
 #include "../include/DeviceHandler.h"
@@ -116,7 +103,7 @@ MainWindowImpl::MainWindowImpl(QWidget *parent, Qt::WindowFlags f)
   fpPix = QPixmap();
 }
 
-// slots -----------------------------------------------------------------------
+// Slots
 void MainWindowImpl::showAbout() {
   AboutImpl *aDialog = new AboutImpl(this);
   aDialog->show();
@@ -184,7 +171,7 @@ bool MainWindowImpl::getUuid(QString dir) {
             passwdUUID = info.fileName();
             while (!dev.isEmpty() && dev.right(1).at(0).isDigit())
               dev.chop(
-                  1); // remove digits from device /dev/sdb123 becomes /dev/sdb
+                  1); // Remove digits from device, /dev/sdb123 becomes /dev/sdb
             // syslog(LOG_DEBUG,"UUID: %s, DEV:
             // %s.",info.fileName().toStdString().data(),dev.toStdString().data());
             QFile d("/sys/class/block/" + dev.section('/', -1) + "/removable");
@@ -378,7 +365,7 @@ void MainWindowImpl::testPam() {
 
 static bool message = false;
 void MainWindowImpl::noDeviceOpen() {
-  // don't know why this is called more than once with further tries
+  // I don't know why this is called more than once with further tries...
   if (message)
     return;
   else
@@ -457,8 +444,8 @@ void MainWindowImpl::existDialogChosen(existDialogChoice choice) {
   disconnect(this, SLOT(existDialogChosen(existDialogChoice)));
 }
 
-int MainWindowImpl::saveToFile() { // save fingerprints to tar-file (needs tar
-                                   // and zip in path)
+int MainWindowImpl::saveToFile() { // Save fingerprints to tar file (needs tar
+                                   // and zip in PATH)
   struct passwd *pws = getpwuid(geteuid());
 
   QString home = QDir::homePath();
@@ -501,7 +488,7 @@ void MainWindowImpl::showAttachedUSBDevices() {
          attachedUSB != nullptr; attachedUSB = attachedUSB->next)
       usbDeviceListWidget->addItem(attachedUSB->getDeviceDescriptor());
   }
-  // are devices available??
+  // Are devices available?
   if (deviceHandler->getFingerprintDevices() == nullptr) { // NO
     const char *msg = "No Devices Found!";
     syslog(LOG_ERR, "%s", msg);
@@ -553,7 +540,7 @@ void MainWindowImpl::setScanTabNeededStages(int stages) {
   syslog(LOG_DEBUG, "Need %d stages.", stages);
 }
 
-// set the current finger
+// Set the current finger
 void MainWindowImpl::lsChanged() { setLabel(0); }
 void MainWindowImpl::lrChanged() { setLabel(1); }
 void MainWindowImpl::lmChanged() { setLabel(2); }
@@ -565,7 +552,7 @@ void MainWindowImpl::rmChanged() { setLabel(7); }
 void MainWindowImpl::rpChanged() { setLabel(6); }
 void MainWindowImpl::rtChanged() { setLabel(5); }
 
-// show vendor/device info in combobox
+// Show the USB vendor/device info in the combo box
 void MainWindowImpl::displayModeVendor() {
   int i;
   disconnect(deviceCombo, SIGNAL(currentIndexChanged(int)), deviceHandler,
@@ -579,7 +566,7 @@ void MainWindowImpl::displayModeVendor() {
           SLOT(setCurrentDevice(int)));
 }
 
-// show driver info in combobox
+// Show the driver info in the combo box
 void MainWindowImpl::displayModeDriver() {
   int i;
   disconnect(deviceCombo, SIGNAL(currentIndexChanged(int)), deviceHandler,
@@ -594,7 +581,7 @@ void MainWindowImpl::displayModeDriver() {
           SLOT(setCurrentDevice(int)));
 }
 
-// private helpers -------------------------------------------------------------
+// Private helpers
 void MainWindowImpl::tabChanged(int newTab) {
 
   if (newTab == currentTab)
@@ -638,7 +625,7 @@ void MainWindowImpl::tabChanged(int newTab) {
 
 void MainWindowImpl::swipeFinger() {
   if (!currentFingerprint->swipe()) {
-    closeApp(); // something went wrong
+    closeApp(); // Something went wrong...
   }
 }
 
@@ -679,7 +666,7 @@ void MainWindowImpl::scanTabToBack() {
     delete (currentFingerprint);
     currentFingerprint = nullptr;
   }
-  // enable other widgets
+  // Enable other widgets
   tabWidget->setTabEnabled(DEVICE_TAB, true);
   tabWidget->setTabEnabled(FINGER_TAB, true);
   tabWidget->setTabEnabled(SETTINGS_TAB, true);
@@ -754,7 +741,7 @@ void MainWindowImpl::markFinger(int finger) {
 void MainWindowImpl::fingerTabToFront() {
   stopTester = true;
   setLabel(currentFinger);
-  for (int i = 0; i < 10; i++) { // mark fingers with existing bir data
+  for (int i = 0; i < 10; i++) { // Mark fingers with existing bir data
     Fingerprint *f = new Fingerprint(
         i, deviceHandler->getCurrentDevice(nullptr), textLabels, iconLabels);
     if (f->isValid()) {
@@ -894,7 +881,7 @@ void MainWindowImpl::findPamServices() {
       if (file.exists()) {
         if (!checked)
           button->setChecked(
-              true); // set the first available service button to checked
+              true); // Set the first available service button to checked
         button->setEnabled(true);
         haveServices = true;
         checked = true;

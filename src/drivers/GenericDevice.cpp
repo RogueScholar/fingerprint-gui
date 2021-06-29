@@ -1,27 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: GenericDevice.cpp, GenericDevice.h
  * Purpose: A device driver wrapper for generic fingerprint devices handled by
- * libfprint
+ *          libfprint
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "GenericDevice.h"
@@ -73,7 +61,7 @@ GenericDevice::GenericDevice(struct fp_dscv_dev *fp, USBDevice *knownUSBDevices)
   }
 }
 
-// public getters and setters --------------------------------------------------
+// Public getters and setters
 string *GenericDevice::getDisplayName(int mode) {
   if (mode == DISPLAY_DRIVER_NAME)
     return &driverName;
@@ -103,7 +91,7 @@ void GenericDevice::setIdentifyData(FingerprintData *iData) {
 
 bool GenericDevice::canIdentify() {
   bool rc = false;
-  if (fpDevice == nullptr) { // Uups!
+  if (fpDevice == nullptr) { // Oops!
     syslog(LOG_ERR, "FIXME: fpDevice nullptr.");
     return rc;
   }
@@ -206,7 +194,7 @@ void GenericDevice::stop() {
   return;
 }
 
-// open fp_dev
+// Open the fingerprint_device
 bool GenericDevice::fpDevOpen(struct fp_dscv_dev *fpDevice) {
   if (fpDevice == nullptr) {
     syslog(LOG_ERR, "FIXME: fpDevice nullptr.");
@@ -232,10 +220,10 @@ bool GenericDevice::fpDevClose() {
 }
 
 void GenericDevice::setTimeout(bool) {
-  // nothing to do here
+  // Nothing to do here
 }
 
-// Translate fp messages into our result codes
+// Translate fingerprint messages into our result codes
 int translateVerify(int fp_result) {
   int rc = -1;
   switch (fp_result) {
@@ -267,7 +255,7 @@ int translateVerify(int fp_result) {
   return rc;
 }
 
-// Translate fp messages into our result codes
+// Translate fingerprint messages into our result codes
 int translateAcquire(int fp_result) {
   int rc = -1;
   switch (fp_result) {
@@ -303,7 +291,7 @@ int translateAcquire(int fp_result) {
   return rc;
 }
 
-// run a verification task
+// Run a verification task
 bool GenericDevice::verify() {
   int result;
 
@@ -314,16 +302,16 @@ bool GenericDevice::verify() {
       return false;
     }
   }
-  emit neededStages(1); // always "1" for verification
+  emit neededStages(1); // Always "1" for verification
   do {
     emit verifyResult(RESULT_SWIPE, &fpPic);
-    sleep(1); // don't know what this is good for; found it in some sample code
-              // of libfprint
+    sleep(1); // I don't know what this is good for; I found it in some sample
+              // code of libfprint...
     //        result=fp_verify_finger(dev,fpData);
-    //"img" to be used in later version
+    // "img" to be used in later version
     struct fp_img *img = nullptr;
     result = fp_verify_finger_img(dev, fpData, &img);
-    //"img" to be used in later version
+    // "img" to be used in later version
     if (img) {
       syslog(LOG_DEBUG, "Verify: have image.");
       img_to_pixmap(img);
@@ -348,7 +336,7 @@ bool GenericDevice::verify() {
   return true;
 }
 
-// run an enrollment task
+// Run an enrollment task
 bool GenericDevice::acquire() {
   int result;
   mode = MODE_ACQUIRE;
@@ -360,13 +348,13 @@ bool GenericDevice::acquire() {
     }
   }
 
-  emit neededStages(1); // we use a dynamic number of needed stages
+  emit neededStages(1); // We use a dynamic number of needed stages
   do {
     emit acquireResult(RESULT_SWIPE);
-    sleep(1); // don't know what this is good for; found it in some sample code
-              // of libfprint
+    sleep(1); // I don't know what this is good for; I found it in some sample
+              // code of libfprint...
     // result=fp_enroll_finger(dev,&fpData);
-    //"img" to be used in later version
+    // "img" to be used in later version
     struct fp_img *img = nullptr;
     result = fp_enroll_finger_img(dev, &fpData, &img);
     if (img) {

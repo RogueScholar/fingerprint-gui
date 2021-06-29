@@ -1,28 +1,16 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: FingerprintRw.cpp
  * Purpose: Helper process running as root and will be called from
- * "fingerprint-gui" only. Creates DATA_DIR and DATA_DIR/<username>/ if
- * required. Checks ownership and mode of directories and files
+ *          "fingerprint-gui" only. Creates DATA_DIR and DATA_DIR/<username>/ if
+ *          required, and checks ownership and mode of directories and files.
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include <errno.h>
@@ -83,10 +71,10 @@ int main(int argc, char **argv) {
   }
 
   syslog(LOG_DEBUG, "Called as %s.", argv[0]);
-  if (strstr(argv[0], "fingerprint-rw-read") != nullptr) { // read file
+  if (strstr(argv[0], "fingerprint-rw-read") != nullptr) { // Read from file
     put = false;
   } else {
-    if (strstr(argv[0], "fingerprint-rw-write") != nullptr) { // write file
+    if (strstr(argv[0], "fingerprint-rw-write") != nullptr) { // Write to file
       put = true;
     } else {
       syslog(LOG_ERR, "Wrong call (%s). Aborting!", argv[0]);
@@ -104,18 +92,18 @@ int main(int argc, char **argv) {
     syslog(LOG_ERR, "Invalid username. Aborting!");
     return (EXIT_FAILURE);
   }
-  // users primary group
+  // User's primary group
   gid = passwd->pw_gid;
-  // users uid
+  // User's UID
   uid = passwd->pw_uid;
 
-  // do we have a valid filename?
+  // Do we have a valid filename?
   if (filename == nullptr) {
     syslog(LOG_ERR, "Filename unknown. Aborting!");
     return (EXIT_FAILURE);
   }
   if (!strcmp(filename, "config.xml")) {
-    // config.xml -- no drivername needed
+    // config.xml -- no driver name needed
     configfile = true;
   } else {
     // birfile must have strlen 5, start with 0...9 and end with ".bir"
@@ -124,12 +112,12 @@ int main(int argc, char **argv) {
       syslog(LOG_ERR, "Invalid filename (%s). Aborting!", filename);
       return (EXIT_FAILURE);
     }
-    // Do we have a drivername?
+    // Do we have a driver name?
     if (driver == nullptr) {
       syslog(LOG_ERR, "Drivername unknown. Aborting!");
       return (EXIT_FAILURE);
     }
-    // drivername must'nt contain a '/'
+    // Driver name mustn't contain a forward slash
     if (strstr(driver, "/")) {
       syslog(LOG_ERR, "Invalid drivername (%s). Aborting!", driver);
       return (EXIT_FAILURE);
@@ -139,8 +127,8 @@ int main(int argc, char **argv) {
   syslog(LOG_DEBUG, "Have user:%s, driver:%s, filename:%s.", user, driver,
          filename);
 
-  // Check sanity of DATA_DIR first
-  if (stat(DATA_DIR, &bStat) != 0) { // could not be stated, try to create it
+  // Check the sanity of DATA_DIR first
+  if (stat(DATA_DIR, &bStat) != 0) { // Could not get its state, try to create
     syslog(LOG_WARNING, "%s doesn't exist. Creating.", DATA_DIR);
     if (mkdir(DATA_DIR, DATA_DIR_MODE)) {
       syslog(LOG_ERR, "Could not create %s. Aborting!", DATA_DIR);
@@ -150,24 +138,24 @@ int main(int argc, char **argv) {
       syslog(LOG_ERR, "Could not chown %s to root.root. Aborting!", DATA_DIR);
       return (EXIT_FAILURE);
     }
-    stat(DATA_DIR, &bStat); // Stat again
+    stat(DATA_DIR, &bStat); // Read state again
   }
-  if (bStat.st_uid != 0 || bStat.st_gid != 0) { // check ownership
+  if (bStat.st_uid != 0 || bStat.st_gid != 0) { // Check ownership
     syslog(LOG_ERR, "%s not owned by root.root. Aborting!", DATA_DIR);
     return (EXIT_FAILURE);
   }
   syslog(LOG_DEBUG, "%s owned by root.root.", DATA_DIR);
-  if ((bStat.st_mode & MODE_MASK) != DATA_DIR_MODE) { // check permissions
+  if ((bStat.st_mode & MODE_MASK) != DATA_DIR_MODE) { // Check permissions
     syslog(LOG_ERR, "%s has not mode %o. This directory will be ignored!",
            DATA_DIR, DATA_DIR_MODE);
     return (EXIT_FAILURE);
   }
   syslog(LOG_DEBUG, "%s has mode %o.", DATA_DIR, bStat.st_mode);
 
-  // Check existance of userdir
+  // Check existence of user dir
   userdir.append(user);
   if (stat(userdir.data(), &bStat) !=
-      0) { // could not be stated, try to create it
+      0) { // Could not get state, trying to create it
     syslog(LOG_DEBUG, "%s doesn't exist. Creating.", userdir.data());
     if (mkdir(userdir.data(), USER_DIR_MODE)) {
       syslog(LOG_ERR, "Could not create %s. Aborting!", userdir.data());
@@ -178,17 +166,17 @@ int main(int argc, char **argv) {
              userdir.data());
       return (EXIT_FAILURE);
     }
-    stat(userdir.data(), &bStat); // Stat again
+    stat(userdir.data(), &bStat); // Read state again
   }
 
-  // Check ownership and permissions of userdir
-  if (bStat.st_uid != 0 || bStat.st_gid != 0) { // check ownership
+  // Check ownership and permissions of user dir
+  if (bStat.st_uid != 0 || bStat.st_gid != 0) { // Check ownership
     syslog(LOG_ERR,
            "%s not owned by root.root. This directory will be ignored!",
            userdir.data());
     return (EXIT_FAILURE);
   }
-  if ((bStat.st_mode & MODE_MASK) != USER_DIR_MODE) { // check permissions
+  if ((bStat.st_mode & MODE_MASK) != USER_DIR_MODE) { // Check permissions
     syslog(LOG_ERR, "%s has not mode %o. This directory will be ignored!",
            userdir.data(), USER_DIR_MODE);
     return (EXIT_FAILURE);
@@ -196,12 +184,12 @@ int main(int argc, char **argv) {
   syslog(LOG_DEBUG, "%s is owned by root.root with mode %o.", userdir.data(),
          bStat.st_mode);
 
-  if (!configfile) { // is birfile, need driverdir
-    // Check existance of driverdir
+  if (!configfile) { // It's a birfile, now need driver dir
+    // Check existence of driver dir
     userdir.append("/");
     userdir.append(driver);
     if (stat(userdir.data(), &bStat) !=
-        0) { // could not be stated, try to create it
+        0) { // Could not get state, trying to create it
       syslog(LOG_DEBUG, "%s doesn't exist. Creating.", userdir.data());
       if (mkdir(userdir.data(), USER_DIR_MODE)) {
         syslog(LOG_ERR, "Could not create %s. Aborting!", userdir.data());
@@ -212,17 +200,17 @@ int main(int argc, char **argv) {
                userdir.data());
         return (EXIT_FAILURE);
       }
-      stat(userdir.data(), &bStat); // Stat again
+      stat(userdir.data(), &bStat); // Read state again
     }
 
-    // Check ownership and permissions of driverdir
-    if (bStat.st_uid != 0 || bStat.st_gid != 0) { // check ownership
+    // Check ownership and permissions of driver dir
+    if (bStat.st_uid != 0 || bStat.st_gid != 0) { // Check ownership
       syslog(LOG_ERR,
              "%s not owned by root.root. This directory will be ignored!",
              userdir.data());
       return (EXIT_FAILURE);
     }
-    if ((bStat.st_mode & MODE_MASK) != USER_DIR_MODE) { // check permissions
+    if ((bStat.st_mode & MODE_MASK) != USER_DIR_MODE) { // Check permissions
       syslog(LOG_ERR, "%s has not mode %o. This directory will be ignored!",
              userdir.data(), USER_DIR_MODE);
       return (EXIT_FAILURE);
@@ -233,9 +221,9 @@ int main(int argc, char **argv) {
 
   userdir.append("/");
   userdir.append(filename);
-  if (put) { // save file
+  if (put) { // Save file
     tempdir.append(filename);
-    // copy file from /tmp to userdir
+    // Copy file from /tmp to user dir
     source = fopen(tempdir.data(), "rb");
     target = fopen(userdir.data(), "wb");
     if ((source == nullptr) || (target == nullptr)) {
@@ -243,16 +231,16 @@ int main(int argc, char **argv) {
              userdir.data());
       return (EXIT_FAILURE);
     }
-  } else {                   // get file
-    tempdir.append("read-"); // read files are named "read-{0-9}.bir"
+  } else {                   // Get the file
+    tempdir.append("read-"); // Read files are named "read-{0-9}.bir"
     tempdir.append(filename);
-    // check ownership and permissions first
-    if (stat(userdir.data(), &bStat) != 0) { // could not be stated
+    // Check ownership and permissions first
+    if (stat(userdir.data(), &bStat) != 0) { // Could not get state
       syslog(LOG_ERR, "Could not stat file %s!", userdir.data());
       return (EXIT_FAILURE);
     }
     if ((bStat.st_uid != 0) ||
-        (bStat.st_gid != 0)) { // file has wrong ownership
+        (bStat.st_gid != 0)) { // File has the wrong ownership
       syslog(LOG_ERR, "File %s is not owned by root.root -- ignoring.",
              userdir.data());
       return (EXIT_FAILURE);
@@ -269,7 +257,7 @@ int main(int argc, char **argv) {
     syslog(LOG_DEBUG, "%s has mode \"%o\" -- OK.", userdir.data(),
            bStat.st_mode & MODE_MASK);
 
-    // copy file from userdir to /tmp
+    // Copy file from user dir to /tmp
     source = fopen(userdir.data(), "rb");
     target = fopen(tempdir.data(), "wb");
     if ((source == nullptr) || (target == nullptr)) {
@@ -283,9 +271,9 @@ int main(int argc, char **argv) {
   fclose(source);
   fclose(target);
 
-  // set ownership and permissions of target
+  // Set ownership and permissions of target
   if (put) {
-    // remove sourcefile
+    // Remove the source file
     if (unlink(tempdir.data())) {
       syslog(LOG_ERR, "Could not delete file %s. Aborting!", tempdir.data());
       return (EXIT_FAILURE);
@@ -301,7 +289,7 @@ int main(int argc, char **argv) {
       return (EXIT_FAILURE);
     }
   } else {
-    // tempfile must be removed by the reading module!
+    // Temporary file must be removed by the reading module!
     if (chown(tempdir.data(), uid, gid)) {
       syslog(LOG_ERR, "Could not chown %s to %d.%d. Aborting!", tempdir.data(),
              uid, gid);

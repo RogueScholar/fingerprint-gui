@@ -1,27 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: PamNonGUI.cpp, PamNonGUI.h
- * Purpose: Main object for libpam_fingerprint module for running in non-gui
- * environments
+ * Purpose: Main object for libpam_fingerprint module for running in non-GUI
+ *          environments
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "PamNonGUI.h"
@@ -37,7 +25,7 @@
 #define CYAN "[1;36m"
 #define WHITE "[1;37m"
 
-// Helper for sending messages to PAM prompt -----------------------------------
+// Helper for sending messages to the PAM prompt
 void PamNonGUI::pamMessage(const char *target, const char *style,
                            const char *msg) {
   if (prompt)
@@ -51,7 +39,7 @@ void PamNonGUI::pamMessage(const char *target, const char *style,
   pluginMessage(fifoMsg.data());
 }
 
-// NonGUI object ---------------------------------------------------------------
+// Non-GUI object
 PamNonGUI::PamNonGUI(bool writeToPrompt, FingerprintDevice *dev,
                      const char *user, const char *fing, QObject *parent)
     : QObject(parent) {
@@ -67,8 +55,7 @@ PamNonGUI::PamNonGUI(bool writeToPrompt, FingerprintDevice *dev,
           SLOT(newVerifyResult(int, struct fp_pic_data *)));
   device->start();
   usleep(100000);           // Give it a chance to stop with some error
-  if (!device->isRunning()) // Exit quietly if device is not running for some
-                            // reason
+  if (!device->isRunning()) // Exit quietly (device not running for some reason)
     return;
 
   string title = string("\nFingerprint Login ");
@@ -89,7 +76,7 @@ PamNonGUI::PamNonGUI(bool writeToPrompt, FingerprintDevice *dev,
 
 PamNonGUI::~PamNonGUI() { device->stop(); }
 
-// slots -----------------------------------------------------------------------
+// Slots
 void PamNonGUI::matchResult(int match,
                             struct fp_pic_data __attribute__((unused)) * pic) {
   device->stop();
@@ -97,7 +84,7 @@ void PamNonGUI::matchResult(int match,
     syslog(LOG_DEBUG, "showMessage: OK");
     pamMessage(MSG_BOLD, GREEN, "OK");
     timer->stop();
-    // exit with index (match) as exit code
+    // Exit with index (match) as exit code
     qApp->processEvents();
     device->wait(5000);
     result = match;
@@ -106,7 +93,7 @@ void PamNonGUI::matchResult(int match,
   }
   syslog(LOG_DEBUG, "showMessage: Not identified!");
   pamMessage(MSG_BOLD, RED, "Not identified!");
-  repeatDelay = 3; // let 'em see the result before exiting
+  repeatDelay = 3; // Let 'em see the result before exiting
 }
 
 void PamNonGUI::newVerifyResult(int result, struct fp_pic_data
@@ -144,13 +131,13 @@ void PamNonGUI::timerTick() {
       qApp->exit(-1);
       return;
     }
-    // do nothing
+    // Do nothing
     break;
   case 1:
     syslog(LOG_INFO, "Waiting for device to stop...");
     device->wait(5000);
     syslog(LOG_INFO, "Stopped, restarting");
-    // restart fingerprint scanner
+    // Restart fingerprint scanner
     s = string("Swipe your ");
     if (finger == nullptr)
       s.append("finger");
@@ -162,7 +149,7 @@ void PamNonGUI::timerTick() {
     repeatDelay--;
     break;
   default:
-    repeatDelay--; // still wait
+    repeatDelay--; // Still waiting...
   }
 }
 

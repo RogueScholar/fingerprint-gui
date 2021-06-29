@@ -1,26 +1,14 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: FingerprintDevice.h
  * Purpose: Interface class for fingerprint sensors of any type
- * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <https://www.gnu.org/licenses/>.
+ * @author Wolfgang Ullrich
  */
 
 #ifndef _FINGERPRINTDEVICE_H
@@ -82,10 +70,11 @@ public:
   virtual bool canIdentify() = 0;
   virtual void setData(void *data, int size) = 0; // loads data into driver
   virtual int
-  getData(void **d, struct fp_pic_data **pic) = 0; // gets data, return datasize
+  getData(void **d, struct fp_pic_data **pic) = 0; // gets data,
+                                                   // returns data size
   virtual void setMode(int mode) = 0;
   virtual void
-  setTimeout(bool timeout) = 0; // timeot after OPERATION_TIMEOUT if true
+  setTimeout(bool timeout) = 0; // timeout after OPERATION_TIMEOUT, if true
   virtual void setIdentifyData(FingerprintData *identifyData) = 0;
   virtual void stop() = 0;
 

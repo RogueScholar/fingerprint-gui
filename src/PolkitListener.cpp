@@ -1,30 +1,18 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: PolkitListener.cpp, PolkitListener.h
  * Purpose: Listens for polkit events
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
+ * @author Wolfgang Ullrich
  */
 
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- * This code is based on the analysis of the "polkit-kde-1-0.95.1" project
+ * This code is based on an analysis of the "polkit-kde-1" project, v0.95.1
  */
 
 #include <polkit-qt5-1/PolkitQt1/Agent/Listener>
@@ -94,7 +82,7 @@ void PolkitListener::initiateAuthentication(
 }
 
 void PolkitListener::finishObtainPrivilege() {
-  // Number of tries increase only when some user is selected
+  // Number of tries increases only when some user is selected
   if (selectedUser.isValid()) {
     numTries++;
   }
@@ -124,7 +112,7 @@ void PolkitListener::finishObtainPrivilege() {
 
 void PolkitListener::tryAgain() {
   syslog(LOG_DEBUG, "Trying again.");
-  // We will create a new session only when some user is selected
+  // We will create a new session only when a user is selected
   if (selectedUser.isValid()) {
     session =
         QSharedPointer<Session>(new Session(selectedUser, cookie, result));
@@ -186,7 +174,7 @@ void PolkitListener::dialogAccepted() {
   //!!!!!!!!!!!!!!!!!!!!!
   // syslog(LOG_DEBUG,"Got password
   // \"%s\".",dialog->password().toStdString().data());
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 void PolkitListener::dialogCanceled() {
@@ -202,7 +190,7 @@ void PolkitListener::userSelected(PolkitQt1::Identity identity) {
   syslog(LOG_DEBUG, "userSelected: %s.",
          identity.toString().remove("unix-user:").toStdString().data());
   selectedUser = identity;
-  // If some user is selected we must destroy existing session
+  // If a user is selected, we must destroy the existing session
   if (!session.isNull()) {
     session.data()->deleteLater();
   }

@@ -1,26 +1,14 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: UserSettings.cpp, UserSettings.h
- * Purpose: User specific persistent settings; Password encryption/decryption
+ * Purpose: User-specific persistent settings and password encryption/decryption
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "UserSettings.h"
@@ -79,36 +67,36 @@ public:
       if (name == "uuid") {
         if (attrs.localName(0) == "value") {
           obj->uuid = QString(attrs.value(0));
-          //                    syslog(LOG_DEBUG,"Setting %s to
-          //                    %s.",name.toStdString().data(),attrs.value(0).toStdString().data());
+          // syslog(LOG_DEBUG,"Setting %s to
+          // s.",name.toStdString().data(),attrs.value(0).toStdString().data());
         }
       }
       if (name == "pathToPassword") {
         if (attrs.localName(0) == "value") {
           obj->pathToPassword = QString(attrs.value(0));
-          //                    syslog(LOG_DEBUG,"Setting %s to
-          //                    %s.",name.toStdString().data(),attrs.value(0).toStdString().data());
+          // syslog(LOG_DEBUG,"Setting %s to
+          //%s.",name.toStdString().data(),attrs.value(0).toStdString().data());
         }
       }
       if (name == "iv") {
         if (attrs.localName(0) == "value") {
           obj->xIv = QString(attrs.value(0));
-          //                    syslog(LOG_DEBUG,"Setting %s to
-          //                    %s.",name.toStdString().data(),attrs.value(0).toStdString().data());
+          // syslog(LOG_DEBUG,"Setting %s to
+          //%s.",name.toStdString().data(),attrs.value(0).toStdString().data());
         }
       }
       if (name == "key") {
         if (attrs.localName(0) == "value") {
           obj->xKey = QString(attrs.value(0));
-          //                    syslog(LOG_DEBUG,"Setting %s to
-          //                    %s.",name.toStdString().data(),attrs.value(0).toStdString().data());
+          // syslog(LOG_DEBUG,"Setting %s to
+          //%s.",name.toStdString().data(),attrs.value(0).toStdString().data());
         }
       }
       if (name == "pass") {
         if (attrs.localName(0) == "value") {
           obj->xPass = QString(attrs.value(0));
-          //                    syslog(LOG_DEBUG,"Setting %s to
-          //                    %s.",name.toStdString().data(),attrs.value(0).toStdString().data());
+          // syslog(LOG_DEBUG,"Setting %s to
+          //%s.",name.toStdString().data(),attrs.value(0).toStdString().data());
         }
       }
     }
@@ -121,7 +109,7 @@ public:
   }
 };
 
-// Constructor used for getting password
+// Constructor used for getting the password
 UserSettings::UserSettings(char *userName, bool debug) {
   pid_t child;
   int rc;
@@ -135,20 +123,20 @@ UserSettings::UserSettings(char *userName, bool debug) {
   if (strlen(userName) < 1)
     return;
 
-  // do we have a config.xml for this user?
+  // Do we have a config.xml for this user?
   string configPath = string(DATA_DIR);
   configPath.append(userName);
   configPath.append("/config.xml");
-  if (stat(configPath.data(), &bStat) != 0) { // could not be stated
+  if (stat(configPath.data(), &bStat) != 0) { // Could not read state
     syslog(LOG_DEBUG, "%s doesn't exist.", configPath.data());
     return;
   }
   syslog(LOG_DEBUG, "User has %s file.", configPath.data());
 
-  if (geteuid() != 0) { // not running as root (need pkexec)
-    // get configfile from /var/lib/<username>/
+  if (geteuid() != 0) { // Not running as root (need pkexec)
+    // Get config file from /var/lib/<username>/
     child =
-        fork(); // here we start a child process that copies configfile to /tmp
+        fork(); // Here we start a child process that copies config file to /tmp
     switch (child) {
     case 0: // This is the child
       rc = execl("/usr/bin/pkexec", "pkexec", READ_COMMAND, ARG_USER, userName,
@@ -180,22 +168,22 @@ UserSettings::UserSettings(char *userName, bool debug) {
   }
   syslog(LOG_DEBUG, "Open file %s for reading.",
          configFile.fileName().toStdString().data());
-  // restore settigs from config.xml
+  // Restore settings from config.xml
   SettingsParser handler(this);
   QXmlInputSource configSource(&configFile);
   QXmlSimpleReader reader;
   reader.setContentHandler(&handler);
   reader.parse(configSource);
   configFile.close();
-  if (geteuid() != 0) { // not running as root (tmpfile must be deleted)
+  if (geteuid() != 0) { // Not running as root (temporary file must be deleted)
     if (unlink("/tmp/read-config.xml")) {
       syslog(LOG_ERR, "Could not delete file \"/tmp/read-config.xml\"!");
     }
   }
 
-  // check for password
+  // Check for password
   if (providePassword) {
-    // Check media by UUID and mount it if available
+    // Check media by UUID and mount it, if available
     QString mountPoint = mountUuid(uuid);
     if (mountPoint.isEmpty()) {
       syslog(LOG_DEBUG, "Could not mount device %s.",
@@ -223,15 +211,15 @@ UserSettings::UserSettings(char *userName, bool debug) {
     }
     syslog(LOG_DEBUG, "Open file %s for reading.",
            passwordFile.fileName().toStdString().data());
-    // restore encrypted password from user@machine.xml
+    // Restore encrypted password from user@machine.xml
     QXmlInputSource passwdSource(&passwordFile);
     reader.parse(passwdSource);
     passwordFile.close();
-    // Force unmounting media for security reason if it wasn't mounted before
+    // Force unmounting media for security reason, if it wasn't mounted before
     if (umountRequired) { // Media was not mounted before
       // syslog(LOG_DEBUG,"Unmount %s.",mountPoint.toStdString().data());
       int i = 50;
-      // Seems we need to wait some time for media being idle
+      // Seems we need to wait some time for the media device to become idle
       while (i > 0 &&
              umount2(mountPoint.toStdString().data(), MNT_FORCE) != 0) {
         // syslog(LOG_DEBUG,"ERRNO %d at %d.",errno,i);
@@ -243,7 +231,7 @@ UserSettings::UserSettings(char *userName, bool debug) {
       syslog(LOG_ERR, "Missing encrypted password, key or iv.");
       return;
     }
-    // Decrpypt password
+    // Decrypt password
     QCA::Initializer init;
     if (!QCA::isSupported("aes128-cbc-pkcs7")) {
       syslog(
@@ -305,7 +293,7 @@ QString UserSettings::mountUuid(QString uuid) {
     umountRequired = true;
     // syslog(LOG_DEBUG,"Device %s is not
     // mounted.",dev.fileName().toStdString().data());
-    // create a mount point
+    // Create a mount point
     QDir tmpDir(QDir::tempPath() + "/" + uuid);
     if (!tmpDir.exists()) {
       tmpDir = QDir(QDir::tempPath());
@@ -318,8 +306,8 @@ QString UserSettings::mountUuid(QString uuid) {
       }
       tmpDir = QDir(QDir::tempPath() + "/" + uuid);
     }
-    // try to mount the device
-    // first try mounting common filesystem types from "filesystems" list
+    // Try to mount the device
+    // First try: mounting common file system types from "filesystems" list
     for (int i = 0; i < 6; i++) {
       if (mount(devName.toStdString().data(),
                 tmpDir.absolutePath().toStdString().data(), filesystems[i],
@@ -379,7 +367,7 @@ const char *UserSettings::getPathToMedia() {
   return pathToMedia.toStdString().data();
 }
 
-// Constructor used for encryption and save settings
+// Constructor used for encryption and saving settings
 UserSettings::UserSettings(char *extDir, char *uuid, char *userName,
                            char *machineName) {
   providePassword = true;
@@ -429,8 +417,7 @@ bool UserSettings::writeConfig(char *passwd, bool debug) {
       QCA::SymmetricKey key(16);
       // Create a random initialisation vector
       QCA::InitializationVector iv(16);
-      // create a 128 bit AES cipher object using Cipher Block Chaining (CBC)
-      // mode
+      // Create a 128-bit AES cipher object using Cipher Block Chaining mode
       QCA::Cipher cipher(QString("aes128"), QCA::Cipher::CBC,
                          QCA::Cipher::DefaultPadding, QCA::Encode, key, iv);
       QCA::SecureArray cipherPassword =
@@ -476,7 +463,7 @@ bool UserSettings::writeConfig(char *passwd, bool debug) {
     writeProperty(xmlWriter, "pass", xPass);
     xmlWriter.writeCloseTag("object");
     xmlWriter.writeCloseTag(GUI_NAME);
-    passwordFile.resize(passwordFile.pos()); // truncate file
+    passwordFile.resize(passwordFile.pos()); // Truncate file
     passwordFile.close();
   } else {
     syslog(LOG_ERR,
@@ -504,8 +491,8 @@ bool UserSettings::writeConfig(char *passwd, bool debug) {
   configFile.resize(configFile.pos()); // truncate file
   configFile.close();
 
-  // save configfile to /var/lib/<username>/
-  child = fork(); // here we start a child process that saves configfile
+  // save the config file to /var/lib/<username>/
+  child = fork(); // Here we start a child process that saves the config file
   switch (child) {
   case 0: // This is the child
     rc = execl("/usr/bin/pkexec", "pkexec", WRITE_COMMAND, ARG_USER,

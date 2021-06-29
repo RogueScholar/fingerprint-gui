@@ -1,42 +1,30 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: DeviceHandler.cpp, DeviceHandler.h
  * Purpose: A module to deal with devices
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
+ * @author Wolfgang Ullrich
  */
 
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- * DeviceHandler maintains a list of all available USB devies and a list of all
+ * DeviceHandler maintains a list of all available USB devices and a list of all
  * attached and supported fingerprint reader devices.
  *
- * In the first step a list of all known vendor-id and device-id is derived from
- * the file usb.ids, that is located in the programm ressources and was found
- * on http://www.linux-usb.org/usb.ids. This is only to be able to show a list
- * of all attached usb devices at GUI startup/rescan.
+ * In the first step, a list of all known vendor-ids and device-ids is derived
+ * from the file usb.ids that is located in the program resources and was found
+ * on <http://www.linux-usb.org/usb-ids.html>. This is only to be able to show a
+ * list of all attached USB devices at GUI startup/re-scan.
  *
- * In the second step the list of attached usb devices is created and can be
+ * In the second step, the list of attached USB devices is created and can be
  * obtained by getAttachedUsbDevices().
  *
- * In the third step a list of attached and supported fingerprint readers is
- * created. On adding a device the signal "deviceAdded" is emitted.
+ * In the third step, a list of attached and supported fingerprint readers is
+ * created. On adding a device, the signal "deviceAdded" is emitted.
  *
  * Calling getIdentifiers returns a list of fingerprint devices that can
  * identify. Calling getVerifiers returns a list of fingerprint devices that can
@@ -69,13 +57,13 @@ DeviceHandler::DeviceHandler(display_name_mode mode) {
   verifierDevices = nullptr;
   displayNameMode = mode;
 
-  // trying to load libbsapi from UPEK
+  // Trying to load libbsapi from UPEK
   upekLoader();
 
-  /* call libloaders for other proprietary driver libraries here */
+  /* Call loaders for other proprietary driver libraries here */
 
   initialize();
-  if (mode == DISPLAY_VENDOR_NAME) // used for GUI
+  if (mode == DISPLAY_VENDOR_NAME) // Used for GUI
     getKnownUSBDevices();
 }
 
@@ -83,7 +71,7 @@ DeviceHandler::~DeviceHandler() {
   //    release();
 }
 
-// public getters and setters --------------------------------------------------
+// Public getters and setters
 USBDevice *DeviceHandler::getAttachedUsbDevices() { return attachedUSBDevices; }
 
 FingerprintDevice *DeviceHandler::getFingerprintDevices() {
@@ -100,8 +88,8 @@ void DeviceHandler::setDisplayNameMode(display_name_mode mode) {
   displayNameMode = mode;
 }
 
-// moves devices that can identify to "identifierDevices" list and
-// those can not identify to "verifierDevices"
+// Moves devices that can identify to "identifierDevices" list and those cannot
+// identify to "verifierDevices"
 // Sets fingerprintDevices to nullptr
 FingerprintDevice *DeviceHandler::getIdentifiers() {
   if (fingerprintDevices == nullptr) {
@@ -150,9 +138,9 @@ FingerprintDevice *DeviceHandler::getVerifiers() {
   return verifierDevices;
 }
 
-// public methods --------------------------------------------------------------
+// Public methods
 void DeviceHandler::rescan() {
-  // free old device lists
+  // Free old device lists
   for (FingerprintDevice *fp = fingerprintDevices; fp != nullptr;) {
     FingerprintDevice *fp_p = fp;
     fp = fp->next;
@@ -185,8 +173,8 @@ void DeviceHandler::rescan() {
     if (discoveredFpDevices != nullptr)
       fp_dscv_devs_free(discoveredFpDevices);
 
-    // discover devices handled by proprietary driver libraries
-    // discover devices handled by "libbsapi" from UPEK
+    /* Discover devices handled by proprietary driver libraries */
+    // Discover devices handled by "libbsapi" from UPEK
     if (discoveredBsDevices != nullptr)
       (*bsapiFreeFunction)(discoveredBsDevices);
 
@@ -206,27 +194,27 @@ void DeviceHandler::rescan() {
       }
     }
 
-    /* discover devices handled by other proprietary driver libraries here */
+    /* Discover devices handled by other proprietary driver libraries here */
 
-    // discover "generic" devices handled by libfprint
-    // this is the fallback for devices not handled by proprietary libraries
+    // Discover "generic" devices handled by libfprint-2
+    // This is the fallback for devices not handled by proprietary libraries
     discoveredFpDevices = fp_discover_devs();
     if (discoveredFpDevices != nullptr) {
       for (int i = 0; discoveredFpDevices[i] != nullptr; i++) {
         addDevice(new GenericDevice(discoveredFpDevices[i], knownUSBDevices));
       }
     } else {
-      syslog(LOG_ERR, "No devices found by libfprint.");
+      syslog(LOG_ERR, "No devices found by libfprint-2.");
     }
   }
   setCurrentDevice(currentDeviceIndex);
   emit rescanFinished();
 }
 
-// slots -----------------------------------------------------------------------
+// Slots
 USBDevice *DeviceHandler::findKnownDevice(int vendor, int device) {
-  string v = "0000  unknown vendor";
-  string d = "0000  unknown device";
+  string v = "0000  Unknown vendor";
+  string d = "0000  Unknown device";
 
   USBDevice *usb = new USBDevice(v, d);
   USBDevice *walk = knownUSBDevices;
@@ -259,7 +247,7 @@ void DeviceHandler::setCurrentDevice(int index) {
   currentDeviceIndex = i;
 }
 
-// private helpers -------------------------------------------------------------
+// Private helpers
 void DeviceHandler::addDevice(FingerprintDevice *fpDevice) {
   fpDevice->next = nullptr;
   if (fingerprintDevices == nullptr) {
@@ -267,8 +255,7 @@ void DeviceHandler::addDevice(FingerprintDevice *fpDevice) {
   } else {
     FingerprintDevice *fpDev = fingerprintDevices;
     while (fpDev != nullptr) {
-      // don't add devices found by a driver that were found by another driver
-      // before
+      // Don't add devices found by a driver that were found before by another
       if (fpDev->vendorId == fpDevice->vendorId &&
           fpDev->productId == fpDevice->productId) {
         string driver1 =
@@ -276,7 +263,7 @@ void DeviceHandler::addDevice(FingerprintDevice *fpDevice) {
         string driver2 =
             string(fpDevice->getDisplayName(DISPLAY_DRIVER_NAME)->data());
         if (driver1.compare(driver2) != 0) {
-          // this device is handled by another driver; don't add it again
+          // This device is handled by another driver; don't add it again
           syslog(LOG_DEBUG, "Device %s is handled by %s already; not added.",
                  fpDevice->getDisplayName(DISPLAY_DRIVER_NAME)->data(),
                  fpDev->getDisplayName(DISPLAY_DRIVER_NAME)->data());
@@ -285,7 +272,7 @@ void DeviceHandler::addDevice(FingerprintDevice *fpDevice) {
         }
       }
       if (fpDev->next == nullptr) {
-        fpDev->next = fpDevice; // append fpDevice
+        fpDev->next = fpDevice; // Append fpDevice
         break;
       }
       fpDev = fpDev->next;
@@ -306,14 +293,14 @@ int DeviceHandler::findAttachedUSBDevices() {
   libusb_init(&ctx);
   libusb_get_device_list(ctx, &devs);
   if (devs == nullptr) {
-    syslog(LOG_ERR, "failed to get usb device list");
+    syslog(LOG_ERR, "Failed to get USB device list");
     return false;
   }
 
   for (int i = 0; devs[i] != nullptr; i++) {
     dev = devs[i];
     if (libusb_get_device_descriptor(dev, &desc) < 0) {
-      syslog(LOG_ERR, "failed to get usb device descriptor");
+      syslog(LOG_ERR, "Failed to get USB device descriptor");
       continue;
     }
     USBDevice *usb = findKnownDevice(desc.idVendor, desc.idProduct);
@@ -349,8 +336,8 @@ int DeviceHandler::getKnownUSBDevices() {
     if (line.compare(endOfDeviceId) == 0)
       break;
     if (line.length() != 0 &&
-        !line.startsWith("#")) {   // comment lines and empty lines
-      if (line.startsWith("\t")) { // device
+        !line.startsWith("#")) {   // Comment lines and empty lines
+      if (line.startsWith("\t")) { // Device
         device = (line.toStdString()).substr(1);
         USBDevice *usb = new USBDevice(vendor, device);
         if (lastDevice == nullptr) {
@@ -359,7 +346,7 @@ int DeviceHandler::getKnownUSBDevices() {
           lastDevice->next = usb;
         }
         lastDevice = usb;
-      } else { // vendor
+      } else { // Vendor
         vendor = line.toStdString();
       }
     }
@@ -368,19 +355,19 @@ int DeviceHandler::getKnownUSBDevices() {
   return true;
 }
 
-// terminate all devices
+// Terminate all devices
 int DeviceHandler::release() {
   if (currentDevice != nullptr) {
-    syslog(LOG_DEBUG, "stopping device.");
+    syslog(LOG_DEBUG, "Stopping device.");
     currentDevice->stop();
   }
-  // exit libfprint
-  syslog(LOG_DEBUG, "exit libfprint.");
+  // Exit libfprint-2
+  syslog(LOG_DEBUG, "Exitting libfprint-2.");
   fp_exit();
 
-  // exit libbsapi
+  // Exit libbsapi
   if (bsapiHandle) {
-    syslog(LOG_DEBUG, "terminating libbsapi.");
+    syslog(LOG_DEBUG, "Terminating libbsapi.");
     if ((*bsapiTerminateFunction)() != 0) {
       syslog(LOG_ERR, "Unable to terminate libbsapi.");
       return 0;
@@ -390,21 +377,21 @@ int DeviceHandler::release() {
   return -1;
 }
 
-// initialize all devices
+// Initialize all devices
 int DeviceHandler::initialize() {
-  // init libfprint
+  // Initialize libfprint-2
   if (fp_init() != 0) {
-    string message = "Unable to init libfprint.";
+    string message = "Unable to initialize libfprint-2.";
     syslog(LOG_ERR, "%s", message.data());
     cerr << message.data() << endl;
     return 0;
   }
-  syslog(LOG_DEBUG, "Libfprint initialized.");
+  syslog(LOG_DEBUG, "Libfprint-2 initialized.");
 
-  // init libbsapi
+  // Initialize libbsapi
   if (bsapiHandle) {
     if ((*bsapiInitFunction)() != 0) {
-      string message = "Unable to init libbsapi.";
+      string message = "Unable to initialize libbsapi.";
       syslog(LOG_ERR, "%s", message.data());
       cerr << message.data() << endl;
       return 0;
@@ -415,33 +402,32 @@ int DeviceHandler::initialize() {
   return -1;
 }
 
-// Libloaders for proprietary driver libraries
-// loader for "libbsapi" from UPEK
+/* Loaders for proprietary driver libraries */
+// Loader for "libbsapi" from UPEK
 const char *getUpekLibname() {
-  // bsapi version 4.0 cannot handle 147e:2020
-  // bsapi version 4.3 cannot handle 147e:1000
-  // we need to load the libbsapi version that can handle the device found here
+  // bsapi v4.0 cannot handle 147e:2020, v4.3 cannot handle 147e:1000
+  // We need to load the libbsapi version that can handle the device found here
   libusb_device **devs = nullptr;
   libusb_device *dev;
   struct libusb_context *ctx;
   struct libusb_device_descriptor desc;
-  const char *libname = BSAPI_LIBNAME_43; // defaults to the newest version
+  const char *libname = BSAPI_LIBNAME_43; // Defaults to the newer version
 
   libusb_init(&ctx);
   libusb_get_device_list(ctx, &devs);
   if (devs == nullptr) {
-    syslog(LOG_ERR, "failed to get usb device list");
+    syslog(LOG_ERR, "Failed to get USB device list");
     return nullptr;
   }
 
   for (int i = 0; devs[i] != nullptr; i++) {
     dev = devs[i];
     if (libusb_get_device_descriptor(dev, &desc) < 0) {
-      syslog(LOG_ERR, "failed to get usb device descriptor");
+      syslog(LOG_ERR, "Failed to get USB device descriptor");
       continue;
     }
     if (desc.idVendor == 0x147e)   // UPEK
-      if (desc.idProduct < 0x2000) // old device needs version 4.0
+      if (desc.idProduct < 0x2000) // Old device needs version 4.0
         libname = BSAPI_LIBNAME_40;
   }
 
@@ -454,7 +440,7 @@ void DeviceHandler::upekLoader() {
   char *error;
   const char *libname = getUpekLibname();
   bsapiHandle = dlopen(libname, RTLD_LAZY);
-  if (!bsapiHandle) { // in case the user has no libbsapi.so.4.0 installed
+  if (!bsapiHandle) { // In case the user has no libbsapi.so.4.0 installed
     // but has a working libbsapi.so from an older installation left over
     bsapiHandle = dlopen(BSAPI_LIBNAME, RTLD_LAZY);
   }
@@ -494,6 +480,6 @@ void DeviceHandler::upekLoader() {
   }
 }
 
-/* insert libloaders for other proprietary driver libraries here */
+/* Insert loaders for other proprietary driver libraries here */
 
 #include "moc_DeviceHandler.cpp"

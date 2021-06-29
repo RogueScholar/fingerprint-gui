@@ -1,27 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: Fingerprint.cpp, Fingerprint.h
- * Purpose: Represents a single fingerprint, it's data and the asigned device,
- * handles some GUI interaction.
+ * Purpose: Represents a single fingerprint, its data, and the assigned device;
+ *          also handles some GUI interaction.
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "Fingerprint.h"
@@ -60,12 +48,12 @@ Fingerprint::Fingerprint(int finger, FingerprintDevice *d,
   setAcquireStage(-1);
   device = d;
   device->setMode(MODE_ACQUIRE);
-  if (loadData()) { // existing fingerprint found
+  if (loadData()) { // Existing fingerprint found
     valid = true;
   }
 }
 
-// public getters and setters --------------------------------------------------
+// Public getters and setters
 FingerprintDevice *Fingerprint::getDevice() { return device; }
 
 bool Fingerprint::isValid() { return valid; }
@@ -83,7 +71,7 @@ bool Fingerprint::swipe() {
   return true;
 }
 
-// slots -----------------------------------------------------------------------
+// Slots
 void Fingerprint::newAcquireResult(int result) {
   int rc = result;
 
@@ -130,10 +118,10 @@ void Fingerprint::newVerifyResult(int result, struct fp_pic_data *pic) {
   emit verifyFinished(result, pic);
 }
 
-// private helpers -------------------------------------------------------------
+// Private helpers
 
-bool Fingerprint::loadData() { // loads fingerprint data for this finger and
-                               // this device and puts it into the device
+bool Fingerprint::loadData() { // Loads fingerprint data for this finger and
+                               // device and puts it into the device
   struct stat bStat;
   pid_t child;
   int rc;
@@ -158,12 +146,12 @@ bool Fingerprint::loadData() { // loads fingerprint data for this finger and
   if (sourcefilename.empty())
     return false;
 
-  if (stat(sourcefilename.data(), &bStat) != 0) // file doesn't exist
+  if (stat(sourcefilename.data(), &bStat) != 0) // File doesn't exist
     return false;
 
   syslog(LOG_DEBUG, "Parent PID: %d.", getpid());
-  child = fork(); // here we start a child process that copies fingerprint data
-                  // to tempfile
+  child = fork(); // Here we start a child process that copies fingerprint data
+                  // to a temporary file
   switch (child) {
   case 0: // This is the child
     rc = execl("/usr/bin/pkexec", "pkexec", READ_COMMAND, ARG_USER,
@@ -211,8 +199,8 @@ bool Fingerprint::loadData() { // loads fingerprint data for this finger and
   return true;
 }
 
-bool Fingerprint::saveData() { // saves fingerprint data for this finger and
-                               // this device to disk
+bool Fingerprint::saveData() { // Saves fingerprint data for this finger and
+                               // device to the disk
   pid_t child;
   int rc;
   struct passwd *pws = getpwuid(geteuid());
@@ -237,7 +225,7 @@ bool Fingerprint::saveData() { // saves fingerprint data for this finger and
   fin << finger;
 
   syslog(LOG_DEBUG, "Parent PID: %d.", getpid());
-  child = fork(); // here we start a child process that saves fingerprint data
+  child = fork(); // Here we start a child process that saves fingerprint data
   switch (child) {
   case 0: // This is the child
     rc = execl("/usr/bin/pkexec", "pkexec", WRITE_COMMAND, ARG_USER,
@@ -261,7 +249,7 @@ bool Fingerprint::saveData() { // saves fingerprint data for this finger and
 }
 
 void Fingerprint::initLabels() {
-  textLabels[0]->setText(tr("waiting..."));
+  textLabels[0]->setText(tr("Waiting..."));
   textLabels[1]->setText("");
   textLabels[2]->setText("");
   textLabels[3]->setText("");
@@ -275,7 +263,7 @@ void Fingerprint::initLabels() {
 }
 
 void Fingerprint::setAcquireStage(int result) {
-  if (result == -1) { // initial
+  if (result == -1) { // Initial
     stage = 0;
     initLabels();
     return;

@@ -1,30 +1,18 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: PolkitDialog.cpp, PolkitDialog.h
  * Purpose: GUI dialog for polkit agent for fingerprint authentication
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
+ * @author Wolfgang Ullrich
  */
 
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- * This code is based on the analysis of the "polkit-kde-1-0.95.1" project
+ * This code is based on an analysis of the "polkit-kde-1" project, v0.95.1
  */
 
 #include <polkit-qt5-1/PolkitQt1/Authority>
@@ -58,7 +46,7 @@ PolkitDialogImpl::PolkitDialogImpl(const QString &actionId,
     syslog(LOG_DEBUG, "Message of action: %s.", message.toStdString().data());
     headerLabel->setText("<h3>" + message + "</h3>");
   }
-  // find action description for actionId
+  // Find action description for actionId
   foreach (PolkitQt1::ActionDescription desc,
            PolkitQt1::Authority::instance()->enumerateActionsSync()) {
     if (actionId == desc.actionId()) {
@@ -75,7 +63,7 @@ PolkitDialogImpl::PolkitDialogImpl(const QString &actionId,
   connect(detailsButton, SIGNAL(pressed()), SLOT(showDetails()));
   connect(detailsButton, SIGNAL(released()), SLOT(resize()));
   userCombobox->hide();
-  // If there is more than 1 identity we will show the combobox for user
+  // If there is more than one identity, we will show the combo box for user
   // selection
   if (identities.size() > 1) {
     connect(userCombobox, SIGNAL(currentIndexChanged(int)),
@@ -90,7 +78,7 @@ PolkitDialogImpl::PolkitDialogImpl(const QString &actionId,
 
 PolkitDialogImpl::~PolkitDialogImpl() {
   syslog(LOG_DEBUG, "Deleting PolkitDialog.");
-  // If a helper process is running kill him
+  // If a helper process is running, kill it
   int rc;
   FILE *pidfile = fopen(HELPER_PID, "r");
   if (pidfile) {
@@ -108,7 +96,7 @@ PolkitDialogImpl::~PolkitDialogImpl() {
   }
 }
 
-// Preselect the current user if he is in admin group
+// Pre-select the current user if he is in the admin group
 bool PolkitDialogImpl::preselectUser() {
   struct passwd *bPwd = getpwuid(getuid());
   if (!bPwd) {
@@ -131,8 +119,7 @@ void PolkitDialogImpl::resize() {
 
 void PolkitDialogImpl::accept() {
   syslog(LOG_DEBUG, "Accept.");
-  // Do nothing, do not close the dialog. This is needed so that the dialog
-  // stays
+  // Do nothing, but do not close the dialog. This is needed so the dialog stays
   return;
 }
 
@@ -263,7 +250,6 @@ void PolkitDialogImpl::showDetails() {
   }
 }
 
-//------------------------------------------------------------------------------
 PolkitDetailsImpl::PolkitDetailsImpl(
     const PolkitQt1::Details &details,
     PolkitQt1::ActionDescription *actionDescription, const QString &appname,

@@ -1,26 +1,14 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: fingerprintIdentifier.cpp
  * Purpose: Main application to be used for fingerprint identifier
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include <cstdio>
@@ -86,7 +74,7 @@ int main(int argc, char **argv) {
   }
   syslog(LOG_INFO, "Started.");
 
-  // find "identifier" devices
+  // Find identifier devices
   FingerprintDevice *devices = nullptr;
   DeviceHandler deviceHandler(DISPLAY_DRIVER_NAME);
   deviceHandler.rescan();
@@ -102,7 +90,7 @@ int main(int argc, char **argv) {
     syslog(LOG_WARNING, "Found more then one devices. Using %s.",
            devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
   }
-  // collect fingerprints from all users for this device
+  // Collect fingerprints from all users for this device
   FingerprintDiscoverer discoverer(devices, debug);
   FingerprintData *identifyData = discoverer.getIdentifyData();
   if (identifyData == nullptr) { // We have no fingerprints at all
@@ -122,7 +110,7 @@ int main(int argc, char **argv) {
       fingerprintData = fingerprintData->next;
     syslog(LOG_DEBUG, "Have index %d (user: %s).", rc,
            fingerprintData->getUserName()->data());
-    cout << fingerprintData->getUserName()->data(); // send username to stdout
+    cout << fingerprintData->getUserName()->data(); // Send username to stdout
   }
 
   rc = 0;

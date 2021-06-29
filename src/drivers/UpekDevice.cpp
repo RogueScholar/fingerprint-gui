@@ -1,27 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: UpekDevice.cpp, UpekDevice.h
- * Purpose: A device driver wrapper for fingerprint devices from UPEK inc.
- * (former SGS Thomson)
+ * Purpose: A device driver wrapper for fingerprint devices from UPEK, Inc.
+ *          (formerly SGS Thomson)
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "UpekDevice.h"
@@ -43,7 +31,7 @@ UpekDevice::UpekDevice(void *libHandle, struct abs_device_list_item *bs,
   absFlag = 0;
   bsapiHandle = libHandle;
 
-  // load library symbols
+  // Load the library symbols
   *(void **)(&bsapiOpenFunction) = dlsym(bsapiHandle, BSAPI_OPEN);
   if ((error = dlerror()) != nullptr) {
     syslog(LOG_ERR, "Could not find symbol \"%s\" (%s).", BSAPI_OPEN, error);
@@ -153,7 +141,7 @@ UpekDevice::UpekDevice(void *libHandle, struct abs_device_list_item *bs,
          s.data());
 }
 
-// public getters and setters --------------------------------------------------
+// Public getters and setters
 string *UpekDevice::getDisplayName(int mode) {
   if (mode == DISPLAY_DRIVER_NAME)
     return &driverName;
@@ -227,10 +215,9 @@ void UpekDevice::stop() {
     (*bsapiCancelFunction)(conn, mode);
 }
 
-// private helpers -------------------------------------------------------------
-// These are helpers for the callback
-// I need them only because I don't know how to handover a member function of
-// UpekDevice as callback to the ABS... functions.
+// Private helpers
+// These are helpers for the callback. I need them only because I don't know how
+// to handover a member function of UpekDevice as callback to the ABS… functions
 void UpekDevice::emitAcquireResult(int result) { emit acquireResult(result); }
 
 void UpekDevice::emitVerifyResult(int result) {
@@ -239,7 +226,7 @@ void UpekDevice::emitVerifyResult(int result) {
 
 static UpekDevice *upekDevice;
 
-// opens an ABS... device
+// Opens an ABS… device
 bool UpekDevice::bsDevOpen(string bsDevice, ABS_CONNECTION *conn) {
   if (bsDevice.length() == 0) {
     syslog(LOG_ERR, "FIXME: BsDevice string empty.");
@@ -259,25 +246,25 @@ bool UpekDevice::bsDevOpen(string bsDevice, ABS_CONNECTION *conn) {
       }
       return false;
     }
-    // WORKAROUND!!
-    // In my opinion there is a bug in libbsapi.so when opening a devie with
+    //!!!!WORKAROUND
+    // In my opinion, there is a bug in libbsapi.so when opening a device with
     // NVM emulation. It creates a file in /var/upek_data that is owned by this
-    // user created with his umask. If another user opens the device, hi has
-    // insufficient permissions to acces this file.
-    // So each time we open the device, we try to set the permissions to 0666
-    // if it has created a NVM file.
+    // user, created with their umask. If another user opens the device, they
+    // have insufficient permissions to access this file, so each time we open
+    // the device, we try to set the permissions to 0666 if it has created an
+    // NVM file.
     QFile cfg(UPEK_CFG);
-    if (cfg.exists()) { // We have a NVM config file in /etc
+    if (cfg.exists()) { // We have an NVM config file in /etc
       if (cfg.open(QIODevice::ReadOnly)) {
         QString config(cfg.readAll());
-        if (!config.isEmpty()) { // It contains something
+        if (!config.isEmpty()) { // It contains something...
           QString nvmPath(config.section("nvmprefix", 1));
           nvmPath = nvmPath.section("=", 1);
           if (nvmPath.contains('"')) {
             nvmPath = nvmPath.section('"', 1, 1);
           }
           nvmPath = nvmPath.trimmed();
-          if (!nvmPath.isEmpty()) { // We have a NVM path entry
+          if (!nvmPath.isEmpty()) { // We have an NVM path entry
             QString nvmName(
                 nvmPath.right(nvmPath.length() - nvmPath.lastIndexOf('/') - 1));
             nvmPath = nvmPath.left(nvmPath.lastIndexOf('/'));
@@ -384,8 +371,8 @@ void BSAPI callback(const ABS_OPERATION *p_operation, ABS_DWORD msg,
     syslog(LOG_DEBUG, "ABS_MSG_PROMPT_CLEAN.");
     break;
 
-  /* Quality messages come if something went wrong. E.g. the user
-   * did not scan his finger in the right way. */
+  // Quality messages come if something went wrong. E.g. the user did not scan
+  // their finger correctly.
   case ABS_MSG_QUALITY_CENTER_HARDER:
     syslog(LOG_DEBUG, "ABS_MSG_QUALITY_CENTER_HARDER.");
     center(p_operation);
@@ -452,41 +439,37 @@ void BSAPI callback(const ABS_OPERATION *p_operation, ABS_DWORD msg,
     break;
 
     // UNUSED MESSAGES:
-    //        /* These messages just inform us how the interactive operation
-    //         * progresses. Typical applications do not need it. */
+    // These messages just inform us how the interactive operation progresses.
+    // Typical applications do not need it.
   case ABS_MSG_PROCESS_BEGIN:
   case ABS_MSG_PROCESS_END:
-    //        /* On some platforms, the biometric operastion can be suspended
-    //         * when other process acquires sensor for other operation. */
+    // On some platforms, a biometric operation can be suspended when another
+    // process acquires the sensor for some other operation.
   case ABS_MSG_PROCESS_SUSPEND:
   case ABS_MSG_PROCESS_RESUME:
-    //        /* Sometimes some info how the operation progresses is sent. */
+    // Sometimes some info how the operation progresses is sent.
   case ABS_MSG_PROCESS_PROGRESS:
-    //        /* Navigation messages are sent only from ABSNavigate. Its not
-    //        used
-    //         * in this sample but we list the messages here for completeness.
-    //         */
+    // Navigation messages are sent only from ABSNavigate. It's not used in this
+    // sample, but we list the messages here for completeness.
   case ABS_MSG_NAVIGATE_CHANGE:
   case ABS_MSG_NAVIGATE_CLICK:
-    //        /* Real application would probably use some GUI to provide
-    //        feedback
-    //         * for user. On these messages the GUI dialog should be made
-    //         vsiible
-    //         * and invisible respectivelly. */
+    // A real application would probably use the GUI to provide feedback to the
+    // user...on these messages, the GUI dialog should be made visible and
+    // invisible, respectivelly.
   case ABS_MSG_DLG_SHOW:
   case ABS_MSG_DLG_HIDE:
     return;
-  default: // should not happen
+  default: // Should not happen
     syslog(LOG_ERR, "ABS_MSG_ ... unknown (0x%x).", msg);
   }
   lastMsg = msg;
 }
 
 static ABS_OPERATION operation = {
-    0, // operation identifier, used for mode (acquire, identify or verify)
-    nullptr, // data to call back, not used
+    0, // Operation identifier, used for mode (acquire, identify or verify)
+    nullptr, // Data to call back, not used
     callback,
-    OPERATION_TIMEOUT, // timeout
+    OPERATION_TIMEOUT, // Timeout
     ABS_OPERATION_FLAG_LL_CALLBACK};
 
 void UpekDevice::setTimeout(bool timeout) {
@@ -497,7 +480,7 @@ void UpekDevice::setTimeout(bool timeout) {
   }
 }
 
-// run a verification task
+// Run a verification task
 bool UpekDevice::verify() {
   ABS_LONG bsResult;
   //    ABS_SAMPLE_IMAGE *bsImage;
@@ -511,7 +494,7 @@ bool UpekDevice::verify() {
     emit noDeviceOpen();
     return false;
   }
-  emit neededStages(1); // always "1" for verification
+  emit neededStages(1); // Always "1" for verification
   lastMsg = -1;
   operation.OperationID = MODE_VERIFY;
   if (!bsapiVerifyFunction) {
@@ -524,7 +507,7 @@ bool UpekDevice::verify() {
     emit verifyResult(RESULT_VERIFY_NO_MATCH, &fpPic);
     return false;
   }
-  // maybe we insert "image" stuff here in a later version of libbsapi
+  // Maybe we insert "image" stuff here in a later version of libbsapi?
   //        syslog(LOG_DEBUG,"Verify: grab image start.");
   //        if(ABSGrab(conn,&operation,ABS_PURPOSE_VERIFY,&bsImage,0)==ABS_STATUS_OK){
   //            syslog(LOG_DEBUG,"Verify: have image.");
@@ -549,7 +532,7 @@ bool UpekDevice::verify() {
   return false;
 }
 
-// run an enrollment task
+// Run an enrollment task
 bool UpekDevice::acquire() {
   mode = MODE_ACQUIRE;
   if (bsDevice.length() != 0)
@@ -562,7 +545,7 @@ bool UpekDevice::acquire() {
     return false;
   }
 
-  emit neededStages(1); // we use a dynamic number of needed stages
+  emit neededStages(1); // We use a dynamic number of needed stages
   lastMsg = -1;
   operation.OperationID = mode;
   if (!bsapiEnrollFunction) {
@@ -575,7 +558,7 @@ bool UpekDevice::acquire() {
     emit acquireResult(RESULT_ENROLL_FAIL);
     return false;
   }
-  // insert "image" stuff here in later version
+  // Insert "image" stuff here in later version
   if (bsapiCloseFunction) {
     if ((*bsapiCloseFunction)(conn) != ABS_STATUS_OK) {
       syslog(LOG_ERR, "ABSClose() failed.");

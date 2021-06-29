@@ -1,5 +1,12 @@
+# SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+# SPDX-FileCopyrightText: 🄯 2019-2021 Peter J. Mello <admin@petermello.net>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+# ----------------------------------------------------------------------------
+
 # All but four Visual Studio Code files are installation-specific
 .vscode/*
+*.code-workspace
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -34,6 +41,9 @@ bh_unicode_properties.cache
 
 # Sublime-GitHub package stores a GitHub token in this file
 GitHub.sublime-settings
+
+# CudaText
+**/.cudatext
 
 # Don't accidentally publish your GPG secret keyring
 secring.*

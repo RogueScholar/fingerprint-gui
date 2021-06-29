@@ -1,27 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: PamGUI.cpp, PamGUI.h
  * Purpose: Main object for pam_fingerprint module for running in GUI
- * environments
+ *          environments
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include "PamGUI.h"
@@ -69,41 +57,41 @@ void PamGUI::CinnamonFix() {
   Display *display; // XLib Display
   unsigned int count = 0, screen_num;
   Window rootWindow, root,
-      parent = 0; // screen root window, return root window from XQueryTree,
-                  // return parent window from XQueryTree and new parent window
-  Window *list = nullptr; // for enumerate windows
-  XWindowAttributes attr; // window attributes for test
+      parent = 0; // Screen root window, return root window from XQueryTree,
+                  // Return parent window from XQueryTree and new parent window
+  Window *list = nullptr; // For enumerating windows
+  XWindowAttributes attr; // Window attributes for test
 
-  display = QX11Info::display(); // get Display from QT
+  display = QX11Info::display(); // Get Display from Qt
   if (!display) {
     return;
   }
 
   screen_num = QApplication::desktop()->screenNumber(
-      QCursor::pos()); // screen index on multimonitor system
+      QCursor::pos()); // Screen index on multi-monitor system
   QRect desk_rect =
-      QApplication::desktop()->screenGeometry(screen_num); // screen geometry
+      QApplication::desktop()->screenGeometry(screen_num); // Screen geometry
   syslog(LOG_DEBUG,
          "CinnamonFix: screen %d; left: %d; top: %d; width: %d; height: %d",
          screen_num, desk_rect.left(), desk_rect.top(), desk_rect.width(),
          desk_rect.height());
-  XSync(display, screen_num);                                // sync screen
+  XSync(display, screen_num);                                // Sync screen
   Atom _atomPID = XInternAtom(display, "_NET_WM_PID", True); // _NET_WM_PID
 
   rootWindow = DefaultRootWindow(display);
   syslog(LOG_DEBUG, "CinnamonFix: rootWindow %d", (unsigned int)rootWindow);
 
   if (XQueryTree(display, rootWindow, &root, &parent, &list, &count) !=
-      0) { // get windows on display
+      0) { // Get windows on display
     Atom actual_type;
     int actual_format;
     unsigned long nItems, bytes_after;
     unsigned char *prop;
 
 #define CINNAMONFIX_BUFSIZE 256
-    char procname[CINNAMONFIX_BUFSIZE]; // process name
-    FILE *fprocname;                    // file pointer
-    size_t size;                        // read size
+    char procname[CINNAMONFIX_BUFSIZE]; // Process name
+    FILE *fprocname;                    // File pointer
+    size_t size;                        // Read size
 
     Window child;
     while (count > 0) {
@@ -147,12 +135,12 @@ void PamGUI::CinnamonFix() {
     XFree((char *)list);
   }
 
-  XFlush(display); // flush display settings
+  XFlush(display); // Flush display settings
 
   if (parent) {
     screen_num = 0;
     if (0 != XGetWindowAttributes(display, parent,
-                                  &attr)) { // get screensaver bg size
+                                  &attr)) { // Get screensaver background size
       count = attr.height - height();
     } else {
       count = desk_rect.height() - height();
@@ -167,7 +155,7 @@ void PamGUI::CinnamonFix() {
   }
 
   XReparentWindow(display, winId(), parent, screen_num,
-                  count); // HACK set widget parent window
+                  count); //!!HACK -- Set widget parent window
 }
 // }}} Fix cinnamon-screensaver
 
@@ -208,7 +196,7 @@ void PamGUI::showMessage(const char *target, const QString msg) {
   syslog(LOG_DEBUG, "Message: %s",
          msg.toStdString().data()); // Message to syslog
 
-  // send message to plugin
+  // Send message to plugin
   string fifoMsg(""); // Compose a message for fingerprint-plugin
   fifoMsg.append(target);
   fifoMsg.append(msg.toStdString());
@@ -217,8 +205,8 @@ void PamGUI::showMessage(const char *target, const QString msg) {
 }
 
 // Helper function, required since Ubuntu 12.04 because unity-greeter releases
-// the keyboard focus We set the focus to the greeter window again so the user
-// can invoke his password
+// the keyboard focus. We set the focus to the greeter window again so the user
+// can invoke their password.
 static bool focusIsSet = false;
 
 void PamGUI::setFocusToUnityGreeter() {
@@ -249,7 +237,7 @@ void PamGUI::setFocusToUnityGreeter() {
                                  1024, False, XA_STRING, &type, &format,
                                  &nItems, &bytesAfter, &name)) {
             if (name != nullptr) {
-              //			    syslog(LOG_DEBUG,"WINDOW: \"%ld\",
+              //                 syslog(LOG_DEBUG,"WINDOW: \"%ld\",
               //NAME: %s.",wChild[i],name);
               if (strcmp((const char *)name, "unity-greeter") == 0) {
                 syslog(LOG_DEBUG,
@@ -268,7 +256,7 @@ void PamGUI::setFocusToUnityGreeter() {
   show();
 }
 
-// slots -----------------------------------------------------------------------
+// Slots
 void PamGUI::matchResult(int match, struct fp_pic_data *pic) {
   device->stop();
   if (!fpPix.isNull()) {
@@ -294,11 +282,11 @@ void PamGUI::matchResult(int match, struct fp_pic_data *pic) {
     }
     showMessage(MSG_BOLD, message);
     timer->stop();
-    // exit with index (match) as exit code
+    // Exit with index (match) as exit code
     qApp->processEvents();
     device->wait(5000);
-    //        for(int i=SHOW_DELAY/1000;i>0;i--){ //let 'em see the result
-    //        before exiting
+    //        for(int i=SHOW_DELAY/1000;i>0;i--){ // Let 'em see the result
+                                                  // before exiting
     qApp->processEvents();
     usleep(SHOW_DELAY);
     //            usleep(1000);
@@ -307,7 +295,7 @@ void PamGUI::matchResult(int match, struct fp_pic_data *pic) {
     return;
   }
   showMessage(MSG_BOLD, tr("Not identified!"));
-  repeatDelay = 3; // let 'em see the result before restarting
+  repeatDelay = 3; // Let 'em see the result before restarting
 }
 
 void PamGUI::newVerifyResult(int result, struct fp_pic_data *pic) {
@@ -341,7 +329,7 @@ void PamGUI::newVerifyResult(int result, struct fp_pic_data *pic) {
 // Helper thread for restart
 void PamGUI::timerTick() {
   setFocusToUnityGreeter();
-  // send alive message to plugin
+  // Send alive message to plugin
   pluginMessage(MSG_ALIVE);
   raise();
   switch (repeatDelay) {
@@ -351,20 +339,20 @@ void PamGUI::timerTick() {
       qApp->exit(-1);
       return;
     }
-    // do nothing
+    // Do nothing
     break;
   case 1:
     syslog(LOG_INFO, "Waiting for device to stop...");
     device->wait(5000);
     syslog(LOG_INFO, "Stopped, restarting");
-    // restart fingerprint scanner
+    // Restart fingerprint scanner
     device->start();
     animationLabel->setMovie(movie);
     showMessage(MSG_NORMAL, tr("Ready..."));
     repeatDelay--;
     break;
   default:
-    repeatDelay--; // still wait
+    repeatDelay--; // Still waiting...
   }
 }
 

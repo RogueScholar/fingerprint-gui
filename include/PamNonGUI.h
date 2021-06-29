@@ -1,26 +1,15 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: PamNonGUI.cpp, PamNonGUI.h
- * Purpose: Main object for libpam_fingerprint module for running in non-gui
- * environments SPDX-License-Identifier: GPL-3.0-or-later
+ * Purpose: Main object for libpam_fingerprint module for running in non-GUI
+ *          environments
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <https://www.gnu.org/licenses/>.
+ * @author Wolfgang Ullrich
  */
 
 #ifndef _PAMNONGUI_H
@@ -40,15 +29,14 @@
 
 #include "Globals.h"
 
-// NonGUI object
-// ----------------------------------------------------------------
+// Non-GUI object
 class PamNonGUI : public QObject {
   Q_OBJECT
 
 public:
   volatile int result; // Result code:
                        // -2   -- still waiting for result
-                       // -1   -- no match / not idetified
+                       // -1   -- no match / not identified
                        // >=0  -- index of identified fingerprint
 private:
   QTimer *timer;
@@ -59,7 +47,7 @@ private:
   void pamMessage(const char *target, const char *style, const char *msg);
 
 public:
-  // used for authentication
+  // Used for authentication
   PamNonGUI(bool writeToPrompt, FingerprintDevice *device,
             const char *user = NULL, const char *finger = NULL,
             QObject *parent = 0);

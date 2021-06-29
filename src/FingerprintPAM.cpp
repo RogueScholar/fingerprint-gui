@@ -1,26 +1,14 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: FingerprintPAM.cpp
  * Purpose: Main library to be used for PAM authentication
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include <dirent.h>
@@ -41,14 +29,14 @@
 
 #include "../include/Globals.h"
 
-//#define DEBUG_ALL // Debug all function calls. If not defined
-//pam_sm_authenticate is debugged only
+//#define DEBUG_ALL // Debug all function calls. If not defined,
+//pam_sm_authenticate is debug-only
 
 using namespace std;
 
 #define PASS_PROMPT "Password: "
 #define LOGIN_PROMPT "Login: "
-#define POLL_TIMEOUT 100 // Timeout for polling the fifo (ms)
+#define POLL_TIMEOUT 100 // Timeout for polling the fifo in milliseconds
 
 #define PAM_SM_AUTH
 #include <security/_pam_macros.h>
@@ -66,23 +54,23 @@ static void handler_SIGTERM(int sig) {
   syslog(LOG_DEBUG, "Got SIGNAL %d (%s).", sig, strsignal(sig));
 }
 
-// Check whether a user's homedir is encrypted and not mounted
+// Check whether a user's home dir is encrypted and not mounted
 
-/* found in: http://ecryptfs.sourceforge.net/README
-eCryptfs should only be mounted on (1) empty directories or (2)
-directories containing files only created by eCryptfs. If you mount a
-directory that has pre-existing files not created by eCryptfs, then
-behavior is undefined. Do not run eCryptfs in higher verbosity levels
-unless you are doing so for the sole purpose of development, since
-secret values will be written out to the system log in that case.
-*/
+/* Found in: <https://www.kernel.org/doc/html/latest/filesystems/ecryptfs.html>
+ * eCryptfs version 0.1 should only be mounted on (1) empty directories or (2)
+ * directories containing files only created by eCryptfs. If you mount a
+ * directory that has pre-existing files not created by eCryptfs, then behavior
+ * is undefined. Do not run eCryptfs in higher verbosity levels unless you are
+ * doing so for the sole purpose of debugging or development, since secret
+ * values will be written out to the system log in that case.
+ *
+ * First we check whether the user's home dir is empty. If so, we assume the
+ * home dir to be encrypted and not mounted. If not, we look for the file
+ * "README.txt" (as found on Ubuntu 9.10) and check whether this file is a
+ * symlink to a path containing "ecryptfs-utils". If it is, we assume the home
+ * dir to be encrypted and not mounted. */
 
-// First we check whether the user's homedir is empty.
-// If yes, we assume the homedir to be encrypted and not mounted.
-// If no, we look for a file "README.txt" (like found on Ubuntu 9.10) and
-// check whether this file is a symlink to a path containing "ecryptfs-utils"
-// If yes, we assume the homedir to be encrypted and not mounted.
-// Returns true if the homedir seems to be encrypted and not mounted.
+// Returns true if the home dir seems to be encrypted and not mounted
 bool isEncrypted(const char *homedir) {
   char encFile[FILENAME_MAX];
   char encLink[FILENAME_MAX];
@@ -99,7 +87,7 @@ bool isEncrypted(const char *homedir) {
         continue;
       if (string(entry->d_name).compare("..") == 0)
         continue;
-      // directory is not empty
+      // Directory is not empty
       dirEmpty = false;
       break;
     }
@@ -113,7 +101,7 @@ bool isEncrypted(const char *homedir) {
     return true;
   }
 
-  // Looking for a file "README.txt"
+  // Looking for the file "README.txt"
   sprintf(encFile, "%s/README.txt", homedir);
   struct stat fileStat;
   if (stat(encFile, &fileStat) < 0) {
@@ -121,26 +109,26 @@ bool isEncrypted(const char *homedir) {
            "File \"%s/README.txt\" doesn't exist; assuming not encrypted or "
            "already mounted.",
            homedir);
-    return false; // file seems not to exist
+    return false; // File seems not to exist
   }
   if (S_ISLNK(fileStat.st_mode)) {
     syslog(LOG_DEBUG,
            "File \"%s/README.txt\" is not a symlink; assuming not encrypted.",
            homedir);
-    return false; // file is not a symlink
+    return false; // File is not a symlink
   }
   if ((linkNameSize = readlink(encFile, encLink, FILENAME_MAX)) < 0) {
     syslog(LOG_ERR, "Could not get link filename for \"%s\".", homedir);
-    return false; // could not get the link filename
+    return false; // Could not get the link target
   }
-  encLink[linkNameSize] = '\0'; // terminate the filename
+  encLink[linkNameSize] = '\0'; // Terminate the filename
   string s = encLink;
   if (s.find("ecryptfs-utils") == string::npos) {
     syslog(LOG_DEBUG,
            "symlink \"%s/README.txt\" doesn't point to ecryptfs-utils; "
            "assuming not encrypted.",
            homedir);
-    return false; // sequence "ecryptfs-utils" not found in filename
+    return false; // String "ecryptfs-utils" not found in filename
   }
   syslog(LOG_DEBUG, "Homedir \"%s\" seems to be encrypted and not mounted.",
          homedir);
@@ -168,7 +156,7 @@ static void pam_set_data_free(pam_handle_t *, void *ptr, int) {
 }
 
 void reopenSyslog(bool debug) { // Some evil stuff might have opened their own
-                                // syslog meanwhile so we open ours again
+                                // syslog in the interim, so we open ours again
   closelog();
   openlog(syslogIdent.data(), LOG_NDELAY | LOG_PID, LOG_AUTH);
   if (debug)
@@ -240,7 +228,7 @@ bool getargs(int argc, const char **argv) {
   return debug;
 }
 
-// Call from PAM ---------------------------------------------------------------
+// Call from PAM
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
                                    const char **argv) {
   bool debug = false;
@@ -316,50 +304,35 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   if (service != nullptr && strlen(service) > 0) {
     syslog(LOG_DEBUG, "PAM_SERVICE: %s.", (const char *)service);
     if (strcmp(service, "webmin") ==
-        0) { // webmin can not authenticate a user by fingerprint!
+        0) { // Webmin can not authenticate a user by fingerprint!
       syslog(LOG_INFO,
              "Have service webmin. Should be handled by other PAM modules.");
       goto auth_return;
     }
-
-    //!!!! Dirty hack to workaround bug #862559 in lightdm (Ubuntu 11.10)
-    // Seems fixed since lightdm 1.1.4 (Ubuntu 12.04)
-    // THIS WILL ONLY WORK WITH DISPLAY :0
-    if (xdisp == nullptr && strcmp(service, "lightdm") == 0) {
-      pam_get_item(pamh, PAM_XDISPLAY, (const void **)(const void *)&xdisp);
-      if (xdisp == nullptr) {
-        syslog(LOG_ERR,
-               "APPLYING WORKAROUND FOR lightdm (setting XDISPLAY to :0).");
-        setenv("DISPLAY", ":0", -1);
-        xdisp = getenv("DISPLAY");
-      }
-    }
-    //!!!! Dirty hack to workaround bug #862559 in lightdm (Ubuntu 11.10)
 
   } else {
     syslog(LOG_ERR, "Have no PAM_SERVICE.");
   }
 
   //!!!! A new dirty hack needed since Ubuntu 12.10. They call
-  //!pam_sm_authenticate twice from unity greeter and kill the first one
-  // So we need to kill the first instance of fingerprint-helper
+  // pam_sm_authenticate twice from the Unity greeter and kill the first one, so
+  // we need to kill the first instance of fingerprint-helper.
   if (strcmp(service, "lightdm") == 0) {
     signal(SIGTERM, handler_SIGTERM);
-    sleep(1); // waiting to be killed if we are the first called
-              // pam_sm_authenticate. In the hope one second is enough!
+    sleep(1); // Waiting to be killed if we are the first called
+              // pam_sm_authenticate, in the hope one second is long enough!
     if (exitNow) {
       syslog(LOG_DEBUG, "EXIT");
       _exit(EXIT_SUCCESS);
     }
-    // unset the handler, needed in gnome-scrensaver if ESC is typed while
+    // Unset the handler, needed in gnome-screensaver if ESC is typed while
     // authenticating
     signal(SIGTERM, SIG_DFL);
   }
   //!!!! A new dirty hack needed since Ubuntu 12.10. They call
-  //!pam_sm_authenticate twice from unity greeter
+  // pam_sm_authenticate twice from the Unity greeter
 
-  //==========================================================================
-  if (xdisp == nullptr) { // Trying to get the xdisplay
+  if (xdisp == nullptr) { // Trying to get the X-Display
     pam_get_item(pamh, PAM_XDISPLAY, (const void **)(const void *)&xdisp);
     if (xdisp == nullptr) {
       pam_get_item(pamh, PAM_TTY, (const void **)(const void *)&xdisp);
@@ -368,7 +341,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         xdisp = nullptr;
       } else {
         syslog(LOG_DEBUG, "Have PAM_TTY: %s.", xdisp);
-        if (xdisp[0] != ':') { // looks not like a X-Display
+        if (xdisp[0] != ':') { // Looks like it's not an X-Display
           syslog(LOG_DEBUG, "Have no DISPLAY from PAM_TTY.");
           xdisp = nullptr;
         } else {
@@ -377,7 +350,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         }
       }
     } else {
-      if (xdisp[0] != ':') { // looks not like a X-Display
+      if (xdisp[0] != ':') { // Looks like it's not an X-Display
         syslog(LOG_DEBUG, "Have no DISPLAY from pam_get_item.");
         xdisp = nullptr;
       } else {
@@ -388,15 +361,15 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   } else
     syslog(LOG_DEBUG, "Have DISPLAY %s from getenv.", xdisp);
 
-  // The following section is only required for systems, who have no XAUTHORITY
-  // variable in gdm environment Gentoo is a candidate
+  // The following section is only required for systems who have no XAUTHORITY
+  // variable in a gdm environment; Gentoo is a candidate.
   if (xdisp != nullptr) {
-    if (xauth == nullptr) { // Trying to get the xauthority
+    if (xauth == nullptr) { // Trying to get the Xauthority
       sprintf(X_lock, "/tmp/.X%s-lock", strtok((char *)&xdisp[1], "."));
       syslog(LOG_DEBUG, "Scanning X-server PID from %s.", X_lock);
       xlock = open(X_lock, O_RDONLY);
       if (xlock >= 0) {
-        if (read(xlock, X_lock, sizeof(X_lock)) > 0) { // reading PID file
+        if (read(xlock, X_lock, sizeof(X_lock)) > 0) { // Reading the PID file
           close(xlock);
           sscanf(X_lock, "%d", &xlock);
           syslog(LOG_DEBUG, "Have X-server PID %d.", xlock);
@@ -404,13 +377,13 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
           xlock = open(X_lock, O_RDONLY);
           if (xlock >= 0) {
             if ((i = read(xlock, X_lock, sizeof(X_lock))) >
-                0) { // reading commandline
+                0) { // Reading the command line
               close(xlock);
               for (int j = 0; j < i; j++)
                 if (X_lock[j] == '\0')
                   X_lock[j] = ' ';
               syslog(LOG_DEBUG, "Have cmdline %s.", X_lock);
-              // searching for "-auth"
+              // Searching for "-auth"
               for (char *word = strtok(X_lock, " "); word != nullptr;
                    word = strtok(nullptr, " ")) {
                 if (strcmp(word, "-auth") == 0) {
@@ -433,21 +406,20 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
 
   syslog(LOG_DEBUG, "Have now XDisplay: \"%s\" and XAuth: \"%s\".", xdisp,
          xauth);
-  //==========================================================================
   //!!!! Another dirty hack needed since Ubuntu 12.10. They don't set complete
-  //!environment variables
+  // environment variables
   if (xdisp != nullptr)
     setenv("DISPLAY", xdisp, -1);
   if (xauth != nullptr)
     setenv("XAUTHORITY", xauth, -1);
   //!!!! Another dirty hack needed since Ubuntu 12.10. They don't set complete
-  //!environment variables
+  // environment variables
 
-  // If an username is available we try to authenticate by fingerprint
-  // Otherwise we try to identify the user
+  // If a username is available, we try to authenticate by fingerprint,
+  // otherwise we try to identify the user.
   pam_get_item(pamh, PAM_USER, (const void **)(const void *)&username);
   if (username != nullptr) {     // PAM has a username already
-    if (strlen(username) == 0) { // Uups, got an empty username
+    if (strlen(username) == 0) { // Oops, we got an empty username
       username = nullptr;
     } else {
       // pam_get_item limits the username to 8 chars, so we need to get the full
@@ -455,7 +427,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
       pam_get_user(pamh, (const char **)&username, nullptr);
       syslog(LOG_DEBUG, "Have PAM username \"%s\".", username);
       // Try to compare this username with a saved username from a previous call
-      // ("try_first_identified" funtion)
+      // ("try_first_identified" function)
       if (tryFirstIdent) {
         if (pam_get_data(pamh, firstIdent.data(), &firstUsername) ==
                 PAM_SUCCESS &&
@@ -478,15 +450,15 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     syslog(LOG_DEBUG, "Have no PAM username.");
   }
 
-  // We create two processes here:
-  // Parent will handle the login/auth by username/password at the PAM prompt
-  // Child will request fingerprints
-  // When fingerprint was recognized child will send username/"random string
-  // password" into a pipe and exit PAM prompt by sending the <enter> key
+  /* We create two processes here:
+   * The parent will handle the login/auth by username/password at the PAM
+   * prompt, while the child will request fingerprints. When the fingerprint is
+   * recognized, the child will send username/"random string password" into a
+   * pipe and exit the PAM prompt by sending the <Enter> key. */
 
   // Create a fifo for the parent process to send "random string password" to
-  // child Child resends this "random string password" back to PAM, when
-  // fingerprint was recognized
+  // the child. The child resends this "random string password" back to PAM when
+  // the fingerprint is recognized.
   if (pipe(fifo) == -1) {
     syslog(LOG_ERR, "Creating IPC pipe failed.");
     rc = PAM_SYSTEM_ERR;
@@ -495,7 +467,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
 
   syslog(LOG_DEBUG, "Parent PID: %d.", getpid());
   if (stat(HELPER_COMMAND, &bStat) !=
-      0) { // helper could not be stated, seems missing
+      0) { // Helper state could not be read, it seems to be missing
     syslog(LOG_ERR, "ERROR: Could not find %s.", HELPER_COMMAND);
     close(fifo[0]);
     close(fifo[1]);
@@ -503,14 +475,14 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     goto auth_return;
   }
 
-  child = fork(); // here we start a child process that requests fingerprints
+  child = fork(); // Here we start a child process that requests fingerprints
   switch (child) {
   case 0: // This is the child
-    // If service is "sudo" in GUI enviroment we need to run fingerprint-helper
-    // as the current user (see http://www.gtk.org/setuid.html)
+    // If the service is "sudo" in a GUI environment, we need to run
+    // fingerprint-helper as the current user <https://www.gtk.org/setuid.html>
     if (xdisp != nullptr && service != nullptr &&
         strcmp(service, "sudo") == 0 && username != nullptr) {
-      p_entry = getpwnam(username); // find the uid of the calling user
+      p_entry = getpwnam(username); // Find the UID of the calling user
       if (p_entry != nullptr) {
         syslog(LOG_DEBUG, "Running helper process with UID %d.",
                p_entry->pw_uid);
@@ -521,20 +493,20 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     }
 
     char pipestr_w[10],
-        pipestr_r[10]; // Convert pipe handles to string to be given in argv
+        pipestr_r[10]; // Convert pipe handles to a string to be given in argv
     sprintf(pipestr_w, "%d", fifo[0]);
     sprintf(pipestr_r, "%d", fifo[1]);
     if (xdisp != nullptr)
-      usleep(50000); // We want the helper window to be raised as the last one
-                     // for being visible on top
-    // we use "execl" for running the helper
+      usleep(50000); // We want the helper window to be raised last, so it's
+                     // always visible as takes the input on top of the stack
+    // We use "execl" for running the helper
     rc = execl(HELPER_COMMAND, HELPER_NAME, pipestr_w, pipestr_r,
                xdisp == nullptr ? "" : xdisp, service,
                debug ? ARG_DEBUG1 : "dUmMy1",
                username != nullptr ? ARG_USER : "dUmMy2",
                username != nullptr ? username : "dUmMy3",
-               "dUmMy4", // reserved
-               "dUmMy5", // reserved
+               "dUmMy4", // Reserved
+               "dUmMy5", // Reserved
                nullptr);
     reopenSyslog(debug);
     syslog(LOG_ERR, "ERROR: Child returned %d (%s).", rc, strerror(errno));
@@ -557,7 +529,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
       syslog(LOG_DEBUG, "Wrote random string to fifo.");
     }
 
-    if (username == nullptr) { // user still unknown, prompt for username
+    if (username == nullptr) { // User is still unknown, prompting for username
       if (pam_get_user(pamh, (const char **)&username, nullptr) !=
           PAM_SUCCESS) {
         reopenSyslog(debug);
@@ -567,12 +539,12 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
       reopenSyslog(debug);
       syslog(LOG_DEBUG, "Prompting username returned PAM_SUCCESS.");
       if (strlen(username) == 0) { // We have an empty username.
-        // Maybe the user has pressed <enter> only or fingerprint-helper sent it
-        // to the pipe
+        // Maybe the user only pressed <Enter> or fingerprint-helper sent it to
+        // the pipe
         pfds.fd = fifo[0];
         pfds.events = POLLIN;
         switch (poll(&pfds, 1, POLL_TIMEOUT)) {
-        case 0: // poll timeout, nothing in fifo. User has pressed <enter> only
+        case 0: // Poll timeout, nothing in fifo; user has pressed <Enter> only.
           syslog(LOG_WARNING, "Got empty username; nothing in pipe.");
           // RETURN PAM_AUTHINFO_UNAVAIL and kill child
           kill(child, SIGUSR2); // Stop child immediately
@@ -581,10 +553,10 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
           close(fifo[1]);
           rc = PAM_AUTHINFO_UNAVAIL; // Let others in PAM stack handle that
           goto auth_return;
-        case -1: // poll error
+        case -1: // Poll error
           syslog(LOG_ERR, "ERROR polling fifo.");
           goto system_error;
-        default: // fingerprint-helper wrote something to fifo
+        default: // fingerprint-helper wrote something to the fifo
           username = (char *)malloc(256);
           memset(username, 0, 256);
           if (read(fifo[0], username, 256) <= 0) {
@@ -596,14 +568,14 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         }
       }
       if (strlen(username) ==
-          0) { // Uups, username is still empty. Something went wrong
+          0) { // Oops, username is still empty; something went wrong.
         syslog(LOG_ERR, "ERROR: Got empty username from pipe.");
         // RETURN PAM_AUTHINFO_UNAVAIL and kill child
         kill(child, SIGUSR2); // Stop child immediately
         waitpid(child, &rc, 0);
         close(fifo[0]);
         close(fifo[1]);
-        rc = PAM_AUTHINFO_UNAVAIL; // Let others in PAM stack handle that
+        rc = PAM_AUTHINFO_UNAVAIL; // Let others in the PAM stack handle that
         goto auth_return;
       }
       if (pam_set_item(pamh, PAM_USER, username) != PAM_SUCCESS) {
@@ -613,11 +585,11 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
       }
       syslog(LOG_DEBUG, "Have username: %s.", username);
       // We send a SIGUSR1 to the child.
-      // In case the user has typed the username the child should exit now
-      kill(child, SIGUSR1); // Stops child if it didn't send the username
+      // In case the user has typed the username, the child should exit now
+      kill(child, SIGUSR1); // Stops the child if it didn't send the username
     }
-    // At this point we have a username. Let's prompt for a password
-    double startprompt = get_time_ms(); // starttime for prompting
+    // At this point we have a username, let's prompt for a password
+    double startprompt = get_time_ms(); // Start timer for prompting
 #ifdef _OPENPAM
     syslog(LOG_DEBUG, "running OPENPAM.");
     if (pam_get_authtok(pamh, PAM_AUTHTOK, (const char **)&password, nullptr) !=
@@ -648,9 +620,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
 #endif
     reopenSyslog(debug);
     syslog(LOG_DEBUG, "Prompting password returned PAM_SUCCESS.");
-    // Some services return immediately from password prompt.
-    // This causes a deadlock when fingerprint-helper is not started yet.
-    // So we need to wait for helper start in this case.
+    // Some services return immediately from password prompt, causing a deadlock
+    // when fingerprint-helper is not started yet, so we need to wait for the
+    // helper to start in this case.
     double endprompt = get_time_ms();
     if (endprompt < (startprompt + 1000)) {
       syslog(LOG_DEBUG, "Prompting returned within less then 1 second. Waiting "
@@ -660,8 +632,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     pfds.fd = fifo[0];
     pfds.events = POLLIN;
     switch (poll(&pfds, 1, POLL_TIMEOUT)) {
-    case 0: // poll timeout, nothing in fifo. Maybe we have a password.
-      kill(child, SIGUSR2); // Stop child immediately
+    case 0: // Poll timeout, nothing in fifo. Maybe we have a password?
+      kill(child, SIGUSR2); // Stop the child immediately
       waitpid(child, &rc, 0);
       close(fifo[0]);
       close(fifo[1]);
@@ -682,17 +654,17 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
       }
       rc = PAM_IGNORE; // Let others check the given username/password
       goto auth_return;
-    case -1: // poll error
+    case -1: // Poll error
       syslog(LOG_ERR, "ERROR polling fifo.");
       goto system_error;
-    default: // fingerprint-helper wrote something to fifo
+    default: // fingerprint-helper wrote something to the fifo
       password = (char *)malloc(256);
       if (read(fifo[0], password, 256) <= 0) {
         syslog(LOG_DEBUG, "ERROR: Read password from pipe (%s).",
                strerror(errno));
         goto system_error;
       }
-      waitpid(child, &rc, 0); // Child exits itself
+      waitpid(child, &rc, 0); // The child exits on its own
       close(fifo[0]);
       close(fifo[1]);
       if (strcmp(randomString, password) ==
@@ -707,20 +679,20 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
           rc = PAM_SYSTEM_ERR;
           goto auth_return;
         }
-        // Check whether the user's homedir is encrypted and not mounted
+        // Check whether the user's home dir is encrypted and not mounted
         if (isEncrypted(passwd->pw_dir)) {
-          // We have an encrypted (not mounted) homedir and no password here
+          // We have an encrypted (not mounted) home dir and no password here...
           // Trying to send a message to the user
           string msg = "!!!ERROR: FOUND ENCRYPTED HOMEDIR BUT NO PASSWORD!!!";
           pamErrorMessage(pamh, (char *)msg.data());
-          sleep(5); // let them read the message
+          sleep(5); // Let them read the message
           rc = PAM_AUTH_ERR;
           goto auth_return;
         }
-        // homedir is not encrypted or already mounted
+        // home dir is not encrypted or already mounted
         rc = PAM_SUCCESS; // User authenticated by fingerprint without password
       } else { // A "real" password was written by fingerprint-helper to the
-               // pipe recovered from ext. media
+               // pipe recovered from external media
         syslog(LOG_DEBUG, "Got password from helper via pipe.");
         pam_set_item(pamh, PAM_AUTHTOK, password);
         //!!!!!!!!!!!!!!!! USE THIS LOG OUTPUT ONLY FOR DEVELOPMENT
@@ -731,9 +703,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         rc = PAM_IGNORE; // Let others check the given username/password
         goto auth_return;
       }
-      // Here we are sure the user was identifed and authenticated by
-      // fingerprint Store username to PAM for a later call ("try_first_ident"
-      // function)
+      // Here we are sure the user was identified and authenticated by
+      // fingerprint. Store the username to PAM for a later call
+      // ("try_first_ident" function)
       char *userName = (char *)malloc(256);
       strcpy(userName, username);
       if (pam_set_data(pamh, firstIdent.data(), (void *)userName,
@@ -749,9 +721,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   rc = PAM_SYSTEM_ERR; // Something went totally wrong
   goto auth_return;
 
-// Return PAM_SYSTEM_ERR and kill child
+// Return PAM_SYSTEM_ERR and kill the child
 system_error:
-  kill(child, SIGUSR2); // Stop child immediately
+  kill(child, SIGUSR2); // Stop the child immediately
   waitpid(child, &rc, 0);
   close(fifo[0]);
   close(fifo[1]);
@@ -769,7 +741,7 @@ auth_return:
          : rc == PAM_AUTH_ERR          ? "PAM_AUTH_ERR"
                                        : "unknown");
   closelog();
-  unlink(HELPER_PID); // In case there was a pidfile left over
+  unlink(HELPER_PID); // In case there was a pidfile left over...
   unlink(PLUGIN_FIFO);
 
   //!!!! Another dirty hack for lightdm (Ubuntu 11.10)

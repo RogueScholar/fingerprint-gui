@@ -1,26 +1,14 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: Globals.h
- * Purpose: some global defines
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * Purpose: Some global definitions
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <https://www.gnu.org/licenses/>.
+ * @author Wolfgang Ullrich
  */
 
 #ifndef _GLOBALS_H
@@ -29,12 +17,12 @@
 #include <syslog.h>
 
 #define VERSION "1.09"
-#define COPYRIGHT "(C) 2008-2016  Wolfgang Ullrich"
+#define COPYRIGHT "© 2008-2016 Wolfgang Ullrich"
 #define HOMEPAGE "http://www.ullrich-online.cc/fingerprint/"
 #define FORUM_ONLINE "http://home.ullrich-online.cc/fingerprint/Forum/"
 #define DONATE "contact.php"
-#define BITCOINADDRESS "1LsaAggcE8rgB3Hkrxv2adEYEqDkbVSHFd"
-#define LICENSE "http://www.gnu.org/licenses/gpl.html"
+#define BITCOINADDRESS "1JYt775BFbB13wffjjnSjKyBpMkZktgVLG"
+#define LICENSE "https://www.gnu.org/licenses/gpl-3.0-standalone.html"
 
 extern "C" {
 #include <libfprint/fprint.h>
@@ -43,14 +31,14 @@ extern "C" {
 #define _MULTI_THREADED
 
 #ifndef LIBEXECDIR
-#define LIBEXECDIR "/usr/local/lib/fingerprint-gui"
+#define LIBEXECDIR "/usr/libexec/fingerprint-gui"
 #endif // LIBEXECDIR
 
 #ifndef DOCDIR
 #define DOCDIR "/usr/share/doc/fingerprint-gui"
 #endif // DOCDIR
 
-#define MODPROBE_COMMAND "/sbin/modprobe"
+#define MODPROBE_COMMAND "/usr/sbin/modprobe"
 
 // Modulenames:
 #define GUI_NAME "fingerprint-gui"
@@ -68,9 +56,8 @@ extern "C" {
 #define HELP_BASE "/Manual_"
 #define HELP_EXT ".html"
 
-#define DATA_DIR "/var/lib/fingerprint-gui/" // configdirectory on local machine
-#define PASSWORD_DIR                                                           \
-  "/.fingerprints/"     // directory for password on external media
+#define DATA_DIR "/var/lib/fingerprint-gui/" // config dir on local machine
+#define PASSWORD_DIR "/.fingerprints/" // dir for password on external media
 #define DATA_EXT ".bir" // file extension for fingerprint bir data
 
 // Arguments for modules
@@ -93,17 +80,18 @@ extern "C" {
 #define SUID_MODE (S_IEXEC | S_ISUID)
 
 #define ID_FILE_NAME "/usb.ids" // file with USB-IDs in program directory
-// This might change in later versions of "usb.ids" from
-// http://www.linux-usb.org/usb.ids
+                                // This might change in later versions of
+                                // usb.ids from
+                                // <http://www.linux-usb.org/usb-ids.html>
 #define END_OF_DEVICE_IDS                                                      \
   "# List of known device classes, subclasses and protocols";
 
 #define BACKUP_FILENAME "/Fingerprints.tar.gz"
 
-#define OPERATION_TIMEOUT                                                      \
-  60000 // Timeout (usecs) for user action after requesting a swipe
-#define SHOW_DELAY                                                             \
-  500000 // delay (usecs) for showing results before exiting the GUI
+#define OPERATION_TIMEOUT 60000 // Timeout in milliseconds for user action after
+                                // requesting a swipe
+#define SHOW_DELAY 500000       // Delay in millisecondss for showing results
+                                // before exiting the GUI
 
 #define READ_COMMAND LIBEXECDIR "/" READ_COMMAND_NAME
 #define WRITE_COMMAND LIBEXECDIR "/" WRITE_COMMAND_NAME

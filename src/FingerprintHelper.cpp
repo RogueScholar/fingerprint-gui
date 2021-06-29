@@ -1,26 +1,14 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: FingerprintHelper.cpp
  * Purpose: Helper process to be used for PAM authentication
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include <QEventLoop>
@@ -70,7 +58,7 @@ void pluginMessage(const char *msg) {
       syslog(LOG_ERR, "ERROR: Writing to fifo: %s", strerror(errno));
     //        else
     //            syslog(LOG_DEBUG,"Wrote to fifo: %s",fifoMsg.data());
-    usleep(10000); // let the plugin read it
+    usleep(10000); // Let the plugin read it
     close(pluginFifo);
   }
 }
@@ -153,9 +141,9 @@ bool exitPrompt(const char *display, const char *service) {
   } else {        // No X display, using uinput
     syslog(LOG_DEBUG, "Using uinput to exit PAM conversation.");
     uinput = uinputOpen();
-    if (uinput < 0) { // could not open uinput, trying to load uinput module
+    if (uinput < 0) { // Could not open uinput, trying to load uinput module
       syslog(LOG_DEBUG, "Could not open uinput, trying to load uinput module.");
-      child = fork(); // here we start "modprobe" as child process
+      child = fork(); // Here we start "modprobe" as a child process
       switch (child) {
       case 0: // This is the child
         rc = execl(MODPROBE_COMMAND, "modprobe", "uinput", nullptr);
@@ -167,7 +155,7 @@ bool exitPrompt(const char *display, const char *service) {
       default: // This is the parent, waiting for the child
         waitpid(child, &rc, 0);
       }
-      uinput = uinputOpen(); // we try again to open uinput
+      uinput = uinputOpen(); // We try again to open uinput
     }
     if (uinput < 0) {
       syslog(LOG_ERR, "ERROR: Open uinput failed.");
@@ -196,30 +184,30 @@ bool exitPrompt(const char *display, const char *service) {
   return true;
 }
 
-// Catch SIGUSR1 and SIGUSR2.
+// Catch SIGUSR1 and SIGUSR2
 // When SIGUSR1 is raised and we have _not_ sent a username to the parent, we
-// can exit because the user has typed the password by keyboard. When SIGUSR2 is
-// raised we are requested to exit immediately
+// can exit because the user has input the password by keyboard. When SIGUSR2 is
+// raised, we are requested to exit immediately.
 static void handler_SIGUSR(int sig) {
   switch (sig) {
   case SIGUSR1:
     syslog(LOG_DEBUG, "Got SIGUSR1, %s.",
            userSent ? "continuing" : "EXIT_SUCCESS");
     if (!userSent) {  // We did not send a username to parent
-      exitNow = true; // enforces EXIT_SUCCESS immediately
+      exitNow = true; // Enforces EXIT_SUCCESS immediately
       qApp->exit(-1);
     }
     return;
   case SIGUSR2:
     syslog(LOG_DEBUG, "Got SIGUSR2, EXIT_SUCCESS.");
-    exitNow = true; // enforces EXIT_SUCCESS immediately
+    exitNow = true; // Enforces EXIT_SUCCESS immediately
     qApp->exit(-1);
     return;
   }
   syslog(LOG_DEBUG, "Got signal %d (%s), ignoring.", sig, strsignal(sig));
 }
 
-// Request fingerprint while PAM propmts for username/password
+// Request fingerprint while PAM prompts for username/password
 // Returns false on error, true on success
 bool requestFingerprint(int pipe_w, const char *display, char *service,
                         char *username, int argc, char **argv, bool debug) {
@@ -228,7 +216,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
   FingerprintDevice *devices = nullptr;
 
   // Find fingerprint device to be used
-  // If no identifier device is found we fallback to verifying the first
+  // If no identifier device is found, we fallback to verifying the first
   // fingerprint discovered for this user
   int mode = MODE_IDENTIFY;
   DeviceHandler deviceHandler(DISPLAY_DRIVER_NAME);
@@ -250,8 +238,8 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
     syslog(LOG_WARNING, "Found more then one devices.");
   }
 
-  if (username == nullptr) {     // user not known yet, maybe it's a login
-    if (mode == MODE_IDENTIFY) { // device can identify. So identifying the user
+  if (username == nullptr) {     // User not yet known, maybe it's a login?
+    if (mode == MODE_IDENTIFY) { // Device can identify, so identifying the user
                                  // is possible
       // Find the first device with fingerprints available
       for (; devices != nullptr; devices = devices->next) {
@@ -259,7 +247,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
                devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
         FingerprintDiscoverer discoverer(devices, debug);
         identifyData = discoverer.getIdentifyData();
-        if (identifyData != nullptr) { // Data for this device available
+        if (identifyData != nullptr) { // Data for this device is available
           break;
         }
         syslog(LOG_DEBUG, "Nothing found.");
@@ -279,9 +267,9 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
       devices->setIdentifyData(identifyData);
 
       if (display == nullptr) {
-        //  NonGUI fingerprint identification is not possible! here
-        //  If we would implement this, the first tty would open the fingerprint
-        //  device and GUI login would never be possible.
+        // Non-GUI fingerprint identification is not possible here!
+        // If we were to implement this, the first tty would open the
+        // fingerprint device and GUI login would never be possible.
         syslog(LOG_WARNING, "Missing X-display (required for login).");
         deviceHandler.release();
         return false;
@@ -290,7 +278,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
         QApplication app(argc, argv);
         loadTranslations(app);
         PamGUI gui(devices, identifyData);
-        if (!devices->isRunning()) { // something went wrong
+        if (!devices->isRunning()) { // Something went wrong
           syslog(LOG_ERR, "ERROR: Device not running!");
           deviceHandler.release();
           return false;
@@ -314,7 +302,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
         syslog(LOG_DEBUG, "Waiting for SIGUSR1.");
         usleep(1000000); // Will be interrupted by SIGUSR1
         syslog(LOG_DEBUG, "Waiting for PAM to be in password prompt.");
-        usleep(100000); // We need to wait for PAM being in the password prompt
+        usleep(100000); // We need to wait for PAM to be in the password prompt
         deviceHandler.release();
         return true;
       } else { // Something went wrong
@@ -328,8 +316,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
     return false;
   }
 
-  // At this point:
-  // The user was known already (authentication only)
+  // At this point: the user was known already (authentication only)
   syslog(LOG_INFO, "Authenticating USER: %s", username);
   // Find the first device with fingerprints for this user
   for (; devices != nullptr; devices = devices->next) {
@@ -337,7 +324,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
            username, devices->getDisplayName(DISPLAY_DRIVER_NAME)->data());
     FingerprintDiscoverer discoverer(devices, username, debug);
     identifyData = discoverer.getIdentifyData();
-    if (identifyData != nullptr) { // Data for this user available
+    if (identifyData != nullptr) { // Data for this user is available
       break;
     }
     syslog(LOG_DEBUG, "Nothing found.");
@@ -368,18 +355,18 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
   }
 
   if (display == nullptr
-      // special handling for "su" required since Ubuntu 10.10
+      // Special handling for su required since Ubuntu 10.10 "Maverick Meerkat"
       || strcmp(service, "su") ==
-             0 // no widget allowed but libfakekey for prompt required
+             0 // No widget allowed, but libfakekey required for prompt
       || strcmp(service, "polkit-1") ==
-             0 // no widget allowed and no prompt required
+             0 // No widget allowed and no prompt required
   ) {          // We can't use the GUI
     syslog(LOG_WARNING,
            "WARNING: No X-display. Starting command line authentication.");
     QCoreApplication app(argc, argv);
     PamNonGUI nonGui(strcmp(service, "polkit-1"), devices, username,
                      fingername);
-    if (!devices->isRunning()) { // something went wrong
+    if (!devices->isRunning()) { // Something went wrong
       syslog(LOG_ERR, "ERROR: Device not running!");
       deviceHandler.release();
       return false;
@@ -391,7 +378,7 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
     QApplication app(argc, argv);
     loadTranslations(app);
     PamGUI gui(devices, username, fingername);
-    if (!devices->isRunning()) { // something went wrong
+    if (!devices->isRunning()) { // Something went wrong
       syslog(LOG_ERR, "ERROR: Device not running!");
       deviceHandler.release();
       return false;
@@ -406,16 +393,15 @@ bool requestFingerprint(int pipe_w, const char *display, char *service,
   return false;
 }
 
-// This is called via "execl" from libpam_fingerprint
-// arg[0] -- "fingerprintHelper"
-// arg[1] -- pipe to read from pam_fingerprint-gui.so (receiving a random
-// number) arg[2] -- pipe to write to pam_fingerprint-gui.so (sending a password
-// if available) arg[3] -- DISPLAY variable or empty string (for debugging only)
-// arg[4] -- service (the requested service in case it requires special
-// handling) more args...
-//  "-d", "--debug" for debug
-//  "-u <name>", "--user <name>" for username (if known already by PAM)
-
+/* This is called via "execl" from libpam_fingerprint
+ *   arg[0] -- "fingerprintHelper"
+ *   arg[1] -- pipe to read from pam_fingerprint-gui.so (receiving a random #
+ *   arg[2] -- pipe to write to pam_fingerprint-gui.so (sending a pw if poss.)
+ *   arg[3] -- DISPLAY variable or empty string (for debugging only)
+ *   arg[4] -- service (the requested service, if it requires special handling)
+ * More args...
+ *   "-d", "--debug" for debug
+ *   "-u <name>", "--user <name>" for username (if known already by PAM) */
 int main(int argc, char **argv) {
   int pipe_r;
   int pipe_w;
@@ -482,7 +468,7 @@ int main(int argc, char **argv) {
   if (username == nullptr)
     syslog(LOG_DEBUG, "Have no username.");
 
-  // If another helper process is running kill him
+  // If another helper process is running, kill it
   FILE *pidfile = fopen(HELPER_PID, "r");
   if (pidfile) {
     char pidstr[100];

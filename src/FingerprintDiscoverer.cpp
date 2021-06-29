@@ -1,28 +1,16 @@
 /*
+ * SPDX-FileCopyrightText: © 2008-2016 Wolfgang Ullrich <w.ullrich@n-view.net>
+ * SPDX-FileCopyrightText: 🄯 2021 Peter J. Mello <admin@petermello.net.>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later OR MPL-2.0
+ *
  * Project "Fingerprint GUI": Services for fingerprint authentication on Linux
  * Module: FingerprintDiscoverer.cpp, FingerprintDiscoverer.h
  * Purpose: Try to load all stored fingerprints of all users on local machine
  *          Doesn't load fingerprint data from dirs where it has no permission
- * to read So only running it as root can indentify all users.
+ *          to read, so only running it as root can identify all users.
  *
- * @author  Wolfgang Ullrich
- * Copyright (C) 2008-2016 Wolfgang Ullrich
- */
-
-/*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * @author Wolfgang Ullrich
  */
 
 #include <QtGui>
@@ -45,7 +33,7 @@
 #include "FingerprintDevice.h"
 #include "FingerprintDiscoverer.h"
 
-// constructor to be used for fingerprintIdentifier (for all users)
+// Constructor to be used for fingerprintIdentifier (for all users)
 FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d, bool debug) {
   QString dataPath(DATA_DIR);
   QDir dataDir(dataPath);
@@ -70,7 +58,7 @@ FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d, bool debug) {
   }
 }
 
-// constructor to be used for libpam_fingerprint (for a known user only)
+// Constructor to be used for libpam_fingerprint (for a known user only)
 FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d, string user,
                                              bool debug) {
   device = d;
@@ -80,12 +68,12 @@ FingerprintDiscoverer::FingerprintDiscoverer(FingerprintDevice *d, string user,
   discoverFingerprints(user, d, debug);
 }
 
-// public getters and setters --------------------------------------------------
+// Public getters and setters
 FingerprintData *FingerprintDiscoverer::getIdentifyData() {
   return allFingerprints;
 }
 
-// private helpers -------------------------------------------------------------
+// Private helpers
 void FingerprintDiscoverer::addFingerprintData(FingerprintData *fpd) {
   syslog(LOG_DEBUG, "Adding %s -- %s.", fpd->getUserName()->data(),
          fpd->getFingerName());
@@ -103,7 +91,7 @@ void FingerprintDiscoverer::addFingerprintData(FingerprintData *fpd) {
   }
 }
 
-// discover stored fingerprints fitting this device for an user in his datadir
+// Discover stored fingerprints fitting this device for a user in his data dir
 void FingerprintDiscoverer::discoverFingerprints(string user,
                                                  FingerprintDevice *d,
                                                  bool debug) {
@@ -117,7 +105,7 @@ void FingerprintDiscoverer::discoverFingerprints(string user,
   fname.append("/");
 
   std::ifstream check(fname.data());
-  if (!check) { // directory does not exists
+  if (!check) { // Directory doesn't exist
     syslog(LOG_DEBUG, "Could not open %s", fname.data());
     return;
   }
@@ -127,10 +115,10 @@ void FingerprintDiscoverer::discoverFingerprints(string user,
     string fileName = string(fname);
     fileName.append(o.str());
     fileName.append(DATA_EXT);
-    if (stat(fileName.data(), &bStat) != 0) // could not be stated
+    if (stat(fileName.data(), &bStat) != 0) // Could not get state
       continue;
 
-    if (geteuid() == 0) { // running as root (no pkexec needed)
+    if (geteuid() == 0) { // Running as root (no pkexec needed)
       syslog(LOG_ERR, "Running as root (no pkexec needed).");
       ifstream birFile(fileName.data(), ios_base::binary);
       if (birFile.is_open()) {
@@ -151,14 +139,14 @@ void FingerprintDiscoverer::discoverFingerprints(string user,
           addFingerprintData(fpd);
         numPrints++;
       }
-    } else { // not running as root
+    } else { // Not running as root
       syslog(LOG_ERR, "Not running as root (need pkexec).");
       string filename = string("");
       filename.append(o.str());
       filename.append(DATA_EXT);
       syslog(LOG_DEBUG, "Parent PID: %d.", getpid());
-      child = fork(); // here we start a child process that copies fingerprint
-                      // data to tempfile
+      child = fork(); // Here we start a child process that copies fingerprint
+                      // data to a temporary file
       switch (child) {
       case 0: // This is the child
         rc = execl(
@@ -179,7 +167,7 @@ void FingerprintDiscoverer::discoverFingerprints(string user,
           return;
         }
       }
-      // read file from /tmp
+      // Read file from /tmp
       string tempfile = string("/tmp/read-");
       tempfile.append(filename);
       ifstream birFile(tempfile.data(), ios_base::binary);
